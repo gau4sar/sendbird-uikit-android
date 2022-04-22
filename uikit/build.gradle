@@ -10,6 +10,9 @@ android {
         targetSdkVersion 30
         versionCode Integer.parseInt(UIKIT_VERSION_CODE)
         versionName UIKIT_VERSION
+
+        buildConfigField("long", "VERSION_CODE", "${defaultConfig.versionCode}")
+        buildConfigField("String","VERSION_NAME","\"${defaultConfig.versionName}\"")
     }
 
     buildTypes {
@@ -33,6 +36,10 @@ android {
         }
         debug {
             debuggable true
+        }
+
+        lintOptions {
+            abortOnError false
         }
     }
     compileOptions {
