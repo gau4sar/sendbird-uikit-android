@@ -20,10 +20,9 @@ public class AudioRecorder {
             recorder.setOutputFile(output.getAbsolutePath());
             recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
             recorder.prepare();
-            Thread.sleep(1000);
             recorder.start();
             return output;
-        } catch (IOException | InterruptedException | RuntimeException e) {
+        } catch (IOException |  RuntimeException e) {
             return null;
         }
     }

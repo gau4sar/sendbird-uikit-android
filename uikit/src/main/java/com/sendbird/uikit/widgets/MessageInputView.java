@@ -1,5 +1,8 @@
 package com.sendbird.uikit.widgets;
 
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -11,7 +14,6 @@ import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -22,10 +24,14 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.widget.ImageViewCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
 
+import com.devlomi.record_view.OnRecordListener;
+import com.devlomi.record_view.RecordPermissionHandler;
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.FileMessage;
 import com.sendbird.uikit.R;
@@ -40,7 +46,6 @@ import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.utils.SoftInputUtils;
 import com.sendbird.uikit.utils.TextUtils;
 import com.sendbird.uikit.utils.ViewUtils;
-import com.tougee.recorderview.AudioRecordView;
 
 import java.lang.reflect.Field;
 
@@ -186,10 +191,26 @@ public class MessageInputView extends FrameLayout {
         }
     }
 
-    public void initAudioRecordView(Activity activity, AudioRecordView.Callback callback) {
-        binding.recordView.setActivity(activity);
-        binding.recordView.setCallback(callback);
-        binding.recordView.setTimeoutSeconds(20);
+    public void initAudioRecordView(Activity activity, OnRecordListener recordListener) {
+        binding.recordButton.setRecordView(binding.recordView);
+        binding.recordView.setOnRecordListener(recordListener);
+        binding.recordView.setRecordPermissionHandler(new RecordPermissionHandler() {
+            @Override
+            public boolean isPermissionGranted() {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                    return true;
+                }
+
+                boolean recordPermissionAvailable = ContextCompat.checkSelfPermission(activity, Manifest.permission.RECORD_AUDIO) == PERMISSION_GRANTED;
+                if (recordPermissionAvailable) {
+                    return true;
+                }
+
+
+                ActivityCompat.requestPermissions(activity, new String[]{ Manifest.permission.RECORD_AUDIO}, 0);
+                return false;
+            }
+        });
     }
 
     public void setInputMode(@NonNull final Mode mode) {
@@ -210,12 +231,13 @@ public class MessageInputView extends FrameLayout {
             setEditPanelVisibility(GONE);
             setAddButtonVisibility(GONE);
             setAudioPanelVisibility(VISIBLE);
-            setInputPanelVisibility(GONE);
+            setInputTextVisibility(GONE);
+            setSendButtonVisibility(GONE);
         } else {
             setQuoteReplyPanelVisibility(GONE);
             setEditPanelVisibility(GONE);
             setAudioPanelVisibility(GONE);
-            setInputPanelVisibility(VISIBLE);
+            setInputTextVisibility(VISIBLE);
             setAddButtonVisibility(VISIBLE);
         }
 
@@ -286,7 +308,7 @@ public class MessageInputView extends FrameLayout {
     }
 
     public void setAudioButtonVisibility(int visibility) {
-        binding.ibtnAudio.setVisibility(visibility);
+        binding.recordButton.setVisibility(visibility);
     }
 
     public void setOnSendClickListener(OnClickListener sendClickListener) {
@@ -295,7 +317,7 @@ public class MessageInputView extends FrameLayout {
     }
 
     public void setOnAudioLongClickListener() {
-        binding.ibtnAudio.setOnLongClickListener(v -> {
+        binding.recordButton.setOnLongClickListener(v -> {
             setInputMode(Mode.AUDIO_RECORD);
             return true;
         });
@@ -343,8 +365,8 @@ public class MessageInputView extends FrameLayout {
         binding.recordView.setVisibility(visibility);
     }
 
-    public void setInputPanelVisibility(int visibility) {
-        binding.inputPanel.setVisibility(visibility);
+    public void setInputTextVisibility(int visibility) {
+        binding.etInputText.setVisibility(visibility);
     }
 
     public void setQuoteReplyPanelVisibility(int visibility) {

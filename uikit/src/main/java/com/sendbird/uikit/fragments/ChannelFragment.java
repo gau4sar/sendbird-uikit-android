@@ -28,6 +28,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.devlomi.record_view.OnRecordListener;
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.Emoji;
@@ -94,7 +95,6 @@ import com.sendbird.uikit.widgets.EmojiListView;
 import com.sendbird.uikit.widgets.EmojiReactionUserListView;
 import com.sendbird.uikit.widgets.MessageInputView;
 import com.sendbird.uikit.widgets.PagerRecyclerView;
-import com.tougee.recorderview.AudioRecordView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -111,7 +111,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class ChannelFragment extends BaseGroupChannelFragment implements OnIdentifiableItemClickListener<BaseMessage>,
         OnIdentifiableItemLongClickListener<BaseMessage>,
-        LoadingDialogHandler, AudioRecordView.Callback {
+        LoadingDialogHandler{
 
     private static final int CAPTURE_IMAGE_PERMISSIONS_REQUEST_CODE = 2001;
     private static final int PICK_IMAGE_PERMISSIONS_REQUEST_CODE = 2002;
@@ -763,7 +763,48 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
             }
         });
 
-        binding.vgInputBox.initAudioRecordView(getActivity(), this);
+        binding.vgInputBox.initAudioRecordView(requireActivity(), new OnRecordListener() {
+            @Override
+            public void onStart() {
+                binding.vgInputBox.setInputMode(MessageInputView.Mode.AUDIO_RECORD);
+                audioFile = audioRecorder.startRecording(requireContext());
+            }
+
+            @Override
+            public void onCancel() {
+                binding.vgInputBox.setInputMode(MessageInputView.Mode.DEFAULT);
+            }
+
+            @Override
+            public void onFinish(long recordTime, boolean limitReached) {
+                binding.vgInputBox.setInputMode(MessageInputView.Mode.DEFAULT);
+                audioRecorder.stopRecording();
+
+                if (audioFile != null) {
+                    FileMessageParams params = new FileMessageParams();
+                    FileInfo info = new FileInfo(
+                            audioFile.getPath(),
+                            (int) audioFile.length(),
+                            "audio/mp3",
+                            audioFile.getName(),
+                            null,
+                            0,
+                            0,
+                            null
+                    );
+                    params.setFile(audioFile);
+                    viewModel.sendFileMessage(params, info);
+
+                    clearInput();
+                    scrollToBottom();
+                }
+            }
+
+            @Override
+            public void onLessThanSecond() {
+
+            }
+        });
         binding.vgInputBox.setOnAudioLongClickListener();
     }
 
@@ -1639,46 +1680,6 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
 
     private void setOnListItemLongClickListener(OnIdentifiableItemLongClickListener<BaseMessage> listItemLongClickListener) {
         this.listItemLongClickListener = listItemLongClickListener;
-    }
-
-    @Override
-    public boolean isReady() {
-        return true;
-    }
-
-    @Override
-    public void onRecordCancel() {
-        binding.vgInputBox.setInputMode(MessageInputView.Mode.DEFAULT);
-    }
-
-    @Override
-    public void onRecordEnd() {
-        binding.vgInputBox.setInputMode(MessageInputView.Mode.DEFAULT);
-        audioRecorder.stopRecording();
-
-        if (audioFile != null) {
-            FileMessageParams params = new FileMessageParams();
-            FileInfo info = new FileInfo(
-                    audioFile.getPath(),
-                    (int) audioFile.length(),
-                    "audio/mp3",
-                    audioFile.getName(),
-                    null,
-                    0,
-                    0,
-                    null
-            );
-            params.setFile(audioFile);
-            viewModel.sendFileMessage(params, info);
-
-            clearInput();
-            scrollToBottom();
-        }
-    }
-
-    @Override
-    public void onRecordStart() {
-        audioFile = audioRecorder.startRecording(requireContext());
     }
 
     public static class Builder {
