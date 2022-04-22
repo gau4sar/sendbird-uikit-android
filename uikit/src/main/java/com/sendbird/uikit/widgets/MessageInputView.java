@@ -1,5 +1,6 @@
 package com.sendbird.uikit.widgets;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -10,6 +11,7 @@ import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -38,6 +40,7 @@ import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.utils.SoftInputUtils;
 import com.sendbird.uikit.utils.TextUtils;
 import com.sendbird.uikit.utils.ViewUtils;
+import com.tougee.recorderview.AudioRecordView;
 
 import java.lang.reflect.Field;
 
@@ -59,7 +62,7 @@ public class MessageInputView extends FrameLayout {
     private boolean showSendButtonAlways;
 
     public enum Mode {
-        DEFAULT, EDIT, QUOTE_REPLY
+        DEFAULT, EDIT, QUOTE_REPLY, AUDIO_RECORD
     }
 
     public MessageInputView(@NonNull Context context) {
@@ -148,8 +151,10 @@ public class MessageInputView extends FrameLayout {
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                     if (!TextUtils.isEmpty(s) && Mode.EDIT != getInputMode() || showSendButtonAlways) {
                         setSendButtonVisibility(View.VISIBLE);
+                        setAudioButtonVisibility(View.GONE);
                     } else {
                         setSendButtonVisibility(View.GONE);
+                        setAudioButtonVisibility(View.VISIBLE);
                     }
                 }
 
@@ -167,8 +172,10 @@ public class MessageInputView extends FrameLayout {
                 public void afterTextChanged(Editable s) {
                     if (!TextUtils.isEmpty(s) && Mode.EDIT != getInputMode() || showSendButtonAlways) {
                         setSendButtonVisibility(View.VISIBLE);
+                        setAudioButtonVisibility(View.GONE);
                     } else {
                         setSendButtonVisibility(View.GONE);
+                        setAudioButtonVisibility(View.VISIBLE);
                     }
                 }
             });
@@ -179,21 +186,37 @@ public class MessageInputView extends FrameLayout {
         }
     }
 
+    public void initAudioRecordView(Activity activity, AudioRecordView.Callback callback) {
+        binding.recordView.setActivity(activity);
+        binding.recordView.setCallback(callback);
+        binding.recordView.setTimeoutSeconds(20);
+    }
+
     public void setInputMode(@NonNull final Mode mode) {
         final Mode before = this.mode;
         this.mode = mode;
         if (Mode.EDIT == mode) {
             setQuoteReplyPanelVisibility(GONE);
             setEditPanelVisibility(VISIBLE);
+            setAudioPanelVisibility(GONE);
             binding.ibtnAdd.setVisibility(GONE);
         } else if (Mode.QUOTE_REPLY == mode) {
             setQuoteReplyPanelVisibility(VISIBLE);
             setEditPanelVisibility(GONE);
+            setAudioPanelVisibility(GONE);
             setAddButtonVisibility(addButtonVisibility);
+        } else if (Mode.AUDIO_RECORD == mode) {
+            setQuoteReplyPanelVisibility(GONE);
+            setEditPanelVisibility(GONE);
+            setAddButtonVisibility(GONE);
+            setAudioPanelVisibility(VISIBLE);
+            setInputPanelVisibility(GONE);
         } else {
             setQuoteReplyPanelVisibility(GONE);
             setEditPanelVisibility(GONE);
-            setAddButtonVisibility(addButtonVisibility);
+            setAudioPanelVisibility(GONE);
+            setInputPanelVisibility(VISIBLE);
+            setAddButtonVisibility(VISIBLE);
         }
 
         if (inputModeChangedListener != null) {
@@ -262,9 +285,20 @@ public class MessageInputView extends FrameLayout {
         binding.ibtnSend.setVisibility(visibility);
     }
 
+    public void setAudioButtonVisibility(int visibility) {
+        binding.ibtnAudio.setVisibility(visibility);
+    }
+
     public void setOnSendClickListener(OnClickListener sendClickListener) {
         this.sendClickListener = sendClickListener;
         binding.ibtnSend.setOnClickListener(sendClickListener);
+    }
+
+    public void setOnAudioLongClickListener() {
+        binding.ibtnAudio.setOnLongClickListener(v -> {
+            setInputMode(Mode.AUDIO_RECORD);
+            return true;
+        });
     }
 
     public void setSendImageResource(@DrawableRes int sendImageResource) {
@@ -303,6 +337,14 @@ public class MessageInputView extends FrameLayout {
 
     public void setEditPanelVisibility(int visibility) {
         binding.editPanel.setVisibility(visibility);
+    }
+
+    public void setAudioPanelVisibility(int visibility) {
+        binding.recordView.setVisibility(visibility);
+    }
+
+    public void setInputPanelVisibility(int visibility) {
+        binding.inputPanel.setVisibility(visibility);
     }
 
     public void setQuoteReplyPanelVisibility(int visibility) {

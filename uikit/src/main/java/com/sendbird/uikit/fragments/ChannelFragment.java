@@ -46,6 +46,7 @@ import com.sendbird.android.UserMessageParams;
 import com.sendbird.android.handlers.GroupChannelContext;
 import com.sendbird.android.handlers.MessageCollectionHandler;
 import com.sendbird.android.handlers.MessageContext;
+import com.sendbird.uikit.AudioRecorder;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendBirdUIKit;
 import com.sendbird.uikit.activities.ChannelSettingsActivity;
@@ -93,6 +94,7 @@ import com.sendbird.uikit.widgets.EmojiListView;
 import com.sendbird.uikit.widgets.EmojiReactionUserListView;
 import com.sendbird.uikit.widgets.MessageInputView;
 import com.sendbird.uikit.widgets.PagerRecyclerView;
+import com.tougee.recorderview.AudioRecordView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -109,7 +111,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class ChannelFragment extends BaseGroupChannelFragment implements OnIdentifiableItemClickListener<BaseMessage>,
         OnIdentifiableItemLongClickListener<BaseMessage>,
-        LoadingDialogHandler {
+        LoadingDialogHandler, AudioRecordView.Callback {
 
     private static final int CAPTURE_IMAGE_PERMISSIONS_REQUEST_CODE = 2001;
     private static final int PICK_IMAGE_PERMISSIONS_REQUEST_CODE = 2002;
@@ -126,10 +128,12 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
 
     private final AtomicInteger tooltipMessageCount = new AtomicInteger();
     private Uri mediaUri;
+    private File audioFile;
 
     @Nullable
     private BaseMessage targetMessage;
 
+    private AudioRecorder audioRecorder = new AudioRecorder();
     private View.OnClickListener headerLeftButtonListener;
     private View.OnClickListener headerRightButtonListener;
     private OnItemClickListener<BaseMessage> profileClickListener;
@@ -758,6 +762,9 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
                 targetMessage = null;
             }
         });
+
+        binding.vgInputBox.initAudioRecordView(getActivity(), this);
+        binding.vgInputBox.setOnAudioLongClickListener();
     }
 
     private void onScrollEndReaches(PagerRecyclerView.ScrollDirection direction) {
@@ -1632,6 +1639,46 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
 
     private void setOnListItemLongClickListener(OnIdentifiableItemLongClickListener<BaseMessage> listItemLongClickListener) {
         this.listItemLongClickListener = listItemLongClickListener;
+    }
+
+    @Override
+    public boolean isReady() {
+        return true;
+    }
+
+    @Override
+    public void onRecordCancel() {
+        binding.vgInputBox.setInputMode(MessageInputView.Mode.DEFAULT);
+    }
+
+    @Override
+    public void onRecordEnd() {
+        binding.vgInputBox.setInputMode(MessageInputView.Mode.DEFAULT);
+        audioRecorder.stopRecording();
+
+        if (audioFile != null) {
+            FileMessageParams params = new FileMessageParams();
+            FileInfo info = new FileInfo(
+                    audioFile.getPath(),
+                    (int) audioFile.length(),
+                    "audio/mp3",
+                    audioFile.getName(),
+                    null,
+                    0,
+                    0,
+                    null
+            );
+            params.setFile(audioFile);
+            viewModel.sendFileMessage(params, info);
+
+            clearInput();
+            scrollToBottom();
+        }
+    }
+
+    @Override
+    public void onRecordStart() {
+        audioFile = audioRecorder.startRecording(requireContext());
     }
 
     public static class Builder {
