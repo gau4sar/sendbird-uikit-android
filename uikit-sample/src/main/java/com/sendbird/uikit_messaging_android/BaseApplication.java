@@ -16,7 +16,7 @@ import com.sendbird.uikit_messaging_android.utils.PushUtils;
 
 public class BaseApplication extends MultiDexApplication {
 
-    private static final String APP_ID = "2D7B4CDB-932F-4082-9B09-A1153792DC8D";
+    private static final String APP_ID = "DF3B1DDF-5616-4060-BD16-444B38320B27";
     private static final MutableLiveData<InitState> initState = new MutableLiveData<>();
 
     @Override

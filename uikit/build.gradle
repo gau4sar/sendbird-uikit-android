@@ -10,6 +10,9 @@ android {
         targetSdkVersion 30
         versionCode Integer.parseInt(UIKIT_VERSION_CODE)
         versionName UIKIT_VERSION
+
+        buildConfigField("long", "VERSION_CODE", "${defaultConfig.versionCode}")
+        buildConfigField("String","VERSION_NAME","\"${defaultConfig.versionName}\"")
     }
 
     buildTypes {
@@ -19,7 +22,7 @@ android {
 
             libraryVariants.all { variant ->
                 variant.outputs.all {
-                    def aarName = "sendbird-uikit-${project.version}-${variant.buildType.name}.aar"
+                    def aarName = "sendbird-uikit-${project.version}.aar"
 
                     println "\n============================================================"
                     println "project module : Sendbird UIKit"
@@ -33,6 +36,10 @@ android {
         }
         debug {
             debuggable true
+        }
+
+        lintOptions {
+            abortOnError false
         }
     }
     compileOptions {
@@ -72,4 +79,6 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.3.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+    implementation 'com.github.tougee:audiorecorderview:1.0.4'
 }
