@@ -802,7 +802,8 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
 
             @Override
             public void onLessThanSecond() {
-
+                binding.vgInputBox.setInputMode(MessageInputView.Mode.DEFAULT);
+                audioRecorder.stopRecording();
             }
         });
         binding.vgInputBox.setOnAudioLongClickListener();

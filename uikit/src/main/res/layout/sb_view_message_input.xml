@@ -172,15 +172,16 @@
 
                 <com.devlomi.record_view.RecordButton
                     android:id="@+id/record_button"
-                    android:layout_width="@dimen/sb_size_24"
-                    android:layout_height="@dimen/sb_size_24"
+                    android:layout_width="@dimen/sb_size_36"
+                    android:layout_height="@dimen/sb_size_36"
                     android:layout_marginStart="@dimen/sb_size_12"
                     android:layout_marginLeft="@dimen/sb_size_12"
                     android:layout_marginEnd="@dimen/sb_size_0"
                     android:layout_marginRight="@dimen/sb_size_0"
-                    android:padding="@dimen/sb_size_0"
+                    android:padding="@dimen/sb_size_8"
                     android:src="@drawable/ic_voice"
-                    app:tint="@color/primary_400" />
+                    android:background="@drawable/bg_circle_record"
+                    app:tint="#FFFFFF" />
 
             </LinearLayout>
 
