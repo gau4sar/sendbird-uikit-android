@@ -13,12 +13,12 @@ public class AudioRecorder {
 
     public File startRecording(Context context) {
         try {
-            File output = File.createTempFile("audio_", ".mp3", context.getFilesDir());
+            File output = File.createTempFile("audio_", ".m4a", context.getFilesDir());
             recorder = new MediaRecorder();
             recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-            recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+            recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
             recorder.setOutputFile(output.getAbsolutePath());
-            recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+            recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
             recorder.prepare();
             recorder.start();
             return output;
