@@ -53,6 +53,9 @@ public class StringSet {
     public final static String KEY_STARTING_POINT = "KEY_STARTING_POINT";
     public final static String KEY_FROM_SEARCH_RESULT = "KEY_FROM_SEARCH_RESULT";
     public final static String KEY_SEARCH_BAR_BUTTON_TEXT = "KEY_SEARCH_BAR_BUTTON_TEXT";
+    public final static String KEY_ONE_ONE_CHAT = "KEY_ONE_ONE_CHAT";
+    public final static String KEY_USER_ID = "KEY_USER_ID";
+    public final static String KEY_ACTION_OPEN_USER_PROFILE = "KEY_ACTION_OPEN_USER_PROFILE";
 
     public final static String sb_uikit = "sb_uikit";
     public final static String audio = "audio";

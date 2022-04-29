@@ -47,7 +47,7 @@
                 android:layout_height="@dimen/sb_size_56"
                 android:clickable="true"
                 android:focusable="true"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:paddingLeft="@dimen/sb_size_16"
                 android:paddingRight="@dimen/sb_size_16">
 

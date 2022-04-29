@@ -105,6 +105,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 /**
  * Fragment displaying the list of messages in the channel.
@@ -326,10 +327,44 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
 
         if (headerRightButtonListener != null) {
             binding.chvChannelHeader.setRightImageButtonClickListener(headerRightButtonListener);
+            binding.chvChannelHeader.getTitleTextView().setOnClickListener(headerRightButtonListener);
+            binding.chvChannelHeader.getProfileView().setOnClickListener(headerRightButtonListener);
         } else {
+            List<Member> members = channel.getMembers();
+            ArrayList<CharSequence> memberIds = new ArrayList<>();
+            for (Member member: members) {
+                memberIds.add(member.getUserId());
+            }
+
             binding.chvChannelHeader.setRightImageButtonClickListener(v -> {
-                Intent intent = ChannelSettingsActivity.newIntent(getContext(), channel.getUrl());
-                startActivityForResult(intent, GROUP_CHANNEL_SETTINGS_REQUEST_CODE);
+                if (memberIds.size() > 2) {
+                    Intent intent = ChannelSettingsActivity.newIntent(getContext(), channel.getUrl());
+                    startActivityForResult(intent, GROUP_CHANNEL_SETTINGS_REQUEST_CODE);
+                } else {
+                    Intent intent = new Intent(StringSet.KEY_ACTION_OPEN_USER_PROFILE);
+                    intent.putCharSequenceArrayListExtra(StringSet.KEY_USER_ID, memberIds);
+                    requireContext().sendBroadcast(intent);
+                }
+            });
+            binding.chvChannelHeader.getTitleTextView().setOnClickListener(v -> {
+                if (memberIds.size() > 2) {
+                    Intent intent = ChannelSettingsActivity.newIntent(getContext(), channel.getUrl());
+                    startActivityForResult(intent, GROUP_CHANNEL_SETTINGS_REQUEST_CODE);
+                } else {
+                    Intent intent = new Intent(StringSet.KEY_ACTION_OPEN_USER_PROFILE);
+                    intent.putCharSequenceArrayListExtra(StringSet.KEY_USER_ID, memberIds);
+                    requireContext().sendBroadcast(intent);
+                }
+            });
+            binding.chvChannelHeader.getProfileView().setOnClickListener(v -> {
+                if (memberIds.size() > 2) {
+                    Intent intent = ChannelSettingsActivity.newIntent(getContext(), channel.getUrl());
+                    startActivityForResult(intent, GROUP_CHANNEL_SETTINGS_REQUEST_CODE);
+                } else {
+                    Intent intent = new Intent(StringSet.KEY_ACTION_OPEN_USER_PROFILE);
+                    intent.putCharSequenceArrayListExtra(StringSet.KEY_USER_ID, memberIds);
+                    requireContext().sendBroadcast(intent);
+                }
             });
         }
 
