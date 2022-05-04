@@ -15,7 +15,7 @@ import com.sendbird.uikit.model.ReadyStatus;
 import com.sendbird.uikit.utils.ContextUtils;
 import com.sendbird.uikit.widgets.WaitingDialog;
 
-abstract class BaseFragment extends PermissionFragment implements DialogProvider {
+public abstract class BaseFragment extends PermissionFragment implements DialogProvider {
     private final String CONNECTION_HANDLER_ID = getClass().getName() + System.currentTimeMillis();
 
     public abstract void onReady(User user, ReadyStatus status);

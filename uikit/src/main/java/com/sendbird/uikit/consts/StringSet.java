@@ -2,6 +2,8 @@ package com.sendbird.uikit.consts;
 
 public class StringSet {
     public final static String KEY_CHANNEL_URL = "KEY_CHANNEL_URL";
+    public final static String KEY_MEMBERS = "KEY_MEMBERS";
+    public final static String KEY_READ_STATUS = "KEY_READ_STATUS";
 
     public final static String KEY_THEME_RES_ID = "KEY_THEME_RES_ID";
     public final static String KEY_USE_HEADER = "KEY_USE_HEADER";

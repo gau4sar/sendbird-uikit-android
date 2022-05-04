@@ -45,6 +45,10 @@
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:launchMode="singleTop" />
         <activity
+            android:name=".activities.MembersActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:launchMode="singleTop" />
+        <activity
             android:name=".activities.ChannelListActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:launchMode="singleTop" />

@@ -52,6 +52,7 @@ import com.sendbird.uikit.AudioRecorder;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendBirdUIKit;
 import com.sendbird.uikit.activities.ChannelSettingsActivity;
+import com.sendbird.uikit.activities.MembersActivity;
 import com.sendbird.uikit.activities.PhotoViewActivity;
 import com.sendbird.uikit.activities.adapter.MessageListAdapter;
 import com.sendbird.uikit.activities.viewholder.MessageType;
@@ -1357,6 +1358,8 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
         DialogListItem delete = new DialogListItem(R.string.sb_text_channel_anchor_delete, R.drawable.icon_delete, false, !MessageUtils.isDeletableMessage(message));
         DialogListItem reply = new DialogListItem(R.string.sb_text_channel_anchor_reply, R.drawable.icon_reply, false, MessageUtils.hasParentMessage(message));
         DialogListItem retry = new DialogListItem(R.string.sb_text_channel_anchor_retry, 0);
+        DialogListItem readBy = new DialogListItem(R.string.sb_text_channel_anchor_read_by, R.drawable.icon_read);
+        DialogListItem deliveredBy = new DialogListItem(R.string.sb_text_channel_anchor_delivered_by, R.drawable.icon_delivered);
         DialogListItem deleteFailed = new DialogListItem(R.string.sb_text_channel_anchor_delete, 0);
 
         DialogListItem[] actions = null;
@@ -1364,9 +1367,17 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
             case VIEW_TYPE_USER_MESSAGE_ME:
                 if (status == BaseMessage.SendingStatus.SUCCEEDED) {
                     if (replyType == ReplyType.NONE) {
-                        actions = new DialogListItem[]{copy, edit, delete};
+                        if (channel.getMemberCount() > 2) {
+                            actions = new DialogListItem[]{copy, edit, delete, readBy, deliveredBy};
+                        } else {
+                            actions = new DialogListItem[]{copy, edit, delete};
+                        }
                     } else {
-                        actions = new DialogListItem[]{copy, edit, delete, reply};
+                        if (channel.getMemberCount() > 2) {
+                            actions = new DialogListItem[]{copy, edit, delete, reply, readBy, deliveredBy};
+                        } else {
+                            actions = new DialogListItem[]{copy, edit, delete, reply};
+                        }
                     }
                 } else if (MessageUtils.isFailed(message)) {
                     actions = new DialogListItem[]{retry, deleteFailed};
@@ -1451,6 +1462,19 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
             return true;
         } else if (key == R.string.sb_text_channel_anchor_retry) {
             resendMessage(message);
+            return true;
+        } else if (key == R.string.sb_text_channel_anchor_read_by) {
+            List<Member> members = channel.getReadMembers(message, false);
+            ArrayList<String> memberIdList = new ArrayList<>();
+            for (Member member: members) memberIdList.add(member.getUserId());
+
+            startActivity(MembersActivity.newIntent(getContext(), channel.getUrl(), memberIdList, getString(R.string.sb_text_channel_anchor_read_by)));
+            return true;
+        } else if (key == R.string.sb_text_channel_anchor_delivered_by) {
+            List<Member> members = channel.getUnreadMembers(message, false);
+            ArrayList<String> memberIdList = new ArrayList<>();
+            for (Member member: members) memberIdList.add(member.getUserId());
+            startActivity(MembersActivity.newIntent(getContext(), channel.getUrl(), memberIdList, getString(R.string.sb_text_channel_anchor_delivered_by)));
             return true;
         }
 

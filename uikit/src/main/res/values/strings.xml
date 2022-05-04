@@ -32,6 +32,8 @@
     <string name="sb_text_channel_anchor_delete">Delete</string>
     <string name="sb_text_channel_anchor_reply">Reply</string>
     <string name="sb_text_channel_anchor_retry">Retry</string>
+    <string name="sb_text_channel_anchor_read_by">Read by</string>
+    <string name="sb_text_channel_anchor_delivered_by">Delivered by</string>
     <string name="sb_text_channel_input_text_hint">Enter message</string>
     <string name="sb_text_channel_input_reply_text_hint">Reply to message</string>
     <string name="sb_text_channel_input_camera">Camera</string>
