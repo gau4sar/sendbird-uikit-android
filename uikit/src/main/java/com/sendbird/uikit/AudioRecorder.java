@@ -3,6 +3,7 @@ package com.sendbird.uikit;
 import android.content.Context;
 import android.media.MediaRecorder;
 import android.net.Uri;
+import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,8 +29,12 @@ public class AudioRecorder {
     }
 
     public void stopRecording() {
-        recorder.stop();
-        recorder.release();
-        recorder = null;
+        try {
+            recorder.stop();
+            recorder.release();
+            recorder = null;
+        } catch (Exception exception) {
+            Log.e("nt.dung", "Exception: " + exception.getMessage());
+        }
     }
 }
