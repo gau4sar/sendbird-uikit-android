@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
@@ -29,7 +30,18 @@ public class ChannelActivity extends AppCompatActivity {
      * @return ChannelActivity Intent
      */
     public static Intent newIntent(@NonNull Context context, @NonNull String channelUrl) {
-        return newIntentFromCustomActivity(context, ChannelActivity.class, channelUrl);
+        return newIntentFromCustomActivity(context, ChannelActivity.class, channelUrl, null);
+    }
+
+    /**
+     * Create an intent for a {@link ChannelActivity}.
+     *
+     * @param context A Context of the application package implementing this class.
+     * @param channelUrl the url of the channel will be implemented.
+     * @return ChannelActivity Intent
+     */
+    public static Intent newIntent(@NonNull Context context, @NonNull String channelUrl, @Nullable String title) {
+        return newIntentFromCustomActivity(context, ChannelActivity.class, channelUrl, title);
     }
 
     /**
@@ -41,8 +53,8 @@ public class ChannelActivity extends AppCompatActivity {
      * @return Returns a newly created Intent that can be used to launch the activity.
      * @since 1.1.2
      */
-    public static Intent newIntentFromCustomActivity(@NonNull Context context, @NonNull Class<? extends ChannelActivity> cls, @NonNull String channelUrl) {
-        return new IntentBuilder(context, cls, channelUrl).build();
+    public static Intent newIntentFromCustomActivity(@NonNull Context context, @NonNull Class<? extends ChannelActivity> cls, @NonNull String channelUrl, @Nullable String title) {
+        return new IntentBuilder(context, cls, channelUrl, title).build();
     }
 
     @Override
@@ -52,10 +64,11 @@ public class ChannelActivity extends AppCompatActivity {
         setContentView(R.layout.sb_activity);
 
         String url = getIntent().getStringExtra(StringSet.KEY_CHANNEL_URL);
+        String title = getIntent().getStringExtra(StringSet.KEY_HEADER_TITLE);
         if (TextUtils.isEmpty(url)) {
             ContextUtils.toastError(this, R.string.sb_text_error_get_channel);
         } else {
-            ChannelFragment fragment = createChannelFragment(url);
+            ChannelFragment fragment = createChannelFragment(url, title);
             FragmentManager manager = getSupportFragmentManager();
             manager.popBackStack();
             manager.beginTransaction()
@@ -70,11 +83,14 @@ public class ChannelActivity extends AppCompatActivity {
      * @return a new channel fragment.
      * @since 1.0.4
      */
-    protected ChannelFragment createChannelFragment(@NonNull String channelUrl) {
+    protected ChannelFragment createChannelFragment(@NonNull String channelUrl, @Nullable String title) {
         final Intent intent = getIntent();
         ChannelFragment.Builder builder = new ChannelFragment.Builder(channelUrl)
                 .setUseHeader(true)
                 .setStartingPoint(intent.getLongExtra(StringSet.KEY_STARTING_POINT, Long.MAX_VALUE));
+        if (title != null) {
+            builder.setHeaderTitle(title);
+        }
         if (intent.hasExtra(StringSet.KEY_HIGHLIGHT_MESSAGE_INFO)) {
             builder.setHighlightMessageInfo(intent.getParcelableExtra(StringSet.KEY_HIGHLIGHT_MESSAGE_INFO));
         }
@@ -87,6 +103,7 @@ public class ChannelActivity extends AppCompatActivity {
     public static class IntentBuilder {
         private final Context context;
         private final String channelUrl;
+        private final String title;
         private long startingPoint = Long.MAX_VALUE;
         private HighlightMessageInfo highlightMessageInfo;
         private Class<? extends ChannelActivity> customClass = ChannelActivity.class;
@@ -98,9 +115,10 @@ public class ChannelActivity extends AppCompatActivity {
          * @param channelUrl The url of the channel will be implemented.
          * @since 2.1.0
          */
-        public IntentBuilder(@NonNull Context context, @NonNull String channelUrl) {
+        public IntentBuilder(@NonNull Context context, @NonNull String channelUrl, @Nullable String title) {
             this.context = context;
             this.channelUrl = channelUrl;
+            this.title = title;
         }
 
         /**
@@ -111,10 +129,11 @@ public class ChannelActivity extends AppCompatActivity {
          * @param channelUrl The url of the channel will be implemented.
          * @since 2.1.0
          */
-        public IntentBuilder(@NonNull Context context, @NonNull Class<? extends ChannelActivity> customClass, @NonNull String channelUrl) {
+        public IntentBuilder(@NonNull Context context, @NonNull Class<? extends ChannelActivity> customClass, @NonNull String channelUrl, @Nullable String title) {
             this.context = context;
             this.channelUrl = channelUrl;
             this.customClass = customClass;
+            this.title = title;
         }
 
         /**
@@ -151,6 +170,7 @@ public class ChannelActivity extends AppCompatActivity {
             Intent intent = new Intent(context, customClass);
             intent.putExtra(StringSet.KEY_CHANNEL_URL, channelUrl);
             intent.putExtra(StringSet.KEY_STARTING_POINT, startingPoint);
+            intent.putExtra(StringSet.KEY_HEADER_TITLE, title);
             if (highlightMessageInfo != null) {
                 intent.putExtra(StringSet.KEY_HIGHLIGHT_MESSAGE_INFO, highlightMessageInfo);
             }
