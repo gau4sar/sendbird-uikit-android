@@ -74,4 +74,17 @@ public class AudioPlayerView extends FrameLayout implements AudioManager.AudioCh
     public void onAudioChanged() {
         update();
     }
+
+    @Override
+    public void onStateEnded(Uri uri) {
+        if (uri == audioManager.getUriPlaying()) {
+            binding.sbDuration.setProgress(0);
+            binding.btnPlay.setImageResource(R.drawable.ic_play);
+        }
+    }
+
+    @Override
+    public void onIsPlayingChanged(Uri uri, boolean isPlaying) {
+
+    }
 }

@@ -10,9 +10,12 @@ import com.google.android.exoplayer2.source.ProgressiveMediaSource;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AudioManager {
+public class AudioManager implements AudioPlayer.AudioPlayerListener {
+
     public interface AudioChangeListener {
         void onAudioChanged();
+        void onStateEnded(Uri uri);
+        void onIsPlayingChanged(Uri uri, boolean isPlaying);
     }
 
     private static AudioManager sInstance = null;
@@ -20,9 +23,10 @@ public class AudioManager {
     private int progress;
 
     private final List<AudioChangeListener> listeners = new ArrayList<>();
-    private AudioPlayer player = AudioPlayer.getInstance();
+    private final AudioPlayer player = AudioPlayer.getInstance();
     
     private AudioManager() {
+        player.setListener(this);
     }
 
     public static AudioManager getInstance() {
@@ -56,19 +60,35 @@ public class AudioManager {
         }
     }
 
-    public Uri getUriPlaying() {
-        return uriPlaying;
+    private void stop() {
+        uriPlaying = null;
+        player.stop();
+
+        for (AudioChangeListener listener: listeners) {
+            listener.onAudioChanged();
+        }
     }
 
-    public void setUriPlaying(Uri uriPlaying) {
-        this.uriPlaying = uriPlaying;
+    public Uri getUriPlaying() {
+        return uriPlaying;
     }
 
     public int getProgress() {
         return progress;
     }
 
-    public void setProgress(int progress) {
-        this.progress = progress;
+    @Override
+    public void onStateEnded() {
+        for (AudioChangeListener listener: listeners) {
+            stop();
+            listener.onStateEnded(uriPlaying);
+        }
+    }
+
+    @Override
+    public void onIsPlayingChanged(boolean isPlaying) {
+        for (AudioChangeListener listener: listeners) {
+            listener.onIsPlayingChanged(uriPlaying, isPlaying);
+        }
     }
 }
