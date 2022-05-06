@@ -1,5 +1,7 @@
 package com.sendbird.uikit.activities.viewholder;
 
+import android.net.Uri;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -7,6 +9,7 @@ import androidx.databinding.ViewDataBinding;
 
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
+import com.sendbird.android.FileMessage;
 import com.sendbird.android.Reaction;
 import com.sendbird.uikit.BR;
 import com.sendbird.uikit.consts.ClickableViewIdentifier;
@@ -40,6 +43,11 @@ public final class MyAudioFileMessageViewHolder extends GroupChannelMessageViewH
         binding.setVariable(BR.messageGroupType, messageGroupType);
 
         final MyAudioFileMessageView root = (MyAudioFileMessageView) binding.getRoot();
+        FileMessage fileMessage = (FileMessage) message;
+        String url = fileMessage.getUrl();
+        Log.d("nt.dung", "Audio url: " + url);
+
+        root.setAudioUri(Uri.parse(url));
         root.update();
     }
 

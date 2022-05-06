@@ -2,6 +2,7 @@ package com.sendbird.uikit.widgets;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -86,5 +87,9 @@ public class MyAudioFileMessageView extends GroupChannelMessageView {
 
     public void update() {
         binding.audioPlayerView.update();
+    }
+
+    public void setAudioUri(Uri uri) {
+        binding.audioPlayerView.setUri(uri);
     }
 }

@@ -2,6 +2,7 @@ package com.sendbird.uikit.widgets;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +12,6 @@ import androidx.databinding.DataBindingUtil;
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.FileMessage;
 import com.sendbird.android.GroupChannel;
-import com.sendbird.uikit.AudioManager;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.databinding.SbViewOtherFileAudioMessageComponentBinding;
@@ -94,5 +94,9 @@ public class OtherAudioFileMessageView extends GroupChannelMessageView {
 
     public void update() {
         binding.audioPlayerView.update();
+    }
+
+    public void setAudioUri(Uri uri) {
+        binding.audioPlayerView.setUri(uri);
     }
 }
