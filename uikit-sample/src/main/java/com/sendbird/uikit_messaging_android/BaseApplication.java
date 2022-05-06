@@ -9,6 +9,7 @@ import com.sendbird.android.handlers.InitResultHandler;
 import com.sendbird.uikit.SendBirdUIKit;
 import com.sendbird.uikit.adapter.SendBirdUIKitAdapter;
 import com.sendbird.uikit.interfaces.UserInfo;
+import com.sendbird.uikit.widgets.AudioPlayer;
 import com.sendbird.uikit_messaging_android.consts.InitState;
 import com.sendbird.uikit_messaging_android.fcm.MyFirebaseMessagingService;
 import com.sendbird.uikit_messaging_android.utils.PreferenceUtils;
@@ -81,6 +82,8 @@ public class BaseApplication extends MultiDexApplication {
         PushUtils.registerPushHandler(new MyFirebaseMessagingService());
         SendBirdUIKit.setLogLevel(SendBirdUIKit.LogLevel.ALL);
         SendBirdUIKit.setUseDefaultUserProfile(true);
+
+        AudioPlayer.getInstance().init(this);
     }
 
     public static LiveData<InitState> initStateChanges() {

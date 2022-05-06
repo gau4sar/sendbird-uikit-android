@@ -14,10 +14,11 @@ import androidx.databinding.DataBindingUtil;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.databinding.SbViewAudioPlayerBinding;
 
-public class AudioPlayerView extends FrameLayout {
+public class AudioPlayerView extends FrameLayout implements AudioManager.AudioChangeListener {
 
     private SbViewAudioPlayerBinding binding;
     private android.net.Uri uri;
+    private AudioManager audioManager = AudioManager.getInstance();
 
     public AudioPlayerView(@NonNull Context context) {
         this(context, null);
@@ -37,6 +38,9 @@ public class AudioPlayerView extends FrameLayout {
     }
 
     private void init(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, ViewGroup parent) {
+        if (parent == null) {
+            parent = this;
+        }
         this.binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.sb_view_audio_player, parent, true);
         initListeners();
     }
@@ -46,8 +50,8 @@ public class AudioPlayerView extends FrameLayout {
     }
 
     public void update() {
-        if (uri == AudioManager.getInstance().getUriPlaying()) {
-            binding.sbDuration.setProgress(AudioManager.getInstance().getProgress());
+        if (uri == audioManager.getUriPlaying()) {
+            binding.sbDuration.setProgress(audioManager.getProgress());
             binding.btnPlay.setImageResource(R.drawable.ic_pause);
         } else {
             binding.sbDuration.setProgress(0);
@@ -56,6 +60,18 @@ public class AudioPlayerView extends FrameLayout {
     }
 
     private void initListeners() {
-        binding.btnPlay.setOnClickListener(v -> AudioManager.getInstance().togglePlay(uri));
+        audioManager.registerAudioChangeListener(this);
+        binding.btnPlay.setOnClickListener(v -> audioManager.togglePlay(uri));
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        audioManager.unregisterAudioChangeListener(this);
+        super.onDetachedFromWindow();
+    }
+
+    @Override
+    public void onAudioChanged() {
+        update();
     }
 }

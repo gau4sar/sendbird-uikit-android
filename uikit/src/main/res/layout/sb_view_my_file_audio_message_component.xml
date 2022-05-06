@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/root"
@@ -84,27 +85,6 @@
                 app:layout_constraintEnd_toEndOf="@+id/contentBarrier"
                 app:layout_constraintBottom_toTopOf="@id/rvEmojiReactionList"  />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivThumbnailOveray"
-                android:background="@drawable/selector_file_message_bubble"
-                android:scaleType="centerInside"
-                app:layout_constraintStart_toStartOf="@id/ivThumbnail"
-                app:layout_constraintEnd_toEndOf="@id/ivThumbnail"
-                app:layout_constraintTop_toTopOf="@id/ivThumbnail"
-                app:layout_constraintBottom_toBottomOf="@id/ivThumbnail"
-                android:layout_width="@dimen/sb_size_0"
-                android:layout_height="@dimen/sb_size_0"/>
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivThumbnailIcon"
-                android:background="@drawable/selector_file_message_bubble"
-                android:scaleType="centerInside"
-                app:layout_constraintStart_toStartOf="@id/ivThumbnail"
-                app:layout_constraintEnd_toEndOf="@id/ivThumbnail"
-                app:layout_constraintTop_toTopOf="@id/ivThumbnail"
-                app:layout_constraintBottom_toBottomOf="@id/ivThumbnail"
-                android:layout_width="@dimen/sb_size_48"
-                android:layout_height="@dimen/sb_size_48"/>
 
             <com.sendbird.uikit.widgets.EmojiReactionListView
                 android:id="@+id/rvEmojiReactionList"
@@ -117,7 +97,7 @@
                 android:paddingBottom="@dimen/sb_size_7"
                 android:paddingTop="@dimen/sb_size_7"
                 app:layout_constraintHorizontal_bias="0"
-                app:layout_constraintTop_toBottomOf="@id/ivThumbnail"
+                app:layout_constraintTop_toBottomOf="@id/audioPlayerView"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/contentBarrier"
                 app:layout_constraintBottom_toBottomOf="parent"/>
@@ -126,7 +106,7 @@
                 android:id="@+id/contentBarrier"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:constraint_referenced_ids="ivThumbnail,rvEmojiReactionList"
+                app:constraint_referenced_ids="audioPlayerView,rvEmojiReactionList"
                 app:barrierDirection="end" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

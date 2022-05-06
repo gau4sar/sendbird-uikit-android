@@ -32,7 +32,6 @@ public final class MyAudioFileMessageViewHolder extends GroupChannelMessageViewH
         emojiReactionListView = ((MyAudioFileMessageView) binding.getRoot()).getBinding().rvEmojiReactionList;
         final MyAudioFileMessageView root = (MyAudioFileMessageView) binding.getRoot();
 
-        clickableViewMap.put(ClickableViewIdentifier.Chat.name(), root.getBinding().ivThumbnailOveray);
         clickableViewMap.put(ClickableViewIdentifier.QuoteReply.name(), root.getBinding().quoteReplyPanel);
     }
 

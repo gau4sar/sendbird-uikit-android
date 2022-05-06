@@ -76,7 +76,6 @@ public class MyAudioFileMessageView extends GroupChannelMessageView {
         binding.ivStatus.drawStatus(message, channel);
 
         ViewUtils.drawReactionEnabled(binding.rvEmojiReactionList, channel);
-        ViewUtils.drawThumbnailIcon(binding.ivThumbnailIcon, (FileMessage) message);
 
         int paddingTop = getResources().getDimensionPixelSize((messageGroupType == MessageGroupType.GROUPING_TYPE_TAIL || messageGroupType == MessageGroupType.GROUPING_TYPE_BODY) ? R.dimen.sb_size_1 : R.dimen.sb_size_8);
         int paddingBottom = getResources().getDimensionPixelSize((messageGroupType == MessageGroupType.GROUPING_TYPE_HEAD || messageGroupType == MessageGroupType.GROUPING_TYPE_BODY) ? R.dimen.sb_size_1 : R.dimen.sb_size_8);
