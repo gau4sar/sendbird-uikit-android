@@ -59,6 +59,7 @@ public class MyAudioFileMessageView extends GroupChannelMessageView {
             binding.tvSentAt.setTextAppearance(context, timeAppearance);
             binding.contentPanel.setBackground(DrawableUtils.setTintList(getContext(), messageBackground, messageBackgroundTint));
             binding.emojiReactionListBackground.setBackgroundResource(emojiReactionListBackground);
+            binding.audioPlayerView.setupUi(true);
         } finally {
             a.recycle();
         }

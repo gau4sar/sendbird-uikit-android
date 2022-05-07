@@ -64,4 +64,12 @@ public class AudioPlayer {
         exoPlayer.setPlayWhenReady(false);
         exoPlayer.stop();
     }
+
+    public long getCurrentProgress() {
+        long currentPosition = exoPlayer.getCurrentPosition();
+        long duration = exoPlayer.getDuration();
+        return 100 * currentPosition / duration;
+    }
+
+
 }

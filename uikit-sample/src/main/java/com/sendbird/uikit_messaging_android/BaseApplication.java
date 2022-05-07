@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.multidex.MultiDexApplication;
 
+import com.sendbird.android.LogLevel;
+import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
 import com.sendbird.android.handlers.InitResultHandler;
 import com.sendbird.uikit.SendBirdUIKit;
@@ -81,6 +83,7 @@ public class BaseApplication extends MultiDexApplication {
         SendBirdUIKit.setDefaultThemeMode(useDarkTheme ? SendBirdUIKit.ThemeMode.Dark : SendBirdUIKit.ThemeMode.Light);
         PushUtils.registerPushHandler(new MyFirebaseMessagingService());
         SendBirdUIKit.setLogLevel(SendBirdUIKit.LogLevel.ALL);
+        SendBird.setLoggerLevel(LogLevel.VERBOSE);
         SendBirdUIKit.setUseDefaultUserProfile(true);
 
         AudioPlayer.getInstance().init(this);

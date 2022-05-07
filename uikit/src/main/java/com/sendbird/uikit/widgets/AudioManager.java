@@ -14,13 +14,12 @@ public class AudioManager implements AudioPlayer.AudioPlayerListener {
 
     public interface AudioChangeListener {
         void onAudioChanged();
-        void onStateEnded(Uri uri);
-        void onIsPlayingChanged(Uri uri, boolean isPlaying);
+        void onStateEnded(Uri uriPlaying);
+        void onIsPlayingChanged(Uri uriPlaying, boolean isPlaying);
     }
 
     private static AudioManager sInstance = null;
     private Uri uriPlaying;
-    private int progress;
 
     private final List<AudioChangeListener> listeners = new ArrayList<>();
     private final AudioPlayer player = AudioPlayer.getInstance();
@@ -74,7 +73,7 @@ public class AudioManager implements AudioPlayer.AudioPlayerListener {
     }
 
     public int getProgress() {
-        return progress;
+        return (int) player.getCurrentProgress();
     }
 
     @Override

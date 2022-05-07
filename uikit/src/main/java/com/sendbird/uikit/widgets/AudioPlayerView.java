@@ -1,7 +1,13 @@
 package com.sendbird.uikit.widgets;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.content.res.TypedArray;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -9,6 +15,7 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 
 import com.sendbird.uikit.R;
@@ -18,14 +25,28 @@ public class AudioPlayerView extends FrameLayout implements AudioManager.AudioCh
 
     private SbViewAudioPlayerBinding binding;
     private android.net.Uri uri;
-    private AudioManager audioManager = AudioManager.getInstance();
+    private final AudioManager audioManager = AudioManager.getInstance();
+
+    private final Runnable progressRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                binding.sbDuration.setProgress(audioManager.getProgress(), true);
+            } else {
+                binding.sbDuration.setProgress(audioManager.getProgress());
+            }
+            progressHandler.postDelayed(progressRunnable, 100);
+        }
+    };
+
+    private final Handler progressHandler = new Handler();
 
     public AudioPlayerView(@NonNull Context context) {
         this(context, null);
     }
 
     public AudioPlayerView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, R.attr.sb_message_user_style);
+        this(context, attrs, R.attr.sb_message_file_style);
     }
 
     public AudioPlayerView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
@@ -38,11 +59,42 @@ public class AudioPlayerView extends FrameLayout implements AudioManager.AudioCh
     }
 
     private void init(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, ViewGroup parent) {
-        if (parent == null) {
-            parent = this;
+        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.MessageView_File, defStyleAttr, 0);
+        try {
+            if (parent == null) {
+                parent = this;
+            }
+            binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.sb_view_audio_player, parent, true);
+            binding.sbDuration.setMax(100);
+            binding.sbDuration.setProgress(0);
+            initListeners();
+        } finally {
+            a.recycle();
         }
-        this.binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.sb_view_audio_player, parent, true);
-        initListeners();
+    }
+
+    public void setupUi(boolean isMyMessage) {
+        if (isMyMessage) {
+            // Audio background
+            binding.btnPlay.setBackgroundResource(R.drawable.bg_my_audio_play);
+            binding.btnPlay.setColorFilter(ContextCompat.getColor(getContext(), R.color.primary_400));
+
+            // Progress
+            binding.sbDuration.getProgressDrawable().setColorFilter(
+                    ContextCompat.getColor(getContext(), R.color.background_50),
+                    PorterDuff.Mode.SRC_IN
+            );
+        } else {
+            // Audio background
+            binding.btnPlay.setBackgroundResource(R.drawable.bg_other_audio_play);
+            binding.btnPlay.setColorFilter(ContextCompat.getColor(getContext(), R.color.background_50));
+
+            // Progress
+            binding.sbDuration.getProgressDrawable().setColorFilter(
+                    ContextCompat.getColor(getContext(), R.color.primary_400),
+                    PorterDuff.Mode.SRC_IN
+            );
+        }
     }
 
     public void setUri(Uri uri) {
@@ -54,6 +106,7 @@ public class AudioPlayerView extends FrameLayout implements AudioManager.AudioCh
             binding.sbDuration.setProgress(audioManager.getProgress());
             binding.btnPlay.setImageResource(R.drawable.ic_pause);
         } else {
+            stopProgress();
             binding.sbDuration.setProgress(0);
             binding.btnPlay.setImageResource(R.drawable.ic_play);
         }
@@ -76,15 +129,27 @@ public class AudioPlayerView extends FrameLayout implements AudioManager.AudioCh
     }
 
     @Override
-    public void onStateEnded(Uri uri) {
-        if (uri == audioManager.getUriPlaying()) {
+    public void onStateEnded(Uri uriPlaying) {
+        if (uriPlaying == uri) {
+            stopProgress();
             binding.sbDuration.setProgress(0);
             binding.btnPlay.setImageResource(R.drawable.ic_play);
         }
     }
 
     @Override
-    public void onIsPlayingChanged(Uri uri, boolean isPlaying) {
+    public void onIsPlayingChanged(Uri uriPlaying, boolean isPlaying) {
+        if (uriPlaying == uri) {
+            if (isPlaying) startProgress();
+            else stopProgress();
+        }
+    }
 
+    private void startProgress() {
+        progressHandler.post(progressRunnable);
+    }
+
+    private void stopProgress() {
+        progressHandler.removeCallbacks(progressRunnable);
     }
 }

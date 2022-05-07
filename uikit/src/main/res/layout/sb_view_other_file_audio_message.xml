@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:bind="http://schemas.android.com/tools">
 
-    <com.sendbird.uikit.widgets.OtherVideoFileMessageView
+    <com.sendbird.uikit.widgets.OtherAudioFileMessageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         bind:message="@{message}"
