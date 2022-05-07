@@ -16,6 +16,7 @@ import com.sendbird.uikit.fragments.ChannelFragment;
 import com.sendbird.uikit.model.HighlightMessageInfo;
 import com.sendbird.uikit.utils.ContextUtils;
 import com.sendbird.uikit.utils.TextUtils;
+import com.sendbird.uikit.widgets.AudioManager;
 
 /**
  * Activity displays a list of messages from a channel.
@@ -75,6 +76,14 @@ public class ChannelActivity extends AppCompatActivity {
                     .replace(R.id.sb_fragment_container, fragment)
                     .commit();
         }
+
+        AudioManager.getInstance().attachLifecycle(getLifecycle());
+    }
+
+    @Override
+    protected void onDestroy() {
+        AudioManager.getInstance().detachLifecycle(getLifecycle());
+        super.onDestroy();
     }
 
     /**

@@ -65,6 +65,18 @@ public class AudioPlayer {
         exoPlayer.stop();
     }
 
+    public void pause() {
+        if (exoPlayer.getMediaItemCount() > 0) {
+            exoPlayer.pause();
+        }
+    }
+
+    public void resume() {
+        if (exoPlayer.getMediaItemCount() > 0) {
+            exoPlayer.setPlayWhenReady(true);
+        }
+    }
+
     public long getCurrentProgress() {
         long currentPosition = exoPlayer.getCurrentPosition();
         long duration = exoPlayer.getDuration();
