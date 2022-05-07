@@ -1,9 +1,7 @@
 package com.sendbird.uikit.widgets;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Build;
@@ -101,10 +99,13 @@ public class AudioPlayerView extends FrameLayout implements AudioManager.AudioCh
         this.uri = uri;
     }
 
-    public void update() {
-        if (uri == audioManager.getUriPlaying()) {
-            binding.sbDuration.setProgress(audioManager.getProgress());
-            binding.btnPlay.setImageResource(R.drawable.ic_pause);
+    public void updatePlayState(Uri uriPlaying, boolean isPlaying) {
+        if (uri == uriPlaying) {
+            if (isPlaying) {
+                binding.btnPlay.setImageResource(R.drawable.ic_pause);
+            } else {
+                binding.btnPlay.setImageResource(R.drawable.ic_play);
+            }
         } else {
             stopProgress();
             binding.sbDuration.setProgress(0);
@@ -124,8 +125,8 @@ public class AudioPlayerView extends FrameLayout implements AudioManager.AudioCh
     }
 
     @Override
-    public void onAudioChanged() {
-        update();
+    public void onAudioChanged(Uri uriPlaying, boolean isPlaying) {
+        updatePlayState(uriPlaying, isPlaying);
     }
 
     @Override

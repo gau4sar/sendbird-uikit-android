@@ -45,7 +45,7 @@ public final class OtherAudioFileMessageViewHolder extends GroupChannelMessageVi
         String url = fileMessage.getUrl();
         Log.d("nt.dung", "Audio url: " + url);
         root.setAudioUri(Uri.parse(url));
-        root.update();
+        root.updatePlayState();
     }
 
     @Override

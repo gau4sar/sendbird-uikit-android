@@ -10,13 +10,10 @@ import android.view.View;
 import androidx.databinding.DataBindingUtil;
 
 import com.sendbird.android.BaseMessage;
-import com.sendbird.android.FileMessage;
 import com.sendbird.android.GroupChannel;
 import com.sendbird.uikit.R;
-import com.sendbird.uikit.SendBirdUIKit;
 import com.sendbird.uikit.consts.MessageGroupType;
 import com.sendbird.uikit.databinding.SbViewMyFileAudioMessageComponentBinding;
-import com.sendbird.uikit.databinding.SbViewMyFileVideoMessageComponentBinding;
 import com.sendbird.uikit.utils.DateUtils;
 import com.sendbird.uikit.utils.DrawableUtils;
 import com.sendbird.uikit.utils.ViewUtils;
@@ -85,8 +82,11 @@ public class MyAudioFileMessageView extends GroupChannelMessageView {
         ViewUtils.drawQuotedMessage(binding.quoteReplyPanel, message);
     }
 
-    public void update() {
-        binding.audioPlayerView.update();
+    public void updatePlayState() {
+        binding.audioPlayerView.updatePlayState(
+                AudioManager.getInstance().getUriPlaying(),
+                AudioManager.getInstance().isPlaying()
+        );
     }
 
     public void setAudioUri(Uri uri) {

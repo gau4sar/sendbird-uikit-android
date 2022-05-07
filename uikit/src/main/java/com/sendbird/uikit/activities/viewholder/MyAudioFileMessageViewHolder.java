@@ -18,8 +18,6 @@ import com.sendbird.uikit.interfaces.OnItemClickListener;
 import com.sendbird.uikit.interfaces.OnItemLongClickListener;
 import com.sendbird.uikit.widgets.EmojiReactionListView;
 import com.sendbird.uikit.widgets.MyAudioFileMessageView;
-import com.sendbird.uikit.widgets.MyVideoFileMessageView;
-import com.sendbird.uikit.widgets.OtherAudioFileMessageView;
 
 import java.util.List;
 import java.util.Map;
@@ -47,7 +45,7 @@ public final class MyAudioFileMessageViewHolder extends GroupChannelMessageViewH
         Log.d("nt.dung", "Audio url: " + url);
 
         root.setAudioUri(Uri.parse(url));
-        root.update();
+        root.updatePlayState();
     }
 
     @Override

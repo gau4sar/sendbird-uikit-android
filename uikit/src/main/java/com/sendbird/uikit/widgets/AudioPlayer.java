@@ -77,6 +77,15 @@ public class AudioPlayer {
         }
     }
 
+    public void toggle() {
+        if (exoPlayer.isPlaying()) pause();
+        else resume();
+    }
+
+    public boolean isPlaying() {
+        return exoPlayer.isPlaying();
+    }
+
     public long getCurrentProgress() {
         long currentPosition = exoPlayer.getCurrentPosition();
         long duration = exoPlayer.getDuration();

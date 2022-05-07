@@ -93,8 +93,11 @@ public class OtherAudioFileMessageView extends GroupChannelMessageView {
         ViewUtils.drawQuotedMessage(binding.quoteReplyPanel, message);
     }
 
-    public void update() {
-        binding.audioPlayerView.update();
+    public void updatePlayState() {
+        binding.audioPlayerView.updatePlayState(
+                AudioManager.getInstance().getUriPlaying(),
+                AudioManager.getInstance().isPlaying()
+        );
     }
 
     public void setAudioUri(Uri uri) {

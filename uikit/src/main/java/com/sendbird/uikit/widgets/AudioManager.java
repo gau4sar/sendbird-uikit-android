@@ -17,7 +17,7 @@ import java.util.List;
 public class AudioManager implements AudioPlayer.AudioPlayerListener, LifecycleObserver {
 
     public interface AudioChangeListener {
-        void onAudioChanged();
+        void onAudioChanged(Uri uriPlaying, boolean isPlaying);
         void onStateEnded(Uri uriPlaying);
         void onIsPlayingChanged(Uri uriPlaying, boolean isPlaying);
     }
@@ -55,33 +55,36 @@ public class AudioManager implements AudioPlayer.AudioPlayerListener, LifecycleO
         this.listeners.remove(listener);
     }
 
+    private void notifyAudioChanged(boolean isPlaying) {
+        for (AudioChangeListener listener: listeners) {
+            listener.onAudioChanged(uriPlaying, isPlaying);
+        }
+    }
+
     public void togglePlay(Uri uri) {
         if (uriPlaying != uri) {
             uriPlaying = uri;
             player.stop();
             player.start(uriPlaying);
-        }
-        else {
-            uriPlaying = null;
-            player.stop();
-        }
-
-        for (AudioChangeListener listener: listeners) {
-            listener.onAudioChanged();
+            notifyAudioChanged(true);
+        } else {
+            player.toggle();
+            notifyAudioChanged(player.isPlaying());
         }
     }
 
     private void stop() {
         uriPlaying = null;
         player.stop();
-
-        for (AudioChangeListener listener: listeners) {
-            listener.onAudioChanged();
-        }
+        notifyAudioChanged(false);
     }
 
     public Uri getUriPlaying() {
         return uriPlaying;
+    }
+
+    public boolean isPlaying() {
+        return player.isPlaying();
     }
 
     public int getProgress() {
