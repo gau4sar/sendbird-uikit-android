@@ -1,15 +1,10 @@
 package com.sendbird.uikit.widgets;
 
-import android.content.Context;
 import android.net.Uri;
 
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.OnLifecycleEvent;
-
-import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.source.ProgressiveMediaSource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +39,7 @@ public class AudioManager implements AudioPlayer.AudioPlayerListener, LifecycleO
     }
 
     public void detachLifecycle(Lifecycle lifecycle) {
+        stop();
         lifecycle.removeObserver(this);
     }
 
@@ -79,8 +75,8 @@ public class AudioManager implements AudioPlayer.AudioPlayerListener, LifecycleO
         notifyAudioChanged(false);
     }
 
-    public Uri getUriPlaying() {
-        return uriPlaying;
+    public boolean isUriPlaying(Uri uri) {
+        return uriPlaying != null && uri != null &&  uriPlaying.toString().equals(uri.toString());
     }
 
     public boolean isPlaying() {

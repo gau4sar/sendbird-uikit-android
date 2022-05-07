@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -65,7 +66,6 @@ public class AudioPlayerView extends FrameLayout implements AudioManager.AudioCh
             binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.sb_view_audio_player, parent, true);
             binding.sbDuration.setMax(100);
             binding.sbDuration.setProgress(0);
-            initListeners();
         } finally {
             a.recycle();
         }
@@ -95,15 +95,19 @@ public class AudioPlayerView extends FrameLayout implements AudioManager.AudioCh
         }
     }
 
-    public void setUri(Uri uri) {
+    public void bind(Uri uri) {
         this.uri = uri;
+        initListeners();
     }
 
-    public void updatePlayState(Uri uriPlaying, boolean isPlaying) {
-        if (uri == uriPlaying) {
+    private void updatePlayState(boolean isPlaying) {
+        if (audioManager.isUriPlaying(uri)) {
+            Log.e("nt.dung", "isPlaying: " + isPlaying);
             if (isPlaying) {
+                startProgress();
                 binding.btnPlay.setImageResource(R.drawable.ic_pause);
             } else {
+                stopProgress();
                 binding.btnPlay.setImageResource(R.drawable.ic_play);
             }
         } else {
@@ -116,6 +120,9 @@ public class AudioPlayerView extends FrameLayout implements AudioManager.AudioCh
     private void initListeners() {
         audioManager.registerAudioChangeListener(this);
         binding.btnPlay.setOnClickListener(v -> audioManager.togglePlay(uri));
+
+        Log.e("nt.dung", "isUriPlaying: " + (audioManager.isUriPlaying(uri)) + ", isPlaying: " + audioManager.isPlaying());
+        updatePlayState(audioManager.isPlaying());
     }
 
     @Override
@@ -126,12 +133,12 @@ public class AudioPlayerView extends FrameLayout implements AudioManager.AudioCh
 
     @Override
     public void onAudioChanged(Uri uriPlaying, boolean isPlaying) {
-        updatePlayState(uriPlaying, isPlaying);
+        updatePlayState(isPlaying);
     }
 
     @Override
     public void onStateEnded(Uri uriPlaying) {
-        if (uriPlaying == uri) {
+        if (audioManager.isUriPlaying(uri)) {
             stopProgress();
             binding.sbDuration.setProgress(0);
             binding.btnPlay.setImageResource(R.drawable.ic_play);
@@ -140,9 +147,9 @@ public class AudioPlayerView extends FrameLayout implements AudioManager.AudioCh
 
     @Override
     public void onIsPlayingChanged(Uri uriPlaying, boolean isPlaying) {
-        if (uriPlaying == uri) {
-            if (isPlaying) startProgress();
-            else stopProgress();
+        if (audioManager.isUriPlaying(uri)) {
+//            if (isPlaying) startProgress();
+//            else stopProgress();
         }
     }
 
