@@ -243,6 +243,8 @@
 
         <attr name="sb_message_highlight_background_color" format="reference"/>
         <attr name="sb_message_highlight_foreground_color" format="reference"/>
+
+        <attr name="sb_message_audio_background_tint" format="color" />
     </declare-styleable>
 
     <declare-styleable name="MessageView.User">
@@ -291,6 +293,8 @@
         <attr name="sb_message_emoji_reaction_list_background" />
         <attr name="sb_message_highlight_background_color"/>
         <attr name="sb_message_highlight_foreground_color"/>
+
+        <attr name="sb_message_audio_background_tint" />
     </declare-styleable>
 
     <declare-styleable name="MessageView.Admin">

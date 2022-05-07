@@ -90,6 +90,12 @@ public class MessageViewHolderFactory {
             case VIEW_TYPE_ADMIN_MESSAGE:
                 holder = new AdminMessageViewHolder(DataBindingUtil.inflate(inflater, R.layout.sb_view_admin_message, parent, false), false);
                 break;
+            case VIEW_TYPE_FILE_MESSAGE_AUDIO_ME:
+                holder = new MyAudioFileMessageViewHolder(DataBindingUtil.inflate(inflater, R.layout.sb_view_my_file_audio_message, parent, false), useMessageGroupUI);
+                break;
+            case VIEW_TYPE_FILE_MESSAGE_AUDIO_OTHER:
+                holder = new OtherAudioFileMessageViewHolder(DataBindingUtil.inflate(inflater, R.layout.sb_view_other_file_audio_message, parent, false), useMessageGroupUI);
+                break;
             default:
                 // unknown message type
                 if (viewType == MessageType.VIEW_TYPE_UNKNOWN_MESSAGE_ME) {
@@ -150,7 +156,14 @@ public class MessageViewHolderFactory {
                 } else {
                     type = MessageType.VIEW_TYPE_FILE_MESSAGE_VIDEO_OTHER;
                 }
-            } else {
+            } else if (mimeType.startsWith(StringSet.audio)) {
+                if (MessageUtils.isMine(message)) {
+                    type = MessageType.VIEW_TYPE_FILE_MESSAGE_AUDIO_ME;
+                } else {
+                    type = MessageType.VIEW_TYPE_FILE_MESSAGE_AUDIO_OTHER;
+                }
+            }
+            else {
                 if (MessageUtils.isMine(message)) {
                     type = MessageType.VIEW_TYPE_FILE_MESSAGE_ME;
                 } else {
