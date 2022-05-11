@@ -109,9 +109,9 @@ public class ChannelUtils {
 
     public static List<String> makeProfileUrlsFromChannel(GroupChannel channel) {
         List<String> urls = new ArrayList<>();
-        if (!isDefaultChannelCover(channel)) {
-            urls.add(channel.getCoverUrl());
-        } else {
+//        if (!isDefaultChannelCover(channel)) {
+//            urls.add(channel.getCoverUrl());
+//        } else {
             String myUserId = "";
             if (SendBird.getCurrentUser() != null) {
                 myUserId = SendBird.getCurrentUser().getUserId();
@@ -126,7 +126,7 @@ public class ChannelUtils {
                 }
                 urls.add(member.getProfileUrl());
             }
-        }
+//        }
         return urls;
     }
 
