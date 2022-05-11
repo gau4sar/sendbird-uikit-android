@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="@dimen/sb_size_56"
+            android:orientation="vertical"
             android:paddingLeft="@dimen/sb_size_16"
             android:paddingRight="@dimen/sb_size_16">
 
@@ -20,36 +20,34 @@
                 android:layout_height="@dimen/sb_size_34"
                 android:translationX="@dimen/sb_size_negative_8"
                 android:visibility="gone"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/titlePanel"
                 app:layout_constraintStart_toEndOf="@id/emptyLeft"
-                app:layout_constraintEnd_toStartOf="@id/titlePanel"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <LinearLayout
                 android:id="@+id/titlePanel"
                 android:layout_width="@dimen/sb_size_0"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/flRightPanel"
                 app:layout_constraintStart_toEndOf="@id/ccvProfileView"
-                app:layout_constraintEnd_toStartOf="@id/flRightPanel">
+                app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvAppBarTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:maxLines="1"
                     android:ellipsize="end"
-                    />
+                    android:maxLines="1" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvAppBarDesc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:singleLine="true"
                     android:ellipsize="middle"
-                    />
+                    android:singleLine="true" />
 
             </LinearLayout>
 
@@ -58,28 +56,28 @@
                 android:layout_width="@dimen/sb_size_8"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/ccvProfileView"
                 app:layout_constraintStart_toEndOf="@id/flLeftPanel"
-                app:layout_constraintEnd_toStartOf="@id/ccvProfileView"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <FrameLayout
                 android:id="@+id/flLeftPanel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/sb_size_20"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/emptyLeft"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/emptyLeft">
+                app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/ibtnLeft"
                     android:layout_width="@dimen/sb_size_40"
                     android:layout_height="@dimen/sb_size_40"
+                    android:layout_gravity="center"
                     android:padding="@dimen/sb_size_8"
-                    android:scaleType="centerCrop"
-                    android:layout_gravity="center" />
+                    android:scaleType="centerCrop" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/btnLeft"
@@ -87,8 +85,8 @@
                     android:layout_height="@dimen/sb_size_40"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:paddingRight="@dimen/sb_size_4"
-                    android:paddingLeft="@dimen/sb_size_4"/>
+                    android:paddingLeft="@dimen/sb_size_4"
+                    android:paddingRight="@dimen/sb_size_4" />
 
             </FrameLayout>
 
@@ -96,18 +94,18 @@
                 android:id="@+id/flRightPanel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/titlePanel">
+                app:layout_constraintEnd_toStartOf="@id/btnSearch"
+                app:layout_constraintStart_toEndOf="@id/titlePanel"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/ibtnRight"
                     android:layout_width="@dimen/sb_size_40"
                     android:layout_height="@dimen/sb_size_40"
+                    android:layout_gravity="center"
                     android:padding="@dimen/sb_size_8"
-                    android:scaleType="centerCrop"
-                    android:layout_gravity="center"/>
+                    android:scaleType="centerCrop" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/btnRight"
@@ -115,17 +113,29 @@
                     android:layout_height="@dimen/sb_size_40"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:paddingRight="@dimen/sb_size_4"
-                    android:paddingLeft="@dimen/sb_size_4"/>
+                    android:paddingLeft="@dimen/sb_size_4"
+                    android:paddingRight="@dimen/sb_size_4" />
 
             </FrameLayout>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/btnSearch"
+                android:layout_width="@dimen/sb_size_40"
+                android:layout_height="@dimen/sb_size_40"
+                android:padding="@dimen/sb_size_8"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/icon_search"
+                android:visibility="gone"
+                app:tint="@color/primary_400" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <View
             android:id="@+id/elevationView"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/sb_size_1"/>
+            android:layout_height="@dimen/sb_size_1" />
 
     </LinearLayout>
 

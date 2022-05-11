@@ -6,6 +6,7 @@ import android.content.res.TypedArray;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -139,6 +140,13 @@ public class AppBarView extends FrameLayout {
     public void setLeftImageButtonClickListener(OnClickListener listener) {
         if (binding != null) {
             binding.ibtnLeft.setOnClickListener(listener);
+        }
+    }
+
+    public void setSearchListener(OnClickListener listener) {
+        if (binding != null) {
+            binding.btnSearch.setVisibility(View.VISIBLE);
+            binding.btnSearch.setOnClickListener(listener);
         }
     }
 
