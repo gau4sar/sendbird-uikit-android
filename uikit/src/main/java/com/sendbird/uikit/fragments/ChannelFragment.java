@@ -53,6 +53,7 @@ import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendBirdUIKit;
 import com.sendbird.uikit.activities.ChannelSettingsActivity;
 import com.sendbird.uikit.activities.MembersActivity;
+import com.sendbird.uikit.activities.MessageSearchActivity;
 import com.sendbird.uikit.activities.PhotoViewActivity;
 import com.sendbird.uikit.activities.adapter.MessageListAdapter;
 import com.sendbird.uikit.activities.viewholder.MessageType;
@@ -311,6 +312,11 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
             binding.chvChannelHeader.setRightImageButtonTint(headerRightButtonIconTint);
         }
         binding.chvChannelHeader.setLeftImageButtonClickListener(v -> finish());
+        binding.chvChannelHeader.setSearchListener(v -> {
+            if (getContext() != null) {
+                startActivity(MessageSearchActivity.newIntent(getContext(), channel.getUrl()));
+            }
+        });
     }
 
     private void initHeaderOnReady(GroupChannel channel) {
