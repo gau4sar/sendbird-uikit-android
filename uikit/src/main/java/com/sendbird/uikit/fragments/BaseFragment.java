@@ -50,6 +50,9 @@ public abstract class BaseFragment extends PermissionFragment implements DialogP
     public void onDestroy() {
         super.onDestroy();
         SendBird.removeConnectionHandler(CONNECTION_HANDLER_ID);
+        SendBirdUIKit.disconnect(() -> {
+            Logger.dev(">> BaseFragment::disconnect()");
+        });
     }
 
     @Override
