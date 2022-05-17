@@ -187,8 +187,16 @@ public class FileUtils {
         ContentResolver contentResolver = context.getContentResolver();
         ContentValues cv = new ContentValues();
         String fileName = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-        cv.put(MediaStore.Images.Media.TITLE, fileName);
+        cv.put(MediaStore.Images.Media.TITLE, fileName + ".png");
         return contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, cv);
+    }
+
+    public static Uri createVideoUri(@NonNull Context context) {
+        ContentResolver contentResolver = context.getContentResolver();
+        ContentValues cv = new ContentValues();
+        String fileName = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+        cv.put(MediaStore.Video.Media.TITLE, fileName + ".mp4");
+        return contentResolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, cv);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)

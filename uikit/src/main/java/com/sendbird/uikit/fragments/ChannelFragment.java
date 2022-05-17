@@ -18,6 +18,9 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -159,6 +162,15 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
     private String headerTitle = null;
 
     private final ReplyType replyType = SendBirdUIKit.getReplyType();
+
+    ActivityResultLauncher<Uri> captureVideo = registerForActivityResult(new ActivityResultContracts.CaptureVideo(), result -> {
+        SendBird.setAutoBackgroundDetection(true);
+        if (result) {
+            if (this.mediaUri != null && isActive()) {
+                sendFileMessage(mediaUri);
+            }
+        }
+    });
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -880,9 +892,10 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
     protected void showMediaSelectDialog() {
         if (getContext() == null || getFragmentManager() == null) return;
         DialogListItem[] items = {
-                new DialogListItem(R.string.sb_text_channel_input_camera, R.drawable.icon_camera),
-                new DialogListItem(R.string.sb_text_channel_input_gallery, R.drawable.icon_photo),
-                new DialogListItem(R.string.sb_text_channel_input_document, R.drawable.icon_document)
+                new DialogListItem(R.string.sb_text_channel_input_video, R.drawable.icon_record_video),
+                new DialogListItem(R.string.sb_text_channel_input_camera, R.drawable.icon_take_image),
+                new DialogListItem(R.string.sb_text_channel_input_gallery, R.drawable.icon_gallery),
+                new DialogListItem(R.string.sb_text_channel_input_document, R.drawable.icon_file)
         };
         hideKeyboard();
         DialogUtils.buildItemsBottom(items, (view, position, item) -> {
@@ -892,6 +905,8 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
                     takeCamera();
                 } else if (key == R.string.sb_text_channel_input_gallery) {
                     takePhoto();
+                } else if (key == R.string.sb_text_channel_input_video) {
+                    takeVideo();
                 } else {
                     takeFile();
                 }
@@ -936,6 +951,29 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
                 }
             }
         });
+    }
+
+    public void takeVideo() {
+        checkPermission(PERMISSION_REQUEST_ALL, new IPermissionHandler() {
+            @Override
+            public String[] getPermissions(int requestCode) {
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+                    return new String[]{Manifest.permission.CAMERA,
+                            Manifest.permission.READ_EXTERNAL_STORAGE};
+                }
+                return new String[]{Manifest.permission.CAMERA,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE};
+            }
+
+            @Override
+            public void onPermissionGranted(int requestCode) {
+                mediaUri = FileUtils.createVideoUri(getContext());
+                SendBird.setAutoBackgroundDetection(false);
+                captureVideo.launch(mediaUri);
+            }
+        });
+
     }
 
     /**
