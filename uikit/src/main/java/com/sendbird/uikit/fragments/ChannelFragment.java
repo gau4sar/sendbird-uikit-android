@@ -199,6 +199,9 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
         if (!isInitCallFinished.get()) {
             loadingDialogHandler.shouldDismissLoadingDialog();
         }
+        SendBirdUIKit.disconnect(() -> {
+            Logger.dev(">> BaseFragment::disconnect()");
+        });
     }
 
     @Nullable
