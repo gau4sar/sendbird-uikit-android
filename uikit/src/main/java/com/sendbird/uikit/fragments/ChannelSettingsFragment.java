@@ -261,42 +261,44 @@ public class ChannelSettingsFragment extends BaseFragment implements PermissionF
             binding.abSettingsHeader.setLeftImageButtonClickListener(headerLeftButtonListener);
         }
 
-        if (channel.isBroadcast() && channel.getMyRole() != Member.Role.OPERATOR) {
-            binding.abSettingsHeader.setRightTextButtonString("");
-        } else {
-            binding.abSettingsHeader.setRightTextButtonString(getString(R.string.sb_text_button_edit));
-            binding.abSettingsHeader.setRightTextButtonClickListener((v) -> {
-                DialogListItem[] items = {
-                        new DialogListItem(R.string.sb_text_channel_settings_change_channel_name),
-                        new DialogListItem(R.string.sb_text_channel_settings_change_channel_image)
-                };
+        if (channel != null) {
+            if (channel.isBroadcast() && channel.getMyRole() != Member.Role.OPERATOR) {
+                binding.abSettingsHeader.setRightTextButtonString("");
+            } else {
+                binding.abSettingsHeader.setRightTextButtonString(getString(R.string.sb_text_button_edit));
+                binding.abSettingsHeader.setRightTextButtonClickListener((v) -> {
+                    DialogListItem[] items = {
+                            new DialogListItem(R.string.sb_text_channel_settings_change_channel_name),
+                            new DialogListItem(R.string.sb_text_channel_settings_change_channel_image)
+                    };
 
-                if (getContext() == null || getFragmentManager() == null) return;
-                DialogUtils.buildItemsBottom(items, (view, p, item) -> {
-                    final int key = item.getKey();
-                    if (key == R.string.sb_text_channel_settings_change_channel_name) {
-                        if (getContext() == null || getFragmentManager() == null) return;
+                    if (getContext() == null || getFragmentManager() == null) return;
+                    DialogUtils.buildItemsBottom(items, (view, p, item) -> {
+                        final int key = item.getKey();
+                        if (key == R.string.sb_text_channel_settings_change_channel_name) {
+                            if (getContext() == null || getFragmentManager() == null) return;
 
-                        Logger.dev("change channel name");
-                        OnEditTextResultListener listener = res -> {
-                            GroupChannelParams params = new GroupChannelParams().setName(res);
-                            updateGroupChannel(params);
-                        };
+                            Logger.dev("change channel name");
+                            OnEditTextResultListener listener = res -> {
+                                GroupChannelParams params = new GroupChannelParams().setName(res);
+                                updateGroupChannel(params);
+                            };
 
-                        DialogEditTextParams params = new DialogEditTextParams(getString(R.string.sb_text_channel_settings_change_channel_name_hint));
-                        params.setEnableSingleLine(true);
-                        DialogUtils.buildEditText(
-                                getString(R.string.sb_text_channel_settings_change_channel_name),
-                                (int) getResources().getDimension(R.dimen.sb_dialog_width_280),
-                                params, listener,
-                                getString(R.string.sb_text_button_save), null,
-                                getString(R.string.sb_text_button_cancel), null).showSingle(getFragmentManager());
-                    } else if (key == R.string.sb_text_channel_settings_change_channel_image) {
-                        Logger.dev("change channel image");
-                        checkPermission(PICK_IMAGE_PERMISSIONS_REQUEST_CODE, this);
-                    }
-                }).showSingle(getFragmentManager());
-            });
+                            DialogEditTextParams params = new DialogEditTextParams(getString(R.string.sb_text_channel_settings_change_channel_name_hint));
+                            params.setEnableSingleLine(true);
+                            DialogUtils.buildEditText(
+                                    getString(R.string.sb_text_channel_settings_change_channel_name),
+                                    (int) getResources().getDimension(R.dimen.sb_dialog_width_280),
+                                    params, listener,
+                                    getString(R.string.sb_text_button_save), null,
+                                    getString(R.string.sb_text_button_cancel), null).showSingle(getFragmentManager());
+                        } else if (key == R.string.sb_text_channel_settings_change_channel_image) {
+                            Logger.dev("change channel image");
+                            checkPermission(PICK_IMAGE_PERMISSIONS_REQUEST_CODE, this);
+                        }
+                    }).showSingle(getFragmentManager());
+                });
+            }
         }
     }
 

@@ -38,13 +38,18 @@ public class UserUtils {
         if (user == null) return nickname;
         String phoneNumber = user.getMetaData("phone");
 
-        if (user.getUserId() != null && user.getUserId().equals(SendBird.getCurrentUser().getUserId())) {
-            nickname = context.getString(R.string.sb_text_you);
-        } else if (!TextUtils.isEmpty(phoneNumber)) {
-            nickname = SendBirdUIKit.findPhoneBookName(phoneNumber);
-        } else if (!TextUtils.isEmpty(user.getNickname())) {
-            nickname = user.getNickname();
+        User currentUser = SendBird.getCurrentUser();
+        if (currentUser != null) {
+            if (user.getUserId() != null && user.getUserId().equals(currentUser.getUserId())) {
+                nickname = context.getString(R.string.sb_text_you);
+            } else if (!TextUtils.isEmpty(phoneNumber)) {
+                nickname = SendBirdUIKit.findPhoneBookName(phoneNumber);
+            } else if (!TextUtils.isEmpty(user.getNickname())) {
+                nickname = user.getNickname();
+            }
+            return nickname;
+        } else {
+            return phoneNumber;
         }
-        return nickname;
     }
 }

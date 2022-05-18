@@ -58,6 +58,7 @@ public class StringSet {
     public final static String KEY_ONE_ONE_CHAT = "KEY_ONE_ONE_CHAT";
     public final static String KEY_USER_ID = "KEY_USER_ID";
     public final static String KEY_ACTION_OPEN_USER_PROFILE = "KEY_ACTION_OPEN_USER_PROFILE";
+    public final static String KEY_ACTION_OPEN_GROUP_PROFILE = "KEY_ACTION_OPEN_GROUP_PROFILE";
 
     public final static String sb_uikit = "sb_uikit";
     public final static String audio = "audio";
