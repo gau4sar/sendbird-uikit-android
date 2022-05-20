@@ -11,8 +11,11 @@ import androidx.databinding.DataBindingUtil;
 
 import com.sendbird.android.AdminMessage;
 import com.sendbird.android.BaseMessage;
+import com.sendbird.android.shadow.com.google.gson.Gson;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.databinding.SbViewAdminMessageComponentBinding;
+import com.sendbird.uikit.model.admin.AdminMessageData;
+import com.sendbird.uikit.utils.TextUtils;
 
 public class AdminMessageView extends BaseMessageView {
     private SbViewAdminMessageComponentBinding binding;
@@ -55,7 +58,15 @@ public class AdminMessageView extends BaseMessageView {
     }
 
     public void drawMessage(BaseMessage message) {
-        binding.tvMessage.setText(message.getMessage());
+        try {
+            String data = message.getData();
+            AdminMessageData adminMessageData = new Gson().fromJson(data, AdminMessageData.class);
+            String adminMessageContent = adminMessageData.getContent();
+
+            binding.tvMessage.setText(TextUtils.isEmpty(adminMessageContent) ? message.getMessage() : adminMessageContent);
+        } catch (Exception e) {
+            binding.tvMessage.setText(message.getMessage());
+        }
     }
 
     @BindingAdapter("message")
