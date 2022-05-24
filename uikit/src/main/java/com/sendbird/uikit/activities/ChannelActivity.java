@@ -58,13 +58,15 @@ public class ChannelActivity extends AppCompatActivity {
         return new IntentBuilder(context, cls, channelUrl, title).build();
     }
 
+    private String url;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTheme(SendBirdUIKit.isDarkMode() ? R.style.SendBird_Dark : R.style.SendBird);
         setContentView(R.layout.sb_activity);
 
-        String url = getIntent().getStringExtra(StringSet.KEY_CHANNEL_URL);
+        url = getIntent().getStringExtra(StringSet.KEY_CHANNEL_URL);
         String title = getIntent().getStringExtra(StringSet.KEY_HEADER_TITLE);
         if (TextUtils.isEmpty(url)) {
             ContextUtils.toastError(this, R.string.sb_text_error_get_channel);
@@ -78,6 +80,14 @@ public class ChannelActivity extends AppCompatActivity {
         }
 
         AudioManager.getInstance().attachLifecycle(getLifecycle());
+    }
+
+    @Override
+    protected void onResume() {
+        Intent intent = new Intent(StringSet.KEY_ACTION_CLEAR_CHAT_NOTIFICATION);
+        intent.putExtra(StringSet.KEY_CHANNEL_URL, url);
+        sendBroadcast(intent);
+        super.onResume();
     }
 
     @Override
