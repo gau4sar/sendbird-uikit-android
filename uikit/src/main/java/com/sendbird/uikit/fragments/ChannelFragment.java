@@ -33,6 +33,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.devlomi.record_view.OnRecordListener;
+import com.sendbird.android.AdminMessage;
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.Emoji;
@@ -521,6 +522,14 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
             final String traceName = receivedMessageData.getTraceName();
             // The callback coming from setItems is worked asynchronously. So `isInitCallFinished` flag has to mark in advance.
             final boolean isInitCallEnded = isInitCallFinished.get();
+
+            boolean isOneOneChat = channel.getMemberCount() <= 2;
+            if (isOneOneChat) {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                    messageList.removeIf(message -> message instanceof AdminMessage);
+                }
+            }
+
             adapter.setItems(channel, messageList, messages -> {
                 if (traceName != null && isActive()) {
                     Logger.d("++ Message action : %s", traceName);

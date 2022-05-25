@@ -22,9 +22,8 @@ public class AdminMessageUser {
 
     public String getName() {
         String phone = metaData.getPhone();
-        String username = metaData.getUsername();
 
         String phonebookName = SendBirdUIKit.findPhoneBookName(phone);
-        return TextUtils.isEmpty(phonebookName) ? username : phonebookName;
+        return TextUtils.isEmpty(phonebookName) ? phone : phonebookName;
     }
 }

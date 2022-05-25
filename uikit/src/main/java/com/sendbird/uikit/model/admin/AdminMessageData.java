@@ -3,6 +3,7 @@ package com.sendbird.uikit.model.admin;
 import androidx.annotation.Keep;
 
 import com.sendbird.android.shadow.com.google.gson.annotations.SerializedName;
+import com.sendbird.uikit.utils.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,9 +43,12 @@ public class AdminMessageData {
         List<String> names = getUserNames();
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < names.size(); i++) {
-            builder.append(names.get(i));
-            if (i != names.size() - 1) {
-                builder.append(", ");
+            String name = names.get(i);
+            if (!TextUtils.isEmpty(name)) {
+                builder.append(name);
+                if (i != names.size() - 1) {
+                    builder.append(", ");
+                }
             }
         }
         return builder.toString();
