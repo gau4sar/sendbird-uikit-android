@@ -17,8 +17,8 @@ public class CustomChannelActivity extends ChannelActivity {
     private final CustomChannelFragment customChannelFragment = new CustomChannelFragment();
 
     @Override
-    protected ChannelFragment createChannelFragment(@NonNull String channelUrl) {
-        final boolean useMessageGroupUI = false;
+    protected ChannelFragment createChannelFragment(@NonNull String channelUrl, String channelName) {
+        final boolean useMessageGroupUI = true;
         return new ChannelFragment.Builder(channelUrl, R.style.CustomMessageListStyle)
                 .setCustomChannelFragment(customChannelFragment)
                 .setUseHeader(true)

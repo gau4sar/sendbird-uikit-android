@@ -16,6 +16,9 @@ public class AdminMessageData {
     @SerializedName("users")
     private List<AdminMessageUser> users;
 
+    @SerializedName("changes")
+    private List<AdminChannelChange> changes;
+
     public String getType() {
         return type;
     }
@@ -32,9 +35,31 @@ public class AdminMessageData {
         this.users = users;
     }
 
+    public List<AdminChannelChange> getChanges() {
+        return changes;
+    }
+
+    public void setChanges(List<AdminChannelChange> changes) {
+        this.changes = changes;
+    }
+
     public String getContent() {
         if (type.equalsIgnoreCase(AdminMessageType.USER_JOINED)) {
-            return joinUserNames() + " joined";
+            String joinedName = joinUserNames();
+            return android.text.TextUtils.isEmpty(joinedName) ? "" : joinedName + " joined";
+        } else if (type.equalsIgnoreCase(AdminMessageType.USER_LEAVE)) {
+            String joinedName = joinUserNames();
+            return android.text.TextUtils.isEmpty(joinedName) ? "" : joinedName + " left";
+        } else if (type.equalsIgnoreCase(AdminMessageType.CHANNEL_CHANGE)) {
+            if (changes != null && !changes.isEmpty()) {
+                return "The channel "
+                        + joinChannelChanges()
+                        + " "
+                        + (changes.size() == 1 ? "was" : "were")
+                        + " updated";
+            } else {
+                return "";
+            }
         }
         return "";
     }
@@ -47,6 +72,21 @@ public class AdminMessageData {
             if (!TextUtils.isEmpty(name)) {
                 builder.append(name);
                 if (i != names.size() - 1) {
+                    builder.append(", ");
+                }
+            }
+        }
+        return builder.toString();
+    }
+
+    public String joinChannelChanges() {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < changes.size(); i++) {
+            AdminChannelChange channelChange = changes.get(i);
+            if (!TextUtils.isEmpty(channelChange.getKey())) {
+                String key = channelChange.getKey().replace("cover_url", "image");
+                builder.append(key);
+                if (i < changes.size() - 1) {
                     builder.append(", ");
                 }
             }

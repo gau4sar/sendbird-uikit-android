@@ -26,13 +26,14 @@ import com.sendbird.uikit.interfaces.CustomParamsHandler;
 import com.sendbird.uikit.interfaces.CustomUserListQueryHandler;
 import com.sendbird.uikit.interfaces.UserInfo;
 import com.sendbird.uikit.interfaces.UserListResultHandler;
+import com.sendbird.uikit.widgets.AudioPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class BaseApplication extends MultiDexApplication {
 
-    private static final String APP_ID = "2D7B4CDB-932F-4082-9B09-A1153792DC8D";
+    private static final String APP_ID = "033D0C2B-1B69-4592-90E5-2B6D8D58A86B";
     private static final MutableLiveData<InitState> initState = new MutableLiveData<>();
 
     @Override
@@ -128,6 +129,9 @@ public class BaseApplication extends MultiDexApplication {
                 // You can set OpenChannelParams globally before updating a channel.
             }
         });
+
+        AudioPlayer.getInstance().init(this);
+
     }
 
     public static LiveData<InitState> initStateChanges() {

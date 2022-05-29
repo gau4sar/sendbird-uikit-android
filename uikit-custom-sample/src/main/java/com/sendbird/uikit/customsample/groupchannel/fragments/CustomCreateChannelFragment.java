@@ -69,7 +69,7 @@ public class CustomCreateChannelFragment extends CreateChannelFragment {
 
     private void showCustomChannelActivity(String channelUrl) {
         if (getActivity() != null && getContext() != null) {
-            Intent intent = CustomChannelActivity.newIntentFromCustomActivity(getActivity(), CustomChannelActivity.class, channelUrl);
+            Intent intent = CustomChannelActivity.newIntentFromCustomActivity(getActivity(), CustomChannelActivity.class, channelUrl, null);
             startActivity(intent);
             getActivity().finish();
         }

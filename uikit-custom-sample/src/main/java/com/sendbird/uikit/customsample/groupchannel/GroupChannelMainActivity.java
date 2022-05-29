@@ -136,7 +136,7 @@ public class GroupChannelMainActivity extends AppCompatActivity {
     }
 
     private void showCustomChannelActivity(String channelUrl) {
-        Intent intent = CustomChannelActivity.newIntentFromCustomActivity(GroupChannelMainActivity.this, CustomChannelActivity.class, channelUrl);
+        Intent intent = CustomChannelActivity.newIntentFromCustomActivity(GroupChannelMainActivity.this, CustomChannelActivity.class, channelUrl, null);
         startActivity(intent);
     }
 

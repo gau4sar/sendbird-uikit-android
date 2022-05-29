@@ -8,6 +8,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.FragmentManager;
 
 import com.sendbird.android.Member;
@@ -90,6 +91,7 @@ public class ChannelActivity extends AppCompatActivity {
 
         AudioManager.getInstance().attachLifecycle(getLifecycle());
     }
+
 
     public int getLayoutId() {
         return R.layout.sb_activity;
