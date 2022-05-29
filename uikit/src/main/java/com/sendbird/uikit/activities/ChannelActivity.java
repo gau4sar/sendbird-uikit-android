@@ -3,12 +3,14 @@ package com.sendbird.uikit.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
+import com.sendbird.android.Member;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendBirdUIKit;
 import com.sendbird.uikit.consts.StringSet;
@@ -17,6 +19,8 @@ import com.sendbird.uikit.model.HighlightMessageInfo;
 import com.sendbird.uikit.utils.ContextUtils;
 import com.sendbird.uikit.utils.TextUtils;
 import com.sendbird.uikit.widgets.AudioManager;
+
+import java.util.List;
 
 /**
  * Activity displays a list of messages from a channel.
@@ -59,27 +63,60 @@ public class ChannelActivity extends AppCompatActivity {
     }
 
     private String url;
+    private View.OnClickListener onBackClickListener;
+    private View.OnClickListener onInfoClickListener;
+    private ChannelFragment channelFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTheme(SendBirdUIKit.isDarkMode() ? R.style.SendBird_Dark : R.style.SendBird);
-        setContentView(R.layout.sb_activity);
+        setContentView(getLayoutId());
+
+        initialize();
 
         url = getIntent().getStringExtra(StringSet.KEY_CHANNEL_URL);
         String title = getIntent().getStringExtra(StringSet.KEY_HEADER_TITLE);
         if (TextUtils.isEmpty(url)) {
             ContextUtils.toastError(this, R.string.sb_text_error_get_channel);
         } else {
-            ChannelFragment fragment = createChannelFragment(url, title);
+            channelFragment = createChannelFragment(url, title);
             FragmentManager manager = getSupportFragmentManager();
             manager.popBackStack();
             manager.beginTransaction()
-                    .replace(R.id.sb_fragment_container, fragment)
+                    .replace(R.id.sb_fragment_container, channelFragment)
                     .commit();
         }
 
         AudioManager.getInstance().attachLifecycle(getLifecycle());
+    }
+
+    public int getLayoutId() {
+        return R.layout.sb_activity;
+    }
+
+    public void initialize() {
+
+    }
+
+    public String getChannelUrl() {
+        return url;
+    }
+
+    public List<Member> getMembers() {
+        return channelFragment.getMembers();
+    }
+
+    public boolean isSingleChat() {
+        return channelFragment.isSingleChat();
+    }
+
+    public void setOnBackClickListener(View.OnClickListener backClickListener) {
+        this.onBackClickListener = backClickListener;
+    }
+
+    public void setOnInfoClickListener(View.OnClickListener infoClickListener) {
+        this.onInfoClickListener = infoClickListener;
     }
 
     @Override
@@ -116,6 +153,9 @@ public class ChannelActivity extends AppCompatActivity {
         if (intent.hasExtra(StringSet.KEY_FROM_SEARCH_RESULT)) {
             builder.setUseHeaderRightButton(intent.getBooleanExtra(StringSet.KEY_FROM_SEARCH_RESULT, false));
         }
+
+        builder.setHeaderLeftButtonListener(onBackClickListener);
+        builder.setHeaderRightButtonListener(onInfoClickListener);
         return builder.build();
     }
 

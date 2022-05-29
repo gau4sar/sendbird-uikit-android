@@ -1799,6 +1799,14 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
         this.listItemLongClickListener = listItemLongClickListener;
     }
 
+    public boolean isSingleChat() {
+        return channel.getMemberCount() <= 2;
+    }
+
+    public List<Member> getMembers() {
+        return channel.getMembers();
+    }
+
     public static class Builder {
         private final Bundle bundle;
         private ChannelFragment customFragment;
