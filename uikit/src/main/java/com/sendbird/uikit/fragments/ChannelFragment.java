@@ -11,6 +11,7 @@ import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,6 +54,7 @@ import com.sendbird.android.handlers.GroupChannelContext;
 import com.sendbird.android.handlers.MessageCollectionHandler;
 import com.sendbird.android.handlers.MessageContext;
 import com.sendbird.uikit.AudioRecorder;
+import com.sendbird.uikit.PhonebookUpdateListener;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendBirdUIKit;
 import com.sendbird.uikit.activities.ChannelSettingsActivity;
@@ -95,6 +97,7 @@ import com.sendbird.uikit.utils.MessageUtils;
 import com.sendbird.uikit.utils.ReactionUtils;
 import com.sendbird.uikit.utils.SoftInputUtils;
 import com.sendbird.uikit.utils.TextUtils;
+import com.sendbird.uikit.utils.UserUtils;
 import com.sendbird.uikit.vm.ChannelViewModel;
 import com.sendbird.uikit.vm.FileDownloader;
 import com.sendbird.uikit.vm.ViewModelFactory;
@@ -119,7 +122,9 @@ import java.util.function.Consumer;
  */
 public class ChannelFragment extends BaseGroupChannelFragment implements OnIdentifiableItemClickListener<BaseMessage>,
         OnIdentifiableItemLongClickListener<BaseMessage>,
-        LoadingDialogHandler{
+        LoadingDialogHandler,
+        PhonebookUpdateListener
+{
 
     private static final int CAPTURE_IMAGE_PERMISSIONS_REQUEST_CODE = 2001;
     private static final int PICK_IMAGE_PERMISSIONS_REQUEST_CODE = 2002;
@@ -214,6 +219,14 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
         super.onViewCreated(view, savedInstanceState);
         initHeaderOnCreated();
         loadingDialogHandler.shouldShowLoadingDialog();
+
+        SendBirdUIKit.registerPhonebookListener(this);
+    }
+
+    @Override
+    public void onDestroyView() {
+        SendBirdUIKit.unregisterPhonebookListener(this);
+        super.onDestroyView();
     }
 
     @Override
@@ -1805,6 +1818,22 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
 
     public List<Member> getMembers() {
         return channel.getMembers();
+    }
+
+    @Override
+    public void onPhonebookUpdated() {
+        Handler handler = new Handler(getContext().getMainLooper());
+        handler.post(() -> {
+            if (isSingleChat()) {
+                for (Member member: getMembers()) {
+                    if (!member.getUserId().equals(SendBirdUIKit.getAdapter().getUserInfo().getUserId())) {
+                        String phoneNumber = member.getMetaData("phone");
+                        String memberName = SendBirdUIKit.findPhoneBookName(phoneNumber);
+                        binding.chvChannelHeader.getTitleTextView().setText(memberName);
+                    }
+                }
+            }
+        });
     }
 
     public static class Builder {

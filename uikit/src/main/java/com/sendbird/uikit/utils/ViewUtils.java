@@ -44,6 +44,7 @@ import com.sendbird.uikit.model.HighlightMessageInfo;
 import com.sendbird.uikit.vm.PendingMessageRepository;
 import com.sendbird.uikit.widgets.BaseQuotedMessageView;
 import com.sendbird.uikit.widgets.EmojiReactionListView;
+import com.sendbird.uikit.widgets.NickNameTextView;
 import com.sendbird.uikit.widgets.OgtagView;
 import com.sendbird.uikit.widgets.RoundCornerView;
 
@@ -144,6 +145,16 @@ public class ViewUtils {
         String nickname = UserUtils.getDisplayName(tvNickname.getContext(), sender);
         tvNickname.setText(nickname);
     }
+
+    public static void drawNickname(NickNameTextView tvNickname, BaseMessage message) {
+        if (message == null) {
+            return;
+        }
+
+        Sender sender = message.getSender();
+        tvNickname.setSenderName(sender);
+    }
+
 
     public static void drawProfile(ImageView ivProfile, BaseMessage message) {
         if (message == null) {

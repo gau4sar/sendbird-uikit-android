@@ -31,7 +31,9 @@ import com.sendbird.uikit.utils.TextUtils;
 import com.sendbird.uikit.utils.UIKitPrefs;
 
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
@@ -122,14 +124,27 @@ public class SendBirdUIKit {
     private static ReplyType replyType = ReplyType.QUOTE_REPLY;
     private static Map<String, String> phoneBookData = new HashMap<>();
 
+    private static final List<PhonebookUpdateListener> phonebookUpdateListeners = new ArrayList<>();
+
     static void clearAll() {
         SendBirdUIKit.customUserListQueryHandler = null;
         defaultThemeMode = ThemeMode.Light;
         UIKitPrefs.clearAll();
     }
 
+    public static void registerPhonebookListener(PhonebookUpdateListener listener) {
+        phonebookUpdateListeners.add(listener);
+    }
+
+    public static void unregisterPhonebookListener(PhonebookUpdateListener listener) {
+        phonebookUpdateListeners.remove(listener);
+    }
+
     public synchronized static void initPhoneBookData(Map<String, String> phoneBook) {
         phoneBookData = phoneBook;
+        for (PhonebookUpdateListener listener: phonebookUpdateListeners) {
+            listener.onPhonebookUpdated();
+        }
     }
 
     /**

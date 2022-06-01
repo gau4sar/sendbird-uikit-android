@@ -61,7 +61,6 @@ public class AdminMessageView extends BaseMessageView {
     public void drawMessage(BaseMessage message) {
         try {
             String data = message.getData();
-            Log.d("nt.dung", "Admin Message: " + data);
             AdminMessageData adminMessageData = new Gson().fromJson(data, AdminMessageData.class);
             String adminMessageContent = adminMessageData.getContent();
 
