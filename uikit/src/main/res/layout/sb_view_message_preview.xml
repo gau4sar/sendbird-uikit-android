@@ -34,7 +34,7 @@
             app:layout_constraintGuide_end="@dimen/sb_size_16"
             />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.sendbird.uikit.widgets.NickNameTextView
             android:id="@+id/tvUserName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
