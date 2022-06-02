@@ -22,7 +22,6 @@ public class CustomChannelActivity extends ChannelActivity {
         return new ChannelFragment.Builder(channelUrl, R.style.CustomMessageListStyle)
                 .setCustomChannelFragment(customChannelFragment)
                 .setUseHeader(true)
-                .setHeaderTitle(null)
                 .setUseHeaderLeftButton(true)
                 .setUseHeaderRightButton(true)
                 .setUseLastSeenAt(true)

@@ -165,7 +165,6 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
     private OnInputTextChangedListener editModeTextChangedListener;
     final AtomicBoolean isInitCallFinished = new AtomicBoolean(false);
     final AtomicBoolean shouldAnimate = new AtomicBoolean(false);
-    private String headerTitle = null;
 
     private final ReplyType replyType = SendBirdUIKit.getReplyType();
 
@@ -273,9 +272,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
     private void drawChannel(GroupChannel channel) {
         Logger.dev("++ drawChannel()");
         if (isActive()) {
-            if (headerTitle == null) {
-                binding.chvChannelHeader.getTitleTextView().setText(ChannelUtils.makeTitleText(getContext(), channel));
-            }
+            binding.chvChannelHeader.getTitleTextView().setText(ChannelUtils.makeTitleText(channel));
             ChannelUtils.loadChannelCover(binding.chvChannelHeader.getProfileView(), channel);
             binding.tvInformation.setVisibility(channel.isFrozen() ? View.VISIBLE : View.GONE);
             binding.tvInformation.setText(R.string.sb_text_information_channel_frozen);
@@ -317,18 +314,12 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
             headerRightButtonIconResId = args.getInt(StringSet.KEY_HEADER_RIGHT_BUTTON_ICON_RES_ID, R.drawable.icon_info);
             headerLeftButtonIconTint = args.getParcelable(StringSet.KEY_HEADER_LEFT_BUTTON_ICON_TINT);
             headerRightButtonIconTint = args.getParcelable(StringSet.KEY_HEADER_RIGHT_BUTTON_ICON_TINT);
-            headerTitle = args.getString(StringSet.KEY_HEADER_TITLE, null);
         }
 
         binding.chvChannelHeader.setVisibility(useHeader ? View.VISIBLE : View.GONE);
 
         binding.chvChannelHeader.setUseLeftImageButton(useHeaderLeftButton);
         binding.chvChannelHeader.setUseRightButton(useHeaderRightButton);
-
-        if (headerTitle != null) {
-            binding.chvChannelHeader.getTitleTextView().setText(headerTitle);
-        }
-
         binding.chvChannelHeader.setLeftImageButtonResource(headerLeftButtonIconResId);
         if (args != null && args.containsKey(StringSet.KEY_HEADER_LEFT_BUTTON_ICON_RES_ID)) {
             binding.chvChannelHeader.setLeftImageButtonTint(headerLeftButtonIconTint);
@@ -1824,15 +1815,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
     public void onPhonebookUpdated() {
         Handler handler = new Handler(getContext().getMainLooper());
         handler.post(() -> {
-            if (isSingleChat()) {
-                for (Member member: getMembers()) {
-                    if (!member.getUserId().equals(SendBirdUIKit.getAdapter().getUserInfo().getUserId())) {
-                        String phoneNumber = member.getMetaData("phone");
-                        String memberName = SendBirdUIKit.findPhoneBookName(phoneNumber);
-                        binding.chvChannelHeader.getTitleTextView().setText(memberName);
-                    }
-                }
-            }
+            binding.chvChannelHeader.getTitleTextView().setText(ChannelUtils.makeTitleText(channel));
         });
     }
 
@@ -1959,18 +1942,6 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
          */
         public Builder setUseTypingIndicator(boolean useTypingIndicator) {
             bundle.putBoolean(StringSet.KEY_USE_TYPING_INDICATOR, useTypingIndicator);
-            return this;
-        }
-
-        /**
-         * Sets the title of the header.
-         *
-         * @param title text to be displayed.
-         * @return This Builder object to allow for chaining of calls to set methods.
-         * @since 2.1.1
-         */
-        public Builder setHeaderTitle(String title) {
-            bundle.putString(StringSet.KEY_HEADER_TITLE, title);
             return this;
         }
 
