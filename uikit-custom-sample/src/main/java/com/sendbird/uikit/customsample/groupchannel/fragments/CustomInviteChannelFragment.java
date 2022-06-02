@@ -70,7 +70,7 @@ public class CustomInviteChannelFragment extends InviteChannelFragment {
 
     private void showCustomChannelActivity() {
         if (getContext() != null) {
-            Intent intent = ChannelActivity.newIntentFromCustomActivity(getContext(), CustomChannelActivity.class, channel.getUrl(), null);
+            Intent intent = ChannelActivity.newIntentFromCustomActivity(getContext(), CustomChannelActivity.class, channel.getUrl());
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         }

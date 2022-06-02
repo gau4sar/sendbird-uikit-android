@@ -229,7 +229,7 @@ public class MessageSearchFragment extends BaseGroupChannelFragment implements L
      */
     protected void onItemClicked(View view, int position, BaseMessage message) {
         Logger.d(">> MessageSearchFragment::onItemClicked(position=%s)", position);
-        Intent intent = new ChannelActivity.IntentBuilder(getContext(), channel.getUrl(), null)
+        Intent intent = new ChannelActivity.IntentBuilder(getContext(), channel.getUrl())
                 .setStartingPoint(message.getCreatedAt())
                 .setHighlightMessageInfo(HighlightMessageInfo.fromMessage(message))
                 .build();

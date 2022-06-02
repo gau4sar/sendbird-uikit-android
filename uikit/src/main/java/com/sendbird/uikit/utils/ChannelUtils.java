@@ -13,6 +13,7 @@ import com.sendbird.android.SendBird;
 import com.sendbird.android.Sender;
 import com.sendbird.android.User;
 import com.sendbird.uikit.R;
+import com.sendbird.uikit.SendBirdUIKit;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.widgets.ChannelCoverView;
 
@@ -21,6 +22,56 @@ import java.util.List;
 import java.util.Locale;
 
 public class ChannelUtils {
+
+    private static Member getOtherMember(GroupChannel channel) {
+        List<Member> members = channel.getMembers();
+        String userId = SendBirdUIKit.getAdapter().getUserInfo().getUserId();
+        for (Member member: members) {
+            if (!member.getUserId().equals(userId)) {
+                return member;
+            }
+        }
+        return null;
+    }
+
+    private static List<Member> getOtherMembers(GroupChannel channel) {
+        List<Member> members = channel.getMembers();
+        List<Member> otherMembers = new ArrayList<>();
+        String userId = SendBirdUIKit.getAdapter().getUserInfo().getUserId();
+        for (Member member: members) {
+            if (!member.getUserId().equals(userId)) {
+                otherMembers.add(member);
+            }
+        }
+        return otherMembers;
+    }
+
+    public static String makeTitleText(GroupChannel channel) {
+        boolean isSingleChat = channel.getMemberCount() <= 2;
+        if (isSingleChat) {
+            Member otherMember = getOtherMember(channel);
+            if (otherMember != null) {
+                String phoneNumber = otherMember.getMetaData("phone");
+                return SendBirdUIKit.findPhoneBookName(phoneNumber);
+            } else {
+                return "No members";
+            }
+        } else {
+            String channelName = channel.getName();
+            List<Member> otherMembers = getOtherMembers(channel);
+            if (!TextUtils.isEmpty(channelName)) return channelName;
+            else {
+                StringBuilder names = new StringBuilder();
+                for (Member member: otherMembers) {
+                    String phoneNumber = member.getMetaData("phone");
+                    String memberName = SendBirdUIKit.findPhoneBookName(phoneNumber);
+                    names.append(memberName);
+                    names.append(", ");
+                }
+                return names.toString();
+            }
+        }
+    }
 
     public static String makeTitleText(@NonNull Context context, GroupChannel channel) {
         String channelName = channel.getName();
