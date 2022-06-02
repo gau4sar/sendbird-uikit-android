@@ -70,7 +70,7 @@ public class MessagePreview extends FrameLayout {
     public void drawMessage(@NonNull BaseMessage message) {
         final Context context = this.binding.tvSentAt.getContext();
         ViewUtils.drawProfile(binding.ivProfile, message);
-        this.binding.tvUserName.setText(message.getSender().getNickname());
+        ViewUtils.drawNickname(binding.tvUserName, message);
         this.binding.tvSentAt.setText(DateUtils.formatDateTime(context, message.getCreatedAt()));
         if (message instanceof FileMessage) {
             FileMessage fileMessage = (FileMessage) message;
