@@ -1815,7 +1815,9 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
     public void onPhonebookUpdated() {
         Handler handler = new Handler(getContext().getMainLooper());
         handler.post(() -> {
-            binding.chvChannelHeader.getTitleTextView().setText(ChannelUtils.makeTitleText(channel));
+            if (channel != null) {
+                binding.chvChannelHeader.getTitleTextView().setText(ChannelUtils.makeTitleText(channel));
+            }
         });
     }
 

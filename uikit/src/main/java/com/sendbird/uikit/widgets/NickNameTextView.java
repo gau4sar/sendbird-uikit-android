@@ -50,8 +50,10 @@ public class NickNameTextView extends AppCompatTextView implements PhonebookUpda
     private void refreshSenderName() {
         Handler handler = new Handler(getContext().getMainLooper());
         handler.post(() -> {
-            String nickname = UserUtils.getDisplayName(getContext(), sender);
-            setText(nickname);
+            if (sender != null) {
+                String nickname = UserUtils.getDisplayName(getContext(), sender);
+                setText(nickname);
+            }
         });
     }
 
