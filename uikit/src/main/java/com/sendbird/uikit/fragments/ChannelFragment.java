@@ -362,7 +362,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
             }
 
             binding.chvChannelHeader.setRightImageButtonClickListener(v -> {
-                if (memberIds.size() > 2) {
+                if (memberIds.size() > 2 || channel.isSuper()) {
                     Intent intent = new Intent(StringSet.KEY_ACTION_OPEN_GROUP_PROFILE);
                     intent.putExtra(StringSet.KEY_CHANNEL_URL, channel.getUrl());
                     requireContext().sendBroadcast(intent);
@@ -373,7 +373,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
                 }
             });
             binding.chvChannelHeader.getTitleTextView().setOnClickListener(v -> {
-                if (memberIds.size() > 2) {
+                if (memberIds.size() > 2 || channel.isSuper()) {
                     Intent intent = new Intent(StringSet.KEY_ACTION_OPEN_GROUP_PROFILE);
                     intent.putExtra(StringSet.KEY_CHANNEL_URL, channel.getUrl());
                     requireContext().sendBroadcast(intent);
@@ -384,7 +384,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
                 }
             });
             binding.chvChannelHeader.getProfileView().setOnClickListener(v -> {
-                if (memberIds.size() > 2) {
+                if (memberIds.size() > 2 || channel.isSuper()) {
                     Intent intent = new Intent(StringSet.KEY_ACTION_OPEN_GROUP_PROFILE);
                     intent.putExtra(StringSet.KEY_CHANNEL_URL, channel.getUrl());
                     requireContext().sendBroadcast(intent);
