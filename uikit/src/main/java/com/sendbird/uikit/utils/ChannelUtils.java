@@ -47,7 +47,7 @@ public class ChannelUtils {
     }
 
     public static String makeTitleText(GroupChannel channel) {
-        boolean isSingleChat = channel.getMemberCount() <= 2;
+        boolean isSingleChat = channel.getMemberCount() <= 2 && !channel.isSuper();
         if (isSingleChat) {
             Member otherMember = getOtherMember(channel);
             if (otherMember != null) {
