@@ -1804,7 +1804,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
     }
 
     public boolean isSingleChat() {
-        return channel.getMemberCount() <= 2;
+        return channel.getMemberCount() <= 2 && !channel.isSuper();
     }
 
     public List<Member> getMembers() {
