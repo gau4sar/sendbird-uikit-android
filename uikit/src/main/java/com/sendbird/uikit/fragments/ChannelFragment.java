@@ -274,8 +274,9 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
         if (isActive()) {
             binding.chvChannelHeader.getTitleTextView().setText(ChannelUtils.makeTitleText(channel));
             ChannelUtils.loadChannelCover(binding.chvChannelHeader.getProfileView(), channel);
-            binding.tvInformation.setVisibility(channel.isFrozen() ? View.VISIBLE : View.GONE);
-            binding.tvInformation.setText(R.string.sb_text_information_channel_frozen);
+            // TODO: nt.dung - hide the banner if the channel is frozen
+//            binding.tvInformation.setVisibility(channel.isFrozen() ? View.VISIBLE : View.GONE);
+//            binding.tvInformation.setText(R.string.sb_text_information_channel_frozen);
             drawMessageInput(channel);
         }
     }
