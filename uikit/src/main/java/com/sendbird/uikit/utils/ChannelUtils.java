@@ -147,6 +147,11 @@ public class ChannelUtils {
     public static void loadChannelCover(ChannelCoverView coverView, BaseChannel channel) {
         if (channel instanceof GroupChannel) {
             GroupChannel groupChannel = (GroupChannel) channel;
+            if (groupChannel.isSuper()) {
+                String coverUrl = isDefaultChannelCover(channel) ? "" : channel.getCoverUrl();
+                coverView.loadImage(coverUrl);
+                return;
+            }
             if (groupChannel.isBroadcast() && isDefaultChannelCover(channel)) {
                 coverView.drawBroadcastChannelCover();
                 return;

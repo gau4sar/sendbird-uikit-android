@@ -22,14 +22,17 @@ public class ChannelCoverView extends ImageWaffleView {
 
     public ChannelCoverView(Context context) {
         super(context);
+        setDefaultImageResId(R.drawable.ic_default_profile);
     }
 
     public ChannelCoverView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        setDefaultImageResId(R.drawable.ic_default_profile);
     }
 
     public ChannelCoverView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        setDefaultImageResId(R.drawable.ic_default_profile);
     }
 
     public void setDefaultImageResId(int defaultImageResId) {
