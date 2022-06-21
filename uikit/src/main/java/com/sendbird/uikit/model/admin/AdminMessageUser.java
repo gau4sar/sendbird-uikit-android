@@ -12,6 +12,9 @@ public class AdminMessageUser {
     @SerializedName("metadata")
     private AdminMessageMetaData metaData;
 
+    @SerializedName("user_id")
+    private String userId;
+
     public AdminMessageMetaData getMetaData() {
         return metaData;
     }
@@ -21,8 +24,10 @@ public class AdminMessageUser {
     }
 
     public String getName() {
-        String phone = metaData.getPhone();
+        boolean itsMe = userId.equals(SendBirdUIKit.getAdapter().getUserInfo().getUserId());
+        if (itsMe) return "You";
 
+        String phone = metaData.getPhone();
         String phonebookName = SendBirdUIKit.findPhoneBookName(phone);
         return TextUtils.isEmpty(phonebookName) ? phone : phonebookName;
     }
