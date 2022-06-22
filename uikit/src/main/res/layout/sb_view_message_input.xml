@@ -24,7 +24,8 @@
             android:paddingTop="@dimen/sb_size_12"
             android:paddingRight="@dimen/sb_size_16"
             android:paddingBottom="@dimen/sb_size_12"
-            android:visibility="gone">
+            android:visibility="gone"
+            tools:visibility="visible">
 
             <com.sendbird.uikit.widgets.RoundCornerView
                 android:id="@+id/ivQuoteReplyMessageImage"
@@ -131,7 +132,7 @@
                     android:layout_weight="1"
                     android:hint="@string/sb_text_channel_input_text_hint"
                     android:imeOptions="flagNoExtractUi"
-                    android:fontFamily="@font/open_sans_family"
+                    android:fontFamily="@font/helvetica_family"
                     android:inputType="textCapSentences|textMultiLine"
                     android:maxLines="3"
                     android:paddingLeft="@dimen/sb_size_20"
