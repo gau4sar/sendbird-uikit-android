@@ -156,8 +156,13 @@ public class ChannelUtils {
                 coverView.drawBroadcastChannelCover();
                 return;
             }
-            List<String> urls = makeProfileUrlsFromChannel(groupChannel);
-            coverView.loadImages(urls);
+
+            if (isDefaultChannelCover(channel)) {
+                List<String> urls = makeProfileUrlsFromChannel(groupChannel);
+                coverView.loadImages(urls);
+            } else {
+                coverView.loadImage(channel.getCoverUrl());
+            }
         } else {
             coverView.loadImage(channel.getCoverUrl());
         }
