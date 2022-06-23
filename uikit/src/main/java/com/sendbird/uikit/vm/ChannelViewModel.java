@@ -345,7 +345,7 @@ public class ChannelViewModel extends BaseViewModel implements PagerRecyclerView
                 notifyDataSetChanged(context);
                 break;
             default:
-                notifyChannelDataChanged();
+//                notifyChannelDataChanged();
                 break;
         }
 

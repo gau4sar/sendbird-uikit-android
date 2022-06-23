@@ -642,6 +642,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
 
             @Override
             public void onChannelUpdated(@NonNull GroupChannelContext context, @NonNull GroupChannel channel) {
+                drawChannel(channel);
             }
 
             @Override
