@@ -1,5 +1,7 @@
 package com.sendbird.uikit.utils;
 
+import static com.sendbird.uikit.utils.Constant.FONT_SCALE;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -60,6 +62,11 @@ final public class UIKitPrefs {
         return preferences.getLong(key, defValue);
     }
 
+    public static float getFloat(String key, float defValue) {
+        if (preferences == null) return defValue;
+        return preferences.getFloat(key, defValue);
+    }
+
     public static void putInt(String key, int value) {
         if (preferences == null) return;
         SharedPreferences.Editor editor = preferences.edit();
@@ -88,5 +95,17 @@ final public class UIKitPrefs {
     public static boolean getBoolean(String key, boolean defValue) {
         if (preferences == null) return defValue;
         return preferences.getBoolean(key, defValue);
+    }
+
+
+
+    public static void putFonScale(float value) {
+        if (preferences == null) return;
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putFloat(FONT_SCALE, value).apply();
+    }
+
+    public static Float getFontScale() {
+        return getFloat(FONT_SCALE, 1f);
     }
 }
