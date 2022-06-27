@@ -37,6 +37,7 @@ import com.devlomi.record_view.OnRecordListener;
 import com.sendbird.android.AdminMessage;
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
+import com.sendbird.android.BaseMessageParams;
 import com.sendbird.android.Emoji;
 import com.sendbird.android.FileMessage;
 import com.sendbird.android.FileMessageParams;
@@ -165,6 +166,8 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
     private OnInputTextChangedListener editModeTextChangedListener;
     final AtomicBoolean isInitCallFinished = new AtomicBoolean(false);
     final AtomicBoolean shouldAnimate = new AtomicBoolean(false);
+
+    private List<String> tagUserIdList = new ArrayList<>();
 
     private final ReplyType replyType = SendBirdUIKit.getReplyType();
 
@@ -1080,9 +1083,15 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
             String text = getEditTextString();
             if (!TextUtils.isEmpty(text)) {
                 UserMessageParams params = new UserMessageParams(text);
+                if (!tagUserIdList.isEmpty()) {
+                    params.setMentionType(BaseMessageParams.MentionType.USERS);
+                    params.setMentionedUserIds(tagUserIdList);
+                }
                 sendUserMessage(params);
             }
         }
+
+        tagUserIdList.clear();
     }
 
     /**
@@ -1828,7 +1837,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
     @Override
     public void onUserMentionSelected(Member member) {
         Log.e("nt.dung", "Tag: " + member.getNickname());
-
+        tagUserIdList.add(member.getUserId());
     }
 
     public static class Builder {
