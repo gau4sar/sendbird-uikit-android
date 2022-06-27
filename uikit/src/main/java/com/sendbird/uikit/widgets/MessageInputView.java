@@ -34,6 +34,7 @@ import com.devlomi.record_view.OnRecordListener;
 import com.devlomi.record_view.RecordPermissionHandler;
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.FileMessage;
+import com.sendbird.android.Member;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendBirdUIKit;
 import com.sendbird.uikit.consts.KeyboardDisplayType;
@@ -42,12 +43,14 @@ import com.sendbird.uikit.databinding.SbViewMessageInputBinding;
 import com.sendbird.uikit.fragments.SendBirdDialogFragment;
 import com.sendbird.uikit.interfaces.OnInputModeChangedListener;
 import com.sendbird.uikit.interfaces.OnInputTextChangedListener;
+import com.sendbird.uikit.interfaces.UserInfo;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.utils.SoftInputUtils;
 import com.sendbird.uikit.utils.TextUtils;
 import com.sendbird.uikit.utils.ViewUtils;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 public class MessageInputView extends FrameLayout {
     private SbViewMessageInputBinding binding;
@@ -211,6 +214,11 @@ public class MessageInputView extends FrameLayout {
                 return false;
             }
         });
+    }
+
+    public void initTagView(List<Member> memberList, TagView.OnUserMentionSelectedListener onUserMentionSelectedListener) {
+        binding.tagView.setUserList(memberList);
+        binding.tagView.setOnUserMentionSelectedListener(onUserMentionSelectedListener);
     }
 
     public void setInputMode(@NonNull final Mode mode) {

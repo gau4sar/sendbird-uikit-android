@@ -85,7 +85,7 @@ public class SelectableUserInfoListViewModel extends BaseViewModel implements Pa
         super();
         this.userListQuery = SendBird.createApplicationUserListQuery();
         this.userListQuery.setLimit(USER_LIST_LIMIT);
-        this.userListQuery.setNicknameStartsWithFilter("Nguyen Dzung");
+        this.userListQuery.setNicknameStartsWithFilter("gsarma");
         this.customUserListQueryHandler = customUserListQueryHandler == null ? SendBirdUIKit.getCustomUserListQueryHandler() : customUserListQueryHandler;
     }
 
