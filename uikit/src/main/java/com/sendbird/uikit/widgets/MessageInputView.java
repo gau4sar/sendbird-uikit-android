@@ -11,8 +11,10 @@ import android.content.res.TypedArray;
 import android.os.Build;
 import android.text.Editable;
 import android.text.InputType;
+import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -51,8 +53,12 @@ import com.sendbird.uikit.utils.ViewUtils;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class MessageInputView extends FrameLayout {
+import kotlin.text.Regex;
+
+public class MessageInputView extends FrameLayout implements TagView.OnUserMentionSelectedListener, OnTagClicked {
     private SbViewMessageInputBinding binding;
 
     private FragmentManager fragmentManager;
@@ -68,6 +74,7 @@ public class MessageInputView extends FrameLayout {
     private Mode mode;
     private int addButtonVisibility = VISIBLE;
     private boolean showSendButtonAlways;
+    private boolean isTagging = false;
 
     public enum Mode {
         DEFAULT, EDIT, QUOTE_REPLY, AUDIO_RECORD
@@ -185,6 +192,8 @@ public class MessageInputView extends FrameLayout {
                         setSendButtonVisibility(View.GONE);
                         setAudioButtonVisibility(View.VISIBLE);
                     }
+
+                    checkForTag(s.toString());
                 }
             });
         } catch (Exception e) {
@@ -218,7 +227,7 @@ public class MessageInputView extends FrameLayout {
 
     public void initTagView(List<Member> memberList, TagView.OnUserMentionSelectedListener onUserMentionSelectedListener) {
         binding.tagView.setUserList(memberList);
-        binding.tagView.setOnUserMentionSelectedListener(onUserMentionSelectedListener);
+        binding.tagView.setOnUserMentionSelectedListener(this);
     }
 
     public void setInputMode(@NonNull final Mode mode) {
@@ -558,5 +567,96 @@ public class MessageInputView extends FrameLayout {
         messageInputView.getBinding().etInputText.setHint(binding.etInputText.getHint());
 
         return messageInputView;
+    }
+
+    public void enableTagView(boolean enable) {
+        if (enable) {
+            if (!isTagging) {
+                isTagging = true;
+                binding.tagView.setVisibility(View.VISIBLE);
+                binding.tagView.filter("");
+            }
+        }
+        else {
+            isTagging = false;
+            binding.tagView.setVisibility(GONE);
+        }
+    }
+
+    private void checkForTag(String text) {
+        String tagText = text;
+        if (!TextUtils.isEmpty(tagText)) {
+            int start = binding.etInputText.getSelectionStart();
+            if (start >= 0) {
+                tagText = tagText.substring(0, start);
+            }
+            showTagViewIfNeed(tagText);
+        } else {
+            enableTagView(false);
+        }
+    }
+
+    private void showTagViewIfNeed(String text) {
+        String regex = "\\w*[@].*$";
+        if (!TextUtils.isEmpty(text)) {
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(text);
+            if (matcher.find()) {
+                String tag = matcher.group();
+                String filter = tag.replaceAll(".*@(.*@|)", "");
+                if (isTagging) {
+                    Log.e("nt.dung", "Member filter: " + filter);
+                    filterTagView(filter);
+                } else {
+                    enableTagView(true);
+                }
+            } else {
+                enableTagView(false);
+            }
+        } else {
+            enableTagView(false);
+        }
+    }
+
+    private void filterTagView(String constraint) {
+        if (isTagging) {
+            binding.tagView.filter(constraint);
+        }
+    }
+
+    @Override
+    public void onUserMentionSelected(Member member) {
+        enableTagView(false);
+        insertTag(member.getNickname(), member);
+    }
+
+    public void insertTag(String tagName, Member member) {
+        int position;
+        Editable editable = binding.etInputText.getEditableText();
+        if (editable == null) return;
+
+        int start = binding.etInputText.getSelectionStart();
+        for (position = start - 1; position >= 0; position--) {
+            if (editable.toString().charAt(position) == '@') {
+                break;
+            }
+        }
+
+        if (position < start - 1) {
+            editable.delete(position + 1, start);
+        }
+
+        tagName = tagName + " ";
+        int newStart = binding.etInputText.getSelectionStart();
+        int end = newStart + tagName.length();
+        if (newStart >= 0 && end >= 0 && newStart < end) {
+            editable.insert(newStart, tagName);
+            editable.setSpan(new TagClickableSpan(tagName, member, this), newStart, end - 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+    }
+
+    @Override
+    public void onTagClicked(String tagName, Member member) {
+        Log.e("nt.dung", "Tag clicked: " + tagName);
     }
 }

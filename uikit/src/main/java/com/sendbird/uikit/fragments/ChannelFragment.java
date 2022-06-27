@@ -1828,6 +1828,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
     @Override
     public void onUserMentionSelected(Member member) {
         Log.e("nt.dung", "Tag: " + member.getNickname());
+
     }
 
     public static class Builder {
