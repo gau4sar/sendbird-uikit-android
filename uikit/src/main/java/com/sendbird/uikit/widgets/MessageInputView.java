@@ -58,7 +58,7 @@ import java.util.regex.Pattern;
 
 import kotlin.text.Regex;
 
-public class MessageInputView extends FrameLayout implements TagView.OnUserMentionSelectedListener, OnTagClicked {
+public class MessageInputView extends FrameLayout implements OnTagClicked {
     private SbViewMessageInputBinding binding;
 
     private FragmentManager fragmentManager;
@@ -227,7 +227,11 @@ public class MessageInputView extends FrameLayout implements TagView.OnUserMenti
 
     public void initTagView(List<Member> memberList, TagView.OnUserMentionSelectedListener onUserMentionSelectedListener) {
         binding.tagView.setUserList(memberList);
-        binding.tagView.setOnUserMentionSelectedListener(this);
+        binding.tagView.setOnUserMentionSelectedListener(member -> {
+            enableTagView(false);
+            insertTag(member.getNickname(), member);
+            onUserMentionSelectedListener.onUserMentionSelected(member);
+        });
     }
 
     public void setInputMode(@NonNull final Mode mode) {
@@ -622,12 +626,6 @@ public class MessageInputView extends FrameLayout implements TagView.OnUserMenti
         if (isTagging) {
             binding.tagView.filter(constraint);
         }
-    }
-
-    @Override
-    public void onUserMentionSelected(Member member) {
-        enableTagView(false);
-        insertTag(member.getNickname(), member);
     }
 
     public void insertTag(String tagName, Member member) {
