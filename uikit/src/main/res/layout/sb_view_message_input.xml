@@ -127,28 +127,30 @@
                     android:src="@drawable/icon_add" />
 
                 <LinearLayout
-                    android:orientation="vertical"
                     android:layout_width="0dp"
-                    android:background="@drawable/sb_message_input_text_background_light"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_height="wrap_content">
+                    android:background="@drawable/sb_message_input_text_background_light"
+                    android:orientation="vertical">
 
                     <com.sendbird.uikit.widgets.TagView
                         android:id="@+id/tagView"
-                        android:orientation="vertical"
-                        app:sb_pager_recycler_view_use_divide_line="false"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:background="@drawable/sb_message_input_text_background_light"
-                        android:layout_height="wrap_content" />
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:sb_pager_recycler_view_use_divide_line="false"
+                        tools:visibility="visible" />
 
                     <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/etInputText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/helvetica_family"
                         android:hint="@string/sb_text_channel_input_text_hint"
                         android:imeOptions="flagNoExtractUi"
-                        android:fontFamily="@font/helvetica_family"
                         android:inputType="textCapSentences|textMultiLine"
                         android:maxLines="3"
                         android:paddingLeft="@dimen/sb_size_20"
@@ -197,9 +199,9 @@
                     android:layout_marginLeft="@dimen/sb_size_12"
                     android:layout_marginEnd="@dimen/sb_size_0"
                     android:layout_marginRight="@dimen/sb_size_0"
+                    android:background="@drawable/bg_circle_record"
                     android:padding="@dimen/sb_size_8"
                     android:src="@drawable/ic_voice"
-                    android:background="@drawable/bg_circle_record"
                     app:tint="#FFFFFF" />
 
             </LinearLayout>
