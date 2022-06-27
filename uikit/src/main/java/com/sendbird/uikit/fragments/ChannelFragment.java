@@ -105,6 +105,7 @@ import com.sendbird.uikit.widgets.EmojiListView;
 import com.sendbird.uikit.widgets.EmojiReactionUserListView;
 import com.sendbird.uikit.widgets.MessageInputView;
 import com.sendbird.uikit.widgets.PagerRecyclerView;
+import com.sendbird.uikit.widgets.TagView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -123,8 +124,7 @@ import java.util.function.Consumer;
 public class ChannelFragment extends BaseGroupChannelFragment implements OnIdentifiableItemClickListener<BaseMessage>,
         OnIdentifiableItemLongClickListener<BaseMessage>,
         LoadingDialogHandler,
-        PhonebookUpdateListener
-{
+        PhonebookUpdateListener, TagView.OnUserMentionSelectedListener {
 
     private static final int CAPTURE_IMAGE_PERMISSIONS_REQUEST_CODE = 2001;
     private static final int PICK_IMAGE_PERMISSIONS_REQUEST_CODE = 2002;
@@ -880,6 +880,8 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
             }
         });
         binding.vgInputBox.setOnAudioLongClickListener();
+
+        binding.vgInputBox.initTagView(getMembers(), this);
     }
 
     private void onScrollEndReaches(PagerRecyclerView.ScrollDirection direction) {
@@ -1821,6 +1823,11 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
                 binding.chvChannelHeader.getTitleTextView().setText(ChannelUtils.makeTitleText(channel));
             }
         });
+    }
+
+    @Override
+    public void onUserMentionSelected(Member member) {
+        Log.e("nt.dung", "Tag: " + member.getNickname());
     }
 
     public static class Builder {
