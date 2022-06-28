@@ -601,15 +601,14 @@ public class MessageInputView extends FrameLayout implements OnTagClicked {
     }
 
     private void showTagViewIfNeed(String text) {
-        String regex = "\\w*[@].*$";
+        String regex = "\\w*[@]\\w*$";
         if (!TextUtils.isEmpty(text)) {
             Pattern pattern = Pattern.compile(regex);
             Matcher matcher = pattern.matcher(text);
             if (matcher.find()) {
                 String tag = matcher.group();
-                String filter = tag.replaceAll(".*@(.*@|)", "");
+                String filter = tag.replaceAll("^@(.*@|)", "");
                 if (isTagging) {
-                    Log.e("nt.dung", "Member filter: " + filter);
                     filterTagView(filter);
                 } else {
                     enableTagView(true);

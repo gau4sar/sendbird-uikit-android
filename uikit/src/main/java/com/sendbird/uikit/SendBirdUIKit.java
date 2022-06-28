@@ -519,6 +519,8 @@ public class SendBirdUIKit {
 
     public static String findPhoneBookName(String number) {
         String name = phoneBookData.get(number);
+        if (name == null) name = "";
+        if (number == null) number = "";
         return android.text.TextUtils.isEmpty(name) ? number : name;
     }
 }

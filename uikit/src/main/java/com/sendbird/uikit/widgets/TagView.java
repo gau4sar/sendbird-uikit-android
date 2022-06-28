@@ -3,7 +3,6 @@ package com.sendbird.uikit.widgets;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.Filter;
 
@@ -11,12 +10,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.sendbird.android.Member;
+import com.sendbird.uikit.SendBirdUIKit;
 import com.sendbird.uikit.activities.adapter.TagAdapter;
 import com.sendbird.uikit.interfaces.OnItemClickListener;
-import com.sendbird.uikit.interfaces.UserInfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class TagView extends ThemeableRecyclerView implements OnItemClickListener<Member> {
 
@@ -25,7 +25,7 @@ public class TagView extends ThemeableRecyclerView implements OnItemClickListene
     }
 
     public TagAdapter tagAdapter = new TagAdapter();
-    private List<Member> members = new ArrayList<>();
+    private final List<Member> members = new ArrayList<>();
     private final MemberFilter memberFilter = new MemberFilter();
     private OnUserMentionSelectedListener onUserMentionSelectedListener;
 
@@ -46,12 +46,15 @@ public class TagView extends ThemeableRecyclerView implements OnItemClickListene
     }
 
     public void filter(String constraint) {
-        Log.e("nt.dung", "Filter: " + constraint);
         memberFilter.filter(constraint);
     }
 
     public void setUserList(List<Member> memberList) {
-        this.members = memberList;
+        for (Member member: memberList) {
+            if (!Objects.equals(member.getUserId(), SendBirdUIKit.getAdapter().getUserInfo().getUserId())) {
+                this.members.add(member);
+            }
+        }
         tagAdapter.setItems(memberList);
         tagAdapter.setItemClickListener(this);
         setAdapter(tagAdapter);
@@ -66,12 +69,12 @@ public class TagView extends ThemeableRecyclerView implements OnItemClickListene
 
     private class MemberFilter extends Filter {
 
-        class ContactResult {
+        class Result {
             List<Member> contacts = new ArrayList<>();
 
-            public ContactResult() {}
+            public Result() {}
 
-            public ContactResult(List<Member> contacts) {
+            public Result(List<Member> contacts) {
                 this.contacts = contacts;
             }
         }
@@ -81,9 +84,9 @@ public class TagView extends ThemeableRecyclerView implements OnItemClickListene
             FilterResults filterResults = new FilterResults();
 
             if (TextUtils.isEmpty(constraint)) {
-                filterResults.values = new MemberFilter.ContactResult(members);
+                filterResults.values = new Result(members);
             } else {
-                MemberFilter.ContactResult filterData = new MemberFilter.ContactResult();
+                Result filterData = new Result();
 
                 for (Member contact : members) {
                     if (match(contact, constraint)) {
@@ -100,9 +103,9 @@ public class TagView extends ThemeableRecyclerView implements OnItemClickListene
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             if (results.values != null) {
-                if (results.values instanceof MemberFilter.ContactResult) {
-                    MemberFilter.ContactResult contactResult = (MemberFilter.ContactResult) results.values;
-                    tagAdapter.setItems(contactResult.contacts);
+                if (results.values instanceof Result) {
+                    Result result = (Result) results.values;
+                    tagAdapter.setItems(result.contacts);
                     tagAdapter.notifyDataSetChanged();
                 }
             }
@@ -110,8 +113,9 @@ public class TagView extends ThemeableRecyclerView implements OnItemClickListene
 
         private boolean match(Member member, CharSequence constraint) {
             String key = constraint.toString().toLowerCase().trim();
-            String contactName = member.getNickname();
-            return contactName != null && contactName.trim().toLowerCase().startsWith(key);
+            String phoneNumber = member.getMetaData("phone");
+            String contactName = SendBirdUIKit.findPhoneBookName(phoneNumber);
+            return contactName.trim().toLowerCase().startsWith(key);
         }
     }
 }

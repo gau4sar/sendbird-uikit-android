@@ -126,10 +126,12 @@ public class MemberPreview extends FrameLayout {
         Context context = preview.getContext();
         boolean isOperatorMember = member.getRole() == Member.Role.OPERATOR;
         boolean isMe = member.getUserId().equals(SendBird.getCurrentUser().getUserId());
-        String nickname = TextUtils.isEmpty(member.getNickname()) ? context.getString(R.string.sb_text_channel_list_title_unknown) : member.getNickname();
+        String phoneNumber = member.getMetaData("phone");
+
+        String nickname = SendBirdUIKit.findPhoneBookName(phoneNumber);
         preview.setName(nickname);
 
-        String description = isOperatorMember ? context.getString(R.string.sb_text_operator) : "";
+        String description = "";
         preview.setDescription(description);
         preview.setImageFromUrl(member.getProfileUrl());
         preview.enableActionMenu(!isMe);
