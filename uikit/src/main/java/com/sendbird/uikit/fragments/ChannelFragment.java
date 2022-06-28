@@ -19,7 +19,6 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.DrawableRes;
@@ -58,7 +57,6 @@ import com.sendbird.uikit.AudioRecorder;
 import com.sendbird.uikit.PhonebookUpdateListener;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendBirdUIKit;
-import com.sendbird.uikit.activities.ChannelSettingsActivity;
 import com.sendbird.uikit.activities.MembersActivity;
 import com.sendbird.uikit.activities.MessageSearchActivity;
 import com.sendbird.uikit.activities.PhotoViewActivity;
@@ -98,7 +96,6 @@ import com.sendbird.uikit.utils.MessageUtils;
 import com.sendbird.uikit.utils.ReactionUtils;
 import com.sendbird.uikit.utils.SoftInputUtils;
 import com.sendbird.uikit.utils.TextUtils;
-import com.sendbird.uikit.utils.UserUtils;
 import com.sendbird.uikit.vm.ChannelViewModel;
 import com.sendbird.uikit.vm.FileDownloader;
 import com.sendbird.uikit.vm.ViewModelFactory;
@@ -117,7 +114,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 
 /**
  * Fragment displaying the list of messages in the channel.
@@ -167,7 +163,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
     final AtomicBoolean isInitCallFinished = new AtomicBoolean(false);
     final AtomicBoolean shouldAnimate = new AtomicBoolean(false);
 
-    private List<String> tagUserIdList = new ArrayList<>();
+    private List<Member> tagUsers = new ArrayList<>();
 
     private final ReplyType replyType = SendBirdUIKit.getReplyType();
 
@@ -1083,15 +1079,11 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
             String text = getEditTextString();
             if (!TextUtils.isEmpty(text)) {
                 UserMessageParams params = new UserMessageParams(text);
-                if (!tagUserIdList.isEmpty()) {
-                    params.setMentionType(BaseMessageParams.MentionType.USERS);
-                    params.setMentionedUserIds(tagUserIdList);
-                }
                 sendUserMessage(params);
             }
         }
 
-        tagUserIdList.clear();
+        tagUsers.clear();
     }
 
     /**
@@ -1102,6 +1094,19 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
      * @since 1.0.4
      */
     protected void onBeforeSendUserMessage(@NonNull UserMessageParams params) {
+        if (!tagUsers.isEmpty()) {
+            List<String> mentionedUserIds = new ArrayList<>();
+            for (Member user: tagUsers) {
+                String phoneNumber = user.getMetaData("phone");
+                String name = SendBirdUIKit.findPhoneBookName(phoneNumber);
+                String message = params.getMessage().replace("@" + name, "@" + phoneNumber);
+                params.setMessage(message);
+
+                mentionedUserIds.add(user.getUserId());
+            }
+            params.setMentionType(BaseMessageParams.MentionType.USERS);
+            params.setMentionedUserIds(mentionedUserIds);
+        }
     }
 
     /**
@@ -1132,15 +1137,17 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
      */
     protected void sendUserMessage(@NonNull UserMessageParams params) {
         if (viewModel != null) {
-            CustomParamsHandler cutsomHandler = SendBirdUIKit.getCustomParamsHandler();
-            if (cutsomHandler != null) {
-                cutsomHandler.onBeforeSendUserMessage(params);
+            CustomParamsHandler customHandler = SendBirdUIKit.getCustomParamsHandler();
+            if (customHandler != null) {
+                customHandler.onBeforeSendUserMessage(params);
             }
             onBeforeSendUserMessage(params);
             if (targetMessage != null && replyType == ReplyType.QUOTE_REPLY) {
                 params.setParentMessageId(targetMessage.getMessageId());
                 params.setReplyToChannel(true);
             }
+
+            Log.e("nt.dung", "Data: " + params.getData());
             viewModel.sendUserMessage(params);
             clearInput();
             scrollToBottom();
@@ -1836,8 +1843,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
 
     @Override
     public void onUserMentionSelected(Member member) {
-        Log.e("nt.dung", "Tag: " + member.getNickname());
-        tagUserIdList.add(member.getUserId());
+        tagUsers.add(member);
     }
 
     public static class Builder {

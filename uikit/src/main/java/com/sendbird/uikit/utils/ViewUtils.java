@@ -8,6 +8,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.TextAppearanceSpan;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,8 +34,12 @@ import com.bumptech.glide.signature.ObjectKey;
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.FileMessage;
+import com.sendbird.android.MessageMetaArray;
 import com.sendbird.android.OGMetaData;
 import com.sendbird.android.Sender;
+import com.sendbird.android.User;
+import com.sendbird.android.UserMessage;
+import com.sendbird.android.UserMessageParams;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendBirdUIKit;
 import com.sendbird.uikit.consts.StringSet;
@@ -93,7 +98,19 @@ public class ViewUtils {
             builder.addHighlightTextSpan(text.toString(), text.toString(), backgroundColor, foregroundColor);
             text = builder.build();
         }
+
+
+        if (message instanceof UserMessage) {
+            List<User> users = message.getMentionedUsers();
+            for (User user: users) {
+                String phoneNumber = user.getMetaData("phone");
+                String tagUserName = SendBirdUIKit.findPhoneBookName(phoneNumber);
+                text = text.toString().replace("@" + phoneNumber, "@" + tagUserName);
+            }
+        }
+
         textView.setText(text);
+
         if (message.getUpdatedAt() <= 0L) {
             return;
         }

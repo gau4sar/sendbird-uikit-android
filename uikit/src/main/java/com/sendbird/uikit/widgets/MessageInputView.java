@@ -229,7 +229,7 @@ public class MessageInputView extends FrameLayout implements OnTagClicked {
         binding.tagView.setUserList(memberList);
         binding.tagView.setOnUserMentionSelectedListener(member -> {
             enableTagView(false);
-            insertTag(member.getNickname(), member);
+            insertTag(member);
             onUserMentionSelectedListener.onUserMentionSelected(member);
         });
     }
@@ -628,8 +628,11 @@ public class MessageInputView extends FrameLayout implements OnTagClicked {
         }
     }
 
-    public void insertTag(String tagName, Member member) {
+    public void insertTag(Member member) {
         int position;
+        String phoneNumber = member.getMetaData("phone");
+        String tagName = SendBirdUIKit.findPhoneBookName(phoneNumber);
+
         Editable editable = binding.etInputText.getEditableText();
         if (editable == null) return;
 
@@ -655,6 +658,6 @@ public class MessageInputView extends FrameLayout implements OnTagClicked {
 
     @Override
     public void onTagClicked(String tagName, Member member) {
-        Log.e("nt.dung", "Tag clicked: " + tagName);
+
     }
 }
