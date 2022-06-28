@@ -2,13 +2,14 @@ package com.sendbird.uikit.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.FragmentManager;
 
 import com.sendbird.android.Member;
@@ -19,6 +20,7 @@ import com.sendbird.uikit.fragments.ChannelFragment;
 import com.sendbird.uikit.model.HighlightMessageInfo;
 import com.sendbird.uikit.utils.ContextUtils;
 import com.sendbird.uikit.utils.TextUtils;
+import com.sendbird.uikit.utils.UIKitPrefs;
 import com.sendbird.uikit.widgets.AudioManager;
 
 import java.util.List;
@@ -52,6 +54,20 @@ public class ChannelActivity extends AppCompatActivity {
         return new IntentBuilder(context, cls, channelUrl).build();
     }
 
+    /**
+     * Create an intent for a custom activity. The custom activity must inherit {@link ChannelActivity}.
+     *
+     * @param context A Context of the application package implementing this class.
+     * @param cls The activity class that is to be used for the intent.
+     * @param channelUrl the url of the channel will be implemented.
+     * @param fontScale the font scale for the text views of the activity.
+     * @return Returns a newly created Intent that can be used to launch the activity.
+     * @since 1.1.2
+     */
+    public static Intent newIntentFromCustomActivity(@NonNull Context context, @NonNull Class<? extends ChannelActivity> cls, @NonNull String channelUrl, Float fontScale) {
+        return new IntentBuilder(context, cls, channelUrl, fontScale).build();
+    }
+
     private String url;
     private View.OnClickListener onBackClickListener;
     private View.OnClickListener onInfoClickListener;
@@ -79,6 +95,24 @@ public class ChannelActivity extends AppCompatActivity {
         }
 
         AudioManager.getInstance().attachLifecycle(getLifecycle());
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+
+        UIKitPrefs.init(newBase.getApplicationContext());
+        UIKitPrefs.getFontScale();
+
+        Configuration newConfig = newBase.getResources().getConfiguration();
+        newConfig.fontScale = UIKitPrefs.getFontScale();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            applyOverrideConfiguration(newConfig);
+        } else {
+            newBase.getResources().updateConfiguration(newConfig, newBase.getResources().getDisplayMetrics());
+        }
+
+        super.attachBaseContext(newBase);
     }
 
 
@@ -165,6 +199,25 @@ public class ChannelActivity extends AppCompatActivity {
             this.context = context;
             this.channelUrl = channelUrl;
         }
+
+        /**
+         * Create an intent for a {@link ChannelActivity}.
+         *
+         * @param context A Context of the application package implementing this class.
+         * @param customClass The activity class that is to be used for the intent.
+         * @param channelUrl The url of the channel will be implemented.
+         * @since 2.1.0
+         */
+
+        public IntentBuilder(@NonNull Context context, @NonNull Class<? extends ChannelActivity> customClass, @NonNull String channelUrl, Float fontScale) {
+            this.context = context;
+            this.channelUrl = channelUrl;
+            this.customClass = customClass;
+
+            UIKitPrefs.init(context.getApplicationContext());
+            UIKitPrefs.putFonScale(fontScale);
+        }
+
 
         /**
          * Create an intent for a {@link ChannelActivity}.
