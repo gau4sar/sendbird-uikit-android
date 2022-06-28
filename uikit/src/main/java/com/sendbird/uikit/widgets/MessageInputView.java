@@ -61,7 +61,7 @@ import kotlin.text.Regex;
 
 import kotlin.text.Regex;
 
-public class MessageInputView extends FrameLayout implements OnTagClicked {
+public class MessageInputView extends FrameLayout {
     private SbViewMessageInputBinding binding;
 
     private FragmentManager fragmentManager;
