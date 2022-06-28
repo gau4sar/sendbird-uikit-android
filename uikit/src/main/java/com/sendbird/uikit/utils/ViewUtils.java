@@ -3,10 +3,13 @@ package com.sendbird.uikit.utils;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.ClickableSpan;
 import android.text.style.TextAppearanceSpan;
 import android.util.Log;
 import android.util.Pair;
@@ -46,13 +49,17 @@ import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.FileInfo;
 import com.sendbird.uikit.model.HighlightMessageInfo;
+import com.sendbird.uikit.model.TagInfo;
 import com.sendbird.uikit.vm.PendingMessageRepository;
 import com.sendbird.uikit.widgets.BaseQuotedMessageView;
 import com.sendbird.uikit.widgets.EmojiReactionListView;
 import com.sendbird.uikit.widgets.NickNameTextView;
 import com.sendbird.uikit.widgets.OgtagView;
+import com.sendbird.uikit.widgets.OnTagClicked;
 import com.sendbird.uikit.widgets.RoundCornerView;
+import com.sendbird.uikit.widgets.TagClickableSpan;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -99,17 +106,39 @@ public class ViewUtils {
             text = builder.build();
         }
 
+        android.text.SpannableStringBuilder spannableString = new android.text.SpannableStringBuilder(text);
 
         if (message instanceof UserMessage) {
             List<User> users = message.getMentionedUsers();
+            List<TagInfo> tagInfos = new ArrayList<>();
+
             for (User user: users) {
                 String phoneNumber = user.getMetaData("phone");
                 String tagUserName = SendBirdUIKit.findPhoneBookName(phoneNumber);
                 text = text.toString().replace("@" + phoneNumber, "@" + tagUserName);
+
+                String tag = "@" + tagUserName;
+                tagInfos.add(new TagInfo(tag, user.getUserId()));
+            }
+
+            spannableString = new android.text.SpannableStringBuilder(text);
+
+            for (TagInfo tagInfo: tagInfos) {
+                String tag = tagInfo.getTagString();
+                int start = text.toString().indexOf(tag);
+                if (start >= 0) {
+                    TagClickableSpan tagClickableSpan = new TagClickableSpan(tag, tagInfo.getUserId(), Color.parseColor("#adc9ff"), (tagName, userId) -> {
+                        Intent intent = new Intent(StringSet.KEY_ACTION_OPEN_USER_PROFILE);
+                        intent.putExtra(StringSet.KEY_USER_ID, tagInfo.getUserId());
+                        textView.getContext().sendBroadcast(intent);
+                    });
+
+                    spannableString.setSpan(tagClickableSpan, start, start + tag.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
             }
         }
 
-        textView.setText(text);
+        textView.setText(spannableString);
 
         if (message.getUpdatedAt() <= 0L) {
             return;

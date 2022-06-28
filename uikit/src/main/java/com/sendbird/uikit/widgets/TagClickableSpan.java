@@ -1,5 +1,7 @@
 package com.sendbird.uikit.widgets;
 
+import android.graphics.Color;
+import android.text.TextPaint;
 import android.text.style.ClickableSpan;
 import android.view.View;
 
@@ -7,25 +9,29 @@ import androidx.annotation.NonNull;
 
 import com.sendbird.android.Member;
 
-interface OnTagClicked {
-    void onTagClicked(String tagName, Member member);
-}
-
 public class TagClickableSpan extends ClickableSpan {
-    private String name;
-    private Member member;
-    private OnTagClicked onTagClicked;
+    private final String name;
+    private final String userId;
+    private final OnTagClicked onTagClicked;
+    private final int linkColor;
 
-    public TagClickableSpan(String name, Member member, OnTagClicked onTagClicked) {
+    public TagClickableSpan(String name, String userId, int linkColor, OnTagClicked onTagClicked) {
         this.name = name;
-        this.member = member;
+        this.userId = userId;
         this.onTagClicked = onTagClicked;
+        this.linkColor = linkColor;
     }
 
     @Override
     public void onClick(@NonNull View widget) {
         if (onTagClicked != null) {
-            onTagClicked.onTagClicked(name, member);
+            onTagClicked.onTagClicked(name, userId);
         }
     }
+
+//    @Override
+//    public void updateDrawState(@NonNull TextPaint ds) {
+//        ds.linkColor = linkColor;
+//        ds.setUnderlineText(true);
+//    }
 }

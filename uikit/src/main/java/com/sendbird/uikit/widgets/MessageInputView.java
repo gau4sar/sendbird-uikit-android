@@ -8,6 +8,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.os.Build;
 import android.text.Editable;
 import android.text.InputType;
@@ -58,7 +59,7 @@ import java.util.regex.Pattern;
 
 import kotlin.text.Regex;
 
-public class MessageInputView extends FrameLayout implements OnTagClicked {
+public class MessageInputView extends FrameLayout {
     private SbViewMessageInputBinding binding;
 
     private FragmentManager fragmentManager;
@@ -651,12 +652,7 @@ public class MessageInputView extends FrameLayout implements OnTagClicked {
         int end = newStart + tagName.length();
         if (newStart >= 0 && end >= 0 && newStart < end) {
             editable.insert(newStart, tagName);
-            editable.setSpan(new TagClickableSpan(tagName, member, this), newStart, end - 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            editable.setSpan(new TagClickableSpan(tagName, member.getUserId(), Color.parseColor("#491389"), null), newStart, end - 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
-    }
-
-    @Override
-    public void onTagClicked(String tagName, Member member) {
-
     }
 }

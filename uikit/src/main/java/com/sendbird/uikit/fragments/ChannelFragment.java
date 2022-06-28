@@ -1117,6 +1117,14 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
      * @since 1.0.4
      */
     protected void onBeforeSendFileMessage(@NonNull FileMessageParams params) {
+        if (!tagUsers.isEmpty()) {
+            List<String> mentionedUserIds = new ArrayList<>();
+            for (Member user: tagUsers) {
+                mentionedUserIds.add(user.getUserId());
+            }
+            params.setMentionType(BaseMessageParams.MentionType.USERS);
+            params.setMentionedUserIds(mentionedUserIds);
+        }
     }
 
     /**
