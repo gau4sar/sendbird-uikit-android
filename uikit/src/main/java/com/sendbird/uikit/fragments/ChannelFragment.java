@@ -1096,6 +1096,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
     protected void onBeforeSendUserMessage(@NonNull UserMessageParams params) {
         if (!tagUsers.isEmpty()) {
             List<String> mentionedUserIds = new ArrayList<>();
+            StringBuilder data = new StringBuilder();
             for (Member user: tagUsers) {
                 String phoneNumber = user.getMetaData("phone");
                 String name = SendBirdUIKit.findPhoneBookName(phoneNumber);
@@ -1103,9 +1104,12 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
                 params.setMessage(message);
 
                 mentionedUserIds.add(user.getUserId());
+                data.append(user.getMetaData("phone"));
+                data.append(",");
             }
             params.setMentionType(BaseMessageParams.MentionType.USERS);
             params.setMentionedUserIds(mentionedUserIds);
+            params.setData(data.toString());
         }
     }
 
@@ -1119,11 +1123,15 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
     protected void onBeforeSendFileMessage(@NonNull FileMessageParams params) {
         if (!tagUsers.isEmpty()) {
             List<String> mentionedUserIds = new ArrayList<>();
+            StringBuilder data = new StringBuilder();
             for (Member user: tagUsers) {
                 mentionedUserIds.add(user.getUserId());
+                data.append(user.getMetaData("phone"));
+                data.append(",");
             }
             params.setMentionType(BaseMessageParams.MentionType.USERS);
             params.setMentionedUserIds(mentionedUserIds);
+            params.setData(data.toString());
         }
     }
 
