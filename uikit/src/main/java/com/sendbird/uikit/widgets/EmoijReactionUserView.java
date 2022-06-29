@@ -69,22 +69,14 @@ public class EmoijReactionUserView extends FrameLayout {
         List<String> urls = new ArrayList<>();
 
         if (user != null) {
-            nickname = TextUtils.isEmpty(user.getNickname()) ?
-                    context.getString(R.string.sb_text_channel_list_title_unknown) : user.getNickname();
+            String number = user.getMetaData("phone");
+            boolean itsMe = SendBirdUIKit.isItMe(user.getUserId());
+            nickname = itsMe ? "You" : SendBirdUIKit.findPhoneBookName(number);
             urls.add(user.getProfileUrl());
         }
 
         binding.tvNickname.setText(nickname);
         binding.ivUserCover.loadImages(urls);
-
-        if (user != null && user.getUserId().equals(SendBird.getCurrentUser().getUserId())) {
-            String meBadge = context.getResources().getString(R.string.sb_text_user_list_badge_me);
-            final Spannable spannable = new SpannableString(meBadge);
-            int badgeAppearance = SendBirdUIKit.isDarkMode() ? R.style.SendbirdSubtitle2OnDark02 : R.style.SendbirdSubtitle2OnLight02;
-            spannable.setSpan(new TextAppearanceSpan(context, badgeAppearance),
-                    0, meBadge.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            binding.tvNickname.append(spannable);
-        }
     }
 
     @BindingAdapter("user")
