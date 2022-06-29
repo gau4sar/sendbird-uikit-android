@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -138,6 +139,10 @@ public class SendBirdUIKit {
 
     public static void unregisterPhonebookListener(PhonebookUpdateListener listener) {
         phonebookUpdateListeners.remove(listener);
+    }
+
+    public static boolean isItMe(String userId) {
+        return Objects.equals(userId, getAdapter().getUserInfo().getUserId());
     }
 
     public synchronized static void initPhoneBookData(Map<String, String> phoneBook) {
