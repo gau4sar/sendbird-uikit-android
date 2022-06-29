@@ -62,6 +62,7 @@ import com.sendbird.uikit.widgets.TagClickableSpan;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * The helper class for the drawing views in the UIKit.
@@ -115,7 +116,8 @@ public class ViewUtils {
 
             for (User user: users) {
                 String phoneNumber = user.getMetaData("phone");
-                String tagUserName = SendBirdUIKit.findPhoneBookName(phoneNumber);
+                boolean itsme = SendBirdUIKit.isItMe(user.getUserId());
+                String tagUserName = itsme ? "You" : SendBirdUIKit.findPhoneBookName(phoneNumber);
                 text = text.toString().replace("@" + phoneNumber, "@" + tagUserName);
 
                 String tag = "@" + tagUserName;
