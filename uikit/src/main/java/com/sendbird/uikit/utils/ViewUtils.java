@@ -24,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
@@ -127,7 +128,8 @@ public class ViewUtils {
                 String tag = tagInfo.getTagString();
                 int start = text.toString().indexOf(tag);
                 if (start >= 0) {
-                    TagClickableSpan tagClickableSpan = new TagClickableSpan(tag, tagInfo.getUserId(), Color.parseColor("#adc9ff"), (tagName, userId) -> {
+                    int color = ContextCompat.getColor(textView.getContext(), R.color.tag_link);
+                    TagClickableSpan tagClickableSpan = new TagClickableSpan(tag, tagInfo.getUserId(), color, (tagName, userId) -> {
                         Intent intent = new Intent(StringSet.KEY_ACTION_OPEN_USER_PROFILE);
                         intent.putExtra(StringSet.KEY_USER_ID, tagInfo.getUserId());
                         textView.getContext().sendBroadcast(intent);

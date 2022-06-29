@@ -29,9 +29,9 @@ public class TagClickableSpan extends ClickableSpan {
         }
     }
 
-//    @Override
-//    public void updateDrawState(@NonNull TextPaint ds) {
-//        ds.linkColor = linkColor;
-//        ds.setUnderlineText(true);
-//    }
+    @Override
+    public void updateDrawState(@NonNull TextPaint ds) {
+        ds.linkColor = linkColor;
+        ds.setUnderlineText(true);
+    }
 }
