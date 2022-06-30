@@ -52,7 +52,7 @@ public class AdminMessageData {
             return android.text.TextUtils.isEmpty(joinedName) ? "" : joinedName + " left";
         } else if (type.equalsIgnoreCase(AdminMessageType.CHANNEL_CHANGE)) {
             if (changes != null && !changes.isEmpty()) {
-                return "The channel "
+                return "The "
                         + joinChannelChanges()
                         + " "
                         + (changes.size() == 1 ? "was" : "were")
@@ -84,7 +84,7 @@ public class AdminMessageData {
         for (int i = 0; i < changes.size(); i++) {
             AdminChannelChange channelChange = changes.get(i);
             if (!TextUtils.isEmpty(channelChange.getKey())) {
-                String key = channelChange.getKey().replace("cover_url", "image");
+                String key = channelChange.getKey().replace("cover_url", "cover image");
                 builder.append(key);
                 if (i < changes.size() - 1) {
                     builder.append(", ");
