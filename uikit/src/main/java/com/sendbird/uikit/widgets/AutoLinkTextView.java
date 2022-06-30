@@ -6,6 +6,7 @@ import android.text.util.Linkify;
 import android.util.AttributeSet;
 
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.content.ContextCompat;
 
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.log.Logger;
@@ -43,6 +44,7 @@ public class AutoLinkTextView extends AppCompatTextView {
     public void setText(CharSequence text, BufferType type) {
         super.setText(text, type);
         try {
+            setLinkTextColor(ContextCompat.getColor(getContext(), R.color.tag_link));
             Linkify.addLinks(this, linkifyMask);
             setMovementMethod(new SBLinkMovementMethod.Builder()
                     .setOnLinkClickListener(onLinkClickListener)
