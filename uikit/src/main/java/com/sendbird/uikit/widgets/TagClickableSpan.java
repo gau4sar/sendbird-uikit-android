@@ -31,6 +31,7 @@ public class TagClickableSpan extends ClickableSpan {
 
     @Override
     public void updateDrawState(@NonNull TextPaint ds) {
+        super.updateDrawState(ds);
         ds.linkColor = linkColor;
         ds.setUnderlineText(true);
     }
