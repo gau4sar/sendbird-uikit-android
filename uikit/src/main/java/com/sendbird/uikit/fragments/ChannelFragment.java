@@ -1105,7 +1105,9 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
 
                 mentionedUserIds.add(user.getUserId());
                 data.append(user.getMetaData("phone"));
-                data.append(",");
+                if (tagUsers.indexOf(user) != tagUsers.size() - 1) {
+                    data.append(",");
+                }
             }
             params.setMentionType(BaseMessageParams.MentionType.USERS);
             params.setMentionedUserIds(mentionedUserIds);
@@ -1127,7 +1129,9 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
             for (Member user: tagUsers) {
                 mentionedUserIds.add(user.getUserId());
                 data.append(user.getMetaData("phone"));
-                data.append(",");
+                if (tagUsers.indexOf(user) != tagUsers.size() - 1) {
+                    data.append(",");
+                }
             }
             params.setMentionType(BaseMessageParams.MentionType.USERS);
             params.setMentionedUserIds(mentionedUserIds);
