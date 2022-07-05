@@ -390,7 +390,7 @@ public class MessageInputView extends FrameLayout {
     }
 
     public void setInputTextVisibility(int visibility) {
-        binding.etInputText.setVisibility(visibility);
+        binding.inputLayout.setVisibility(visibility);
     }
 
     public void setQuoteReplyPanelVisibility(int visibility) {
