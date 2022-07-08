@@ -44,7 +44,9 @@ public class AdminMessageData {
     }
 
     public String getContent() {
-        if (type.equalsIgnoreCase(AdminMessageType.USER_JOINED)) {
+        if (type.equalsIgnoreCase(AdminMessageType.CHANNEL_CREATE)) {
+            return "The conversation is created.";
+        } else if (type.equalsIgnoreCase(AdminMessageType.USER_JOINED)) {
             String joinedName = joinUserNames();
             return android.text.TextUtils.isEmpty(joinedName) ? "" : joinedName + " joined";
         } else if (type.equalsIgnoreCase(AdminMessageType.USER_LEAVE)) {
