@@ -33,7 +33,7 @@ import java.util.List;
 
 public class BaseApplication extends MultiDexApplication {
 
-    private static final String APP_ID = "033D0C2B-1B69-4592-90E5-2B6D8D58A86B";
+    private static final String APP_ID = "3C52676B-2D0B-4DB0-A0DD-C3879D665F35";
     private static final MutableLiveData<InitState> initState = new MutableLiveData<>();
 
     @Override
