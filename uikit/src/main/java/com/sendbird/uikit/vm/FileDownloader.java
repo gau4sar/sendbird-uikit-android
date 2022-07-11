@@ -32,7 +32,7 @@ public class FileDownloader {
     }
     private final Set<String> downloadingFileSet = new HashSet<>();
 
-    private File getDownloadFile(@NonNull Context context, @NonNull FileMessage message) {
+    public File getDownloadFile(@NonNull Context context, @NonNull FileMessage message) {
         String newFileName = "Downloaded_file_" + message.getMessageId() + "_" + message.getName();
         return FileUtils.createCachedDirFile(context.getApplicationContext(), newFileName);
     }

@@ -54,12 +54,14 @@ import com.sendbird.android.handlers.GroupChannelContext;
 import com.sendbird.android.handlers.MessageCollectionHandler;
 import com.sendbird.android.handlers.MessageContext;
 import com.sendbird.uikit.AudioRecorder;
+import com.sendbird.uikit.BuildConfig;
 import com.sendbird.uikit.PhonebookUpdateListener;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendBirdUIKit;
 import com.sendbird.uikit.activities.MembersActivity;
 import com.sendbird.uikit.activities.MessageSearchActivity;
 import com.sendbird.uikit.activities.PhotoViewActivity;
+import com.sendbird.uikit.activities.VideoViewActivity;
 import com.sendbird.uikit.activities.adapter.MessageListAdapter;
 import com.sendbird.uikit.activities.viewholder.MessageType;
 import com.sendbird.uikit.activities.viewholder.MessageViewHolderFactory;
@@ -1343,6 +1345,28 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
                             break;
                         case VIEW_TYPE_FILE_MESSAGE_VIDEO_ME:
                         case VIEW_TYPE_FILE_MESSAGE_VIDEO_OTHER:
+                            FileMessage videoMessage = (FileMessage) message;
+                            boolean hasFile = FileDownloader.getInstance().hasFile(getContext(), videoMessage);
+                            if (hasFile) {
+                                File file = FileDownloader.getInstance().getDownloadFile(getContext(), videoMessage);
+                                showFile(file, videoMessage.getType());
+                            } else {
+                                Intent intent = VideoViewActivity.newIntent(getContext(), videoMessage.getUrl());
+                                startActivity(intent);
+                                FileDownloader.downloadFile(getContext(), videoMessage, new OnResultHandler<File>() {
+                                    @Override
+                                    public void onResult(File file) {
+
+                                    }
+
+                                    @Override
+                                    public void onError(SendBirdException e) {
+                                        toastError(R.string.sb_text_error_download_file);
+                                    }
+                                });
+                            }
+
+                            break;
                         case VIEW_TYPE_FILE_MESSAGE_ME:
                         case VIEW_TYPE_FILE_MESSAGE_OTHER:
                             FileMessage fileMessage = (FileMessage) message;

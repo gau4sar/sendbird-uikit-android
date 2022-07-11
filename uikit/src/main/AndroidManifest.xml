@@ -65,6 +65,10 @@
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:launchMode="singleTop" />
         <activity
+            android:name=".activities.VideoViewActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:launchMode="singleTop" />
+        <activity
             android:name=".activities.ModerationActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:launchMode="singleTop" />

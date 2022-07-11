@@ -37,6 +37,7 @@ public class StringSet {
 
     public final static String KEY_MESSAGE_FILENAME = "KEY_MESSAGE_FILENAME";
     public final static String KEY_IMAGE_URL = "KEY_IMAGE_URL";
+    public final static String KEY_VIDEO_URL = "KEY_VIDEO_URL";
     public final static String KEY_MESSAGE_MIMETYPE = "KEY_MESSAGE_MIMETYPE";
     public final static String KEY_MESSAGE_CREATEDAT = "KEY_MESSAGE_CREATEDAT";
     public final static String KEY_MESSAGE_SENDER_NAME = "KEY_MESSAGE_SENDER_NAME";
