@@ -11,6 +11,7 @@ import androidx.databinding.BindingAdapter;
 import androidx.databinding.DataBindingUtil;
 
 import com.sendbird.android.AdminMessage;
+import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.shadow.com.google.gson.Gson;
 import com.sendbird.uikit.R;
@@ -58,11 +59,11 @@ public class AdminMessageView extends BaseMessageView {
         }
     }
 
-    public void drawMessage(BaseMessage message) {
+    public void drawAdminMessage(BaseMessage message, BaseChannel channel) {
         try {
             String data = message.getData();
             AdminMessageData adminMessageData = new Gson().fromJson(data, AdminMessageData.class);
-            String adminMessageContent = adminMessageData.getContent();
+            String adminMessageContent = adminMessageData.getContent(channel);
 
             binding.tvMessage.setText(TextUtils.isEmpty(adminMessageContent) ? message.getMessage() : adminMessageContent);
         } catch (Exception e) {
@@ -70,8 +71,8 @@ public class AdminMessageView extends BaseMessageView {
         }
     }
 
-    @BindingAdapter("message")
-    public static void drawMessage(AdminMessageView view, AdminMessage message) {
-        view.drawMessage(message);
+    @BindingAdapter(value = {"message", "channel"}, requireAll = true)
+    public static void drawMessage(AdminMessageView view, AdminMessage message, BaseChannel channel) {
+        view.drawAdminMessage(message, channel);
     }
 }
