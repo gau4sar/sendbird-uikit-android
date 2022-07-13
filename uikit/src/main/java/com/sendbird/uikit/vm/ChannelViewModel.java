@@ -9,6 +9,7 @@ import androidx.annotation.WorkerThread;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.sendbird.android.AdminMessage;
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.FileMessage;
@@ -241,8 +242,15 @@ public class ChannelViewModel extends BaseViewModel implements PagerRecyclerView
         if (context.getMessagesSendingStatus() == BaseMessage.SendingStatus.SUCCEEDED) {
             cachedMessages.addAll(messages);
             notifyDataSetChanged(context);
-        }  else if (context.getMessagesSendingStatus() == BaseMessage.SendingStatus.PENDING) {
+        } else if (context.getMessagesSendingStatus() == BaseMessage.SendingStatus.PENDING) {
             notifyDataSetChanged(StringSet.ACTION_PENDING_MESSAGE_ADDED);
+        } else {
+            for (BaseMessage message: messages) {
+                if (message instanceof AdminMessage) {
+                    cachedMessages.add(message);
+                    notifyDataSetChanged(context);
+                }
+            }
         }
 
         switch (context.getCollectionEventSource()) {
