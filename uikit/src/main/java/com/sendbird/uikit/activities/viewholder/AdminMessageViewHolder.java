@@ -20,6 +20,7 @@ public final class AdminMessageViewHolder extends MessageViewHolder {
     @Override
     public void bind(BaseChannel channel, @NonNull BaseMessage message, MessageGroupType messageGroupType) {
         binding.setVariable(BR.message, message);
+        binding.setVariable(BR.channel, channel);
     }
 
     @Override

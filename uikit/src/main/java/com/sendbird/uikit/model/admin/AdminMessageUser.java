@@ -23,8 +23,12 @@ public class AdminMessageUser {
         this.metaData = metaData;
     }
 
+    public boolean itsMe() {
+        return SendBirdUIKit.isItMe(userId);
+    }
+
     public String getName() {
-        boolean itsMe = userId.equals(SendBirdUIKit.getAdapter().getUserInfo().getUserId());
+        boolean itsMe = itsMe();
         if (itsMe) return "You";
 
         String phone = metaData.getPhone();

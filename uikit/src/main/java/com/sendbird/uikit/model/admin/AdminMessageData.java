@@ -2,7 +2,10 @@ package com.sendbird.uikit.model.admin;
 
 import androidx.annotation.Keep;
 
+import com.sendbird.android.BaseChannel;
+import com.sendbird.android.GroupChannel;
 import com.sendbird.android.shadow.com.google.gson.annotations.SerializedName;
+import com.sendbird.uikit.SendBirdUIKit;
 import com.sendbird.uikit.utils.TextUtils;
 
 import java.util.ArrayList;
@@ -12,6 +15,9 @@ import java.util.List;
 public class AdminMessageData {
     @SerializedName("type")
     private String type;
+
+    @SerializedName("reason")
+    private String reason;
 
     @SerializedName("users")
     private List<AdminMessageUser> users;
@@ -43,9 +49,13 @@ public class AdminMessageData {
         this.changes = changes;
     }
 
-    public String getContent() {
+    public String getContent(BaseChannel channel) {
         if (type.equalsIgnoreCase(AdminMessageType.CHANNEL_CREATE)) {
-            return "The conversation is created.";
+            if (channel instanceof GroupChannel) {
+                GroupChannel groupChannel = (GroupChannel) channel;
+                if (groupChannel.isSuper()) return "The channel is created";
+                else return  "The group is created";
+            }
         } else if (type.equalsIgnoreCase(AdminMessageType.USER_JOINED)) {
             String joinedName = joinUserNames();
             return android.text.TextUtils.isEmpty(joinedName) ? "" : joinedName + " joined";
@@ -61,6 +71,14 @@ public class AdminMessageData {
                         + " updated";
             } else {
                 return "";
+            }
+        } else if (type.equalsIgnoreCase(AdminMessageType.USER_ROLE_CHANGE)) {
+            if (AdminMessageReason.USER_TO_OPERATOR.equalsIgnoreCase(reason)) {
+                boolean onlyMe = users.size() == 1 && users.get(0).itsMe();
+                return joinUserNames()
+                        + " "
+                        + (users.size() > 1 || onlyMe ? "are" : "is")
+                        + " now an operator";
             }
         }
         return "";
