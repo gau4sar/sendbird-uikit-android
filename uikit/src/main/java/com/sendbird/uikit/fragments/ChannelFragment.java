@@ -296,6 +296,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
         binding.vgInputBox.setEnabled(!isMuted && !isFrozen);
         // set hint
         setInputTextHint(isMuted, isFrozen);
+        binding.vgInputBox.updateTagView(getMembers());
     }
 
     private void initHeaderOnCreated() {
@@ -882,7 +883,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
         });
         binding.vgInputBox.setOnAudioLongClickListener();
 
-        binding.vgInputBox.initTagView(getMembers(), this);
+        binding.vgInputBox.initTagView(this);
     }
 
     private void onScrollEndReaches(PagerRecyclerView.ScrollDirection direction) {

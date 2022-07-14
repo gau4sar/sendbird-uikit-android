@@ -50,8 +50,9 @@ public class TagView extends ThemeableRecyclerView implements OnItemClickListene
     }
 
     public void setUserList(List<Member> memberList) {
+        this.members.clear();
         for (Member member: memberList) {
-            if (!Objects.equals(member.getUserId(), SendBirdUIKit.getAdapter().getUserInfo().getUserId())) {
+            if (!SendBirdUIKit.isItMe(member.getUserId())) {
                 this.members.add(member);
             }
         }
