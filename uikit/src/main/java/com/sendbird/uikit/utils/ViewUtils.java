@@ -3,15 +3,12 @@ package com.sendbird.uikit.utils;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.style.ClickableSpan;
 import android.text.style.TextAppearanceSpan;
-import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,12 +35,10 @@ import com.bumptech.glide.signature.ObjectKey;
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.FileMessage;
-import com.sendbird.android.MessageMetaArray;
 import com.sendbird.android.OGMetaData;
 import com.sendbird.android.Sender;
 import com.sendbird.android.User;
 import com.sendbird.android.UserMessage;
-import com.sendbird.android.UserMessageParams;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendBirdUIKit;
 import com.sendbird.uikit.consts.StringSet;
@@ -56,13 +51,11 @@ import com.sendbird.uikit.widgets.BaseQuotedMessageView;
 import com.sendbird.uikit.widgets.EmojiReactionListView;
 import com.sendbird.uikit.widgets.NickNameTextView;
 import com.sendbird.uikit.widgets.OgtagView;
-import com.sendbird.uikit.widgets.OnTagClicked;
 import com.sendbird.uikit.widgets.RoundCornerView;
 import com.sendbird.uikit.widgets.TagClickableSpan;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * The helper class for the drawing views in the UIKit.
@@ -118,26 +111,31 @@ public class ViewUtils {
                 String phoneNumber = user.getMetaData("phone");
                 boolean itsme = SendBirdUIKit.isItMe(user.getUserId());
                 String tagUserName = itsme ? "You" : SendBirdUIKit.findPhoneBookName(phoneNumber);
+                int matchCount = indicesOfSubString("@" + phoneNumber, text.toString()).size();
                 text = text.toString().replace("@" + phoneNumber, "@" + tagUserName);
 
                 String tag = "@" + tagUserName;
-                tagInfos.add(new TagInfo(tag, user.getUserId()));
+                for (int i = 0; i < matchCount; i++) {
+                    tagInfos.add(new TagInfo(tag, user.getUserId()));
+                }
             }
 
             spannableString = new android.text.SpannableStringBuilder(text);
 
             for (TagInfo tagInfo: tagInfos) {
                 String tag = tagInfo.getTagString();
-                int start = text.toString().indexOf(tag);
-                if (start >= 0) {
-                    int color = ContextCompat.getColor(textView.getContext(), R.color.tag_link);
-                    TagClickableSpan tagClickableSpan = new TagClickableSpan(tag, tagInfo.getUserId(), color, (tagName, userId) -> {
-                        Intent intent = new Intent(StringSet.KEY_ACTION_OPEN_USER_PROFILE);
-                        intent.putExtra(StringSet.KEY_USER_ID, tagInfo.getUserId());
-                        textView.getContext().sendBroadcast(intent);
-                    });
+                List<Integer> indices = indicesOfSubString(tag, text.toString());
+                for (Integer start: indices) {
+                    if (start >= 0) {
+                        int color = ContextCompat.getColor(textView.getContext(), R.color.tag_link);
+                        TagClickableSpan tagClickableSpan = new TagClickableSpan(tag, tagInfo.getUserId(), color, (tagName, userId) -> {
+                            Intent intent = new Intent(StringSet.KEY_ACTION_OPEN_USER_PROFILE);
+                            intent.putExtra(StringSet.KEY_USER_ID, tagInfo.getUserId());
+                            textView.getContext().sendBroadcast(intent);
+                        });
 
-                    spannableString.setSpan(tagClickableSpan, start, start + tag.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        spannableString.setSpan(tagClickableSpan, start, start + tag.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
                 }
             }
         }
@@ -153,6 +151,16 @@ public class ViewUtils {
         spannable.setSpan(new TextAppearanceSpan(textView.getContext(), editedTextAppearance),
                 0, edited.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         textView.append(spannable);
+    }
+
+    private static List<Integer> indicesOfSubString(String subString, String text) {
+        int index = 0;
+        List<Integer> indices = new ArrayList<>();
+        while ((index = text.indexOf(subString, index)) != -1 ){
+            indices.add(index);
+            index++;
+        }
+        return indices;
     }
 
     public static void drawOgtag(@NonNull ViewGroup parent, OGMetaData ogMetaData) {
