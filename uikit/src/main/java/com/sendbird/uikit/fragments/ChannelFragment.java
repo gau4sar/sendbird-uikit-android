@@ -365,37 +365,37 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
             }
 
             binding.chvChannelHeader.setRightImageButtonClickListener(v -> {
-                if (memberIds.size() > 2 || channel.isSuper()) {
-                    Intent intent = new Intent(StringSet.KEY_ACTION_OPEN_GROUP_PROFILE);
+                Intent intent;
+                if (!channel.isDistinct() || channel.isSuper()) {
+                    intent = new Intent(StringSet.KEY_ACTION_OPEN_GROUP_PROFILE);
                     intent.putExtra(StringSet.KEY_CHANNEL_URL, channel.getUrl());
-                    requireContext().sendBroadcast(intent);
                 } else {
-                    Intent intent = new Intent(StringSet.KEY_ACTION_OPEN_USER_PROFILE);
+                    intent = new Intent(StringSet.KEY_ACTION_OPEN_USER_PROFILE);
                     intent.putCharSequenceArrayListExtra(StringSet.KEY_USER_ID, memberIds);
-                    requireContext().sendBroadcast(intent);
                 }
+                requireContext().sendBroadcast(intent);
             });
             binding.chvChannelHeader.getTitleTextView().setOnClickListener(v -> {
-                if (memberIds.size() > 2 || channel.isSuper()) {
-                    Intent intent = new Intent(StringSet.KEY_ACTION_OPEN_GROUP_PROFILE);
+                Intent intent;
+                if (!channel.isDistinct() || channel.isSuper()) {
+                    intent = new Intent(StringSet.KEY_ACTION_OPEN_GROUP_PROFILE);
                     intent.putExtra(StringSet.KEY_CHANNEL_URL, channel.getUrl());
-                    requireContext().sendBroadcast(intent);
                 } else {
-                    Intent intent = new Intent(StringSet.KEY_ACTION_OPEN_USER_PROFILE);
+                    intent = new Intent(StringSet.KEY_ACTION_OPEN_USER_PROFILE);
                     intent.putCharSequenceArrayListExtra(StringSet.KEY_USER_ID, memberIds);
-                    requireContext().sendBroadcast(intent);
                 }
+                requireContext().sendBroadcast(intent);
             });
             binding.chvChannelHeader.getProfileView().setOnClickListener(v -> {
-                if (memberIds.size() > 2 || channel.isSuper()) {
-                    Intent intent = new Intent(StringSet.KEY_ACTION_OPEN_GROUP_PROFILE);
+                Intent intent;
+                if (!channel.isDistinct() || channel.isSuper()) {
+                    intent = new Intent(StringSet.KEY_ACTION_OPEN_GROUP_PROFILE);
                     intent.putExtra(StringSet.KEY_CHANNEL_URL, channel.getUrl());
-                    requireContext().sendBroadcast(intent);
                 } else {
-                    Intent intent = new Intent(StringSet.KEY_ACTION_OPEN_USER_PROFILE);
+                    intent = new Intent(StringSet.KEY_ACTION_OPEN_USER_PROFILE);
                     intent.putCharSequenceArrayListExtra(StringSet.KEY_USER_ID, memberIds);
-                    requireContext().sendBroadcast(intent);
                 }
+                requireContext().sendBroadcast(intent);
             });
         }
 
@@ -530,7 +530,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
             // The callback coming from setItems is worked asynchronously. So `isInitCallFinished` flag has to mark in advance.
             final boolean isInitCallEnded = isInitCallFinished.get();
 
-            boolean isOneOneChat = channel.getMemberCount() <= 2;
+            boolean isOneOneChat = channel.isDistinct();
             if (isOneOneChat) {
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                     messageList.removeIf(message -> message instanceof AdminMessage);
@@ -1869,7 +1869,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
     }
 
     public boolean isSingleChat() {
-        return channel.getMemberCount() <= 2 && !channel.isSuper();
+        return channel.getMemberCount() <= 2 && !channel.isSuper() && channel.isDistinct();
     }
 
     public List<Member> getMembers() {
