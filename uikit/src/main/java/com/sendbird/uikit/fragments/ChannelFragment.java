@@ -58,6 +58,7 @@ import com.sendbird.uikit.BuildConfig;
 import com.sendbird.uikit.PhonebookUpdateListener;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendBirdUIKit;
+import com.sendbird.uikit.activities.ChannelSettingsActivity;
 import com.sendbird.uikit.activities.MembersActivity;
 import com.sendbird.uikit.activities.MessageSearchActivity;
 import com.sendbird.uikit.activities.PhotoViewActivity;
@@ -1873,7 +1874,15 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
     }
 
     public List<Member> getMembers() {
-        return channel.getMembers();
+        List<String> bannedUsers = viewModel.getBannedUsers();
+        List<Member> members = channel.getMembers();
+        ArrayList<Member> channelMembers = new ArrayList<>();
+        for(Member member: members) {
+            if (!bannedUsers.contains(member.getUserId())) {
+                channelMembers.add(member);
+            }
+        }
+        return channelMembers;
     }
 
     @Override
