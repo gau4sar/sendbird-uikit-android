@@ -61,6 +61,16 @@ public class TagView extends ThemeableRecyclerView implements OnItemClickListene
         setAdapter(tagAdapter);
     }
 
+    public void updateUserList(List<Member> memberList) {
+        this.members.clear();
+        for (Member member: memberList) {
+            if (!SendBirdUIKit.isItMe(member.getUserId())) {
+                this.members.add(member);
+            }
+        }
+        tagAdapter.notifyDataSetChanged();
+    }
+
     @Override
     public void onItemClick(View view, int position, Member data) {
         if (onUserMentionSelectedListener != null) {
