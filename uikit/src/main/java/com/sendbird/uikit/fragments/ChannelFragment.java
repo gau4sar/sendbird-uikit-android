@@ -883,7 +883,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
         });
         binding.vgInputBox.setOnAudioLongClickListener();
 
-        binding.vgInputBox.initTagView(this);
+        binding.vgInputBox.initTagView(getMembers(), this);
     }
 
     private void onScrollEndReaches(PagerRecyclerView.ScrollDirection direction) {

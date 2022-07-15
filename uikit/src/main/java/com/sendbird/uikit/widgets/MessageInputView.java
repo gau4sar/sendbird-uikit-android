@@ -228,7 +228,8 @@ public class MessageInputView extends FrameLayout {
         });
     }
 
-    public void initTagView(TagView.OnUserMentionSelectedListener onUserMentionSelectedListener) {
+    public void initTagView(List<Member> memberList, TagView.OnUserMentionSelectedListener onUserMentionSelectedListener) {
+        binding.tagView.setUserList(memberList);
         binding.tagView.setOnUserMentionSelectedListener(member -> {
             enableTagView(false);
             insertTag(member);
@@ -237,7 +238,7 @@ public class MessageInputView extends FrameLayout {
     }
 
     public void updateTagView(List<Member> memberList) {
-        binding.tagView.setUserList(memberList);
+        binding.tagView.updateUserList(memberList);
     }
 
     public void setInputMode(@NonNull final Mode mode) {
