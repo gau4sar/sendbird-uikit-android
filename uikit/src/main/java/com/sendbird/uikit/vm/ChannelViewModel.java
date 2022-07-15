@@ -39,8 +39,10 @@ import com.sendbird.uikit.widgets.PagerRecyclerView;
 import com.sendbird.uikit.widgets.StatusFrameView;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -58,10 +60,16 @@ public class ChannelViewModel extends BaseViewModel implements PagerRecyclerView
     private final GroupChannel channel;
     private final MessageList cachedMessages = new MessageList();
 
+    private final List<String> bannedUsers = new ArrayList<>();
+
     @Nullable
     private MessageCollection collection;
     private MessageCollectionHandler handler;
     private boolean needToLoadMessageCache = true;
+
+    public List<String> getBannedUsers() {
+        return bannedUsers;
+    }
 
     public static class ChannelMessageData {
         final List<BaseMessage> messages;
@@ -105,6 +113,21 @@ public class ChannelViewModel extends BaseViewModel implements PagerRecyclerView
                 if (channel.getUrl().equals(ChannelViewModel.this.channel.getUrl()) && hasNext()) {
                     markAsRead();
                     notifyDataSetChanged(new MessageContext(CollectionEventSource.EVENT_MESSAGE_RECEIVED, BaseMessage.SendingStatus.SUCCEEDED));
+                }
+            }
+
+            @Override
+            public void onUserBanned(BaseChannel channel, User user) {
+                bannedUsers.add(user.getUserId());
+            }
+
+            @Override
+            public void onUserUnbanned(BaseChannel channel, User user) {
+                ListIterator<String> iterator = bannedUsers.listIterator();
+                while(iterator.hasNext()){
+                    if(iterator.next().equals(user.getUserId())){
+                        iterator.remove();
+                    }
                 }
             }
         });
@@ -366,6 +389,7 @@ public class ChannelViewModel extends BaseViewModel implements PagerRecyclerView
     protected void onCleared() {
         super.onCleared();
         Logger.dev("-- onCleared ChannelViewModel");
+        bannedUsers.clear();
         SendBird.removeChannelHandler(ID_CHANNEL_EVENT_HANDLER);
         SendBird.removeConnectionHandler(CONNECTION_HANDLER_ID);
         disposeMessageCollection();
