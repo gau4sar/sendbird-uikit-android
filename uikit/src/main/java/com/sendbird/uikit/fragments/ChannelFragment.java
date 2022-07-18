@@ -27,6 +27,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
+import androidx.arch.core.util.Function;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -406,11 +407,27 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
         if (useTypingIndicator) {
             viewModel.getTypingMembers().observe(this, typingMembers -> {
                 if (typingMembers == null) {
-                    binding.chvChannelHeader.getDescriptionTextView().setVisibility(View.GONE);
+                    if (isSingleChat()) {
+                        ChannelUtils.makeLastSeenText(getContext(), channel, lastSeenAt -> {
+                            binding.chvChannelHeader.getDescriptionTextView().setVisibility(View.VISIBLE);
+                            binding.chvChannelHeader.getDescriptionTextView().setText(lastSeenAt);
+                            return null;
+                        });
+                    } else {
+                        binding.chvChannelHeader.getDescriptionTextView().setVisibility(View.GONE);
+                    }
                 } else {
                     binding.chvChannelHeader.getDescriptionTextView().setVisibility(View.VISIBLE);
                     binding.chvChannelHeader.getDescriptionTextView().setText(ChannelUtils.makeTypingText(getContext(), typingMembers));
                 }
+            });
+        }
+
+        if (isSingleChat()) {
+            ChannelUtils.makeLastSeenText(getContext(), channel, lastSeenAt -> {
+                binding.chvChannelHeader.getDescriptionTextView().setVisibility(View.VISIBLE);
+                binding.chvChannelHeader.getDescriptionTextView().setText(lastSeenAt);
+                return null;
             });
         }
     }

@@ -3,6 +3,7 @@ package com.sendbird.uikit.utils;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.arch.core.util.Function;
 
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
@@ -10,12 +11,20 @@ import com.sendbird.android.FileMessage;
 import com.sendbird.android.GroupChannel;
 import com.sendbird.android.Member;
 import com.sendbird.android.SendBird;
+import com.sendbird.android.SendBirdException;
 import com.sendbird.android.Sender;
 import com.sendbird.android.User;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendBirdUIKit;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.widgets.ChannelCoverView;
+
+import org.threeten.bp.Duration;
+import org.threeten.bp.Instant;
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.LocalDateTime;
+import org.threeten.bp.ZoneOffset;
+import org.threeten.bp.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -205,6 +214,58 @@ public class ChannelUtils {
         } else {
             return context.getString(R.string.sb_text_channel_typing_indicator_multiple);
         }
+    }
+
+    public static void makeLastSeenText(Context context, GroupChannel channel, Function<String, Void> callback) {
+        channel.refresh(new GroupChannel.GroupChannelRefreshHandler() {
+            @Override
+            public void onResult(SendBirdException e) {
+                if (e != null) {
+                    e.printStackTrace();
+                    return;
+                }
+
+                User other = null;
+                List<? extends User> members = channel.getMembers();
+                for (User member : members) {
+                    if (!SendBirdUIKit.isItMe(member.getUserId())) {
+                        other = member;
+                    }
+                }
+                if (other != null) {
+                    String lastSeenText = "";
+                    long lastSeenAt = other.getLastSeenAt();
+                    LocalDateTime now = LocalDateTime.now();
+                    LocalDate nowDate = now.toLocalDate();
+
+                    LocalDateTime lastSeen = LocalDateTime.ofInstant(Instant.ofEpochMilli(lastSeenAt), ZoneOffset.UTC);
+                    LocalDate lastSeenDate = lastSeen.toLocalDate();
+
+                    Duration duration = Duration.between(lastSeen, now);
+                    long offsetDays = duration.toDays();
+
+                    if (other.getConnectionStatus() == User.ConnectionStatus.ONLINE) {
+                        lastSeenText = "Online";
+                    } else if (lastSeenAt <= 0) {
+                        lastSeenText = "Offline";
+                    } else if (nowDate.isEqual(lastSeenDate)) {
+                        lastSeenText = "Last seen at " + lastSeen.format(DateTimeFormatter.ofPattern("hh:mm a"));
+                    } else if (offsetDays == 1) {
+                        lastSeenText = "Last seen yesterday, " + lastSeen.format(DateTimeFormatter.ofPattern("hh:mm a"));
+                    } else if (offsetDays > 1 && offsetDays < 7) {
+                        lastSeenText = "Last seen " + lastSeen.format(DateTimeFormatter.ofPattern("EEEE, hh:mm a"));
+                    } else if (offsetDays >= 7 && offsetDays < 14) {
+                        lastSeenText = "Last seen a week ago";
+                    } else if (offsetDays >= 14 && offsetDays < 28) {
+                        lastSeenText = "Last seen few weeks ago";
+                    } else {
+                        lastSeenText = "Last seen " + lastSeen.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                    }
+
+                    callback.apply(lastSeenText);
+                }
+            }
+        });
     }
 
     public static boolean isChannelPushOff(GroupChannel channel) {
