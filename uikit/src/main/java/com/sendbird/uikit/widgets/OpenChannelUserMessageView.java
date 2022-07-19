@@ -88,7 +88,7 @@ public class OpenChannelUserMessageView extends OpenChannelMessageView {
 
     @Override
     public void drawMessage(OpenChannel channel, BaseMessage message, MessageGroupType messageGroupType) {
-        ViewUtils.drawTextMessage(binding.tvMessage, message, editedAppearance);
+        ViewUtils.drawTextMessage(binding.tvMessage, message, channel, editedAppearance);
 
         binding.ogTag.drawOgtag(message.getOgMetaData());
         binding.ivStatus.drawStatus(message, channel);

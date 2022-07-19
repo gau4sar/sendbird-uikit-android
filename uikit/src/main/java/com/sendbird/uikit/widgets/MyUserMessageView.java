@@ -93,7 +93,7 @@ public class MyUserMessageView extends GroupChannelMessageView {
         binding.tvSentAt.setText(DateUtils.formatTime(getContext(), message.getCreatedAt()));
         binding.ivStatus.drawStatus(message, channel);
 
-        ViewUtils.drawTextMessage(binding.tvMessage, message, editedAppearance, highlightMessageInfo, highlightBackgroundColor, highlightForegroundColor);
+        ViewUtils.drawTextMessage(binding.tvMessage, message, channel, editedAppearance, highlightMessageInfo, highlightBackgroundColor, highlightForegroundColor);
         ViewUtils.drawOgtag(binding.ovOgtag, message.getOgMetaData());
         ViewUtils.drawReactionEnabled(binding.rvEmojiReactionList, channel);
 

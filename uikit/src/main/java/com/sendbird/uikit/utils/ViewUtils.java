@@ -9,6 +9,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.TextAppearanceSpan;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,10 +37,12 @@ import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.BaseMessageParams;
 import com.sendbird.android.FileMessage;
+import com.sendbird.android.GroupChannel;
 import com.sendbird.android.OGMetaData;
 import com.sendbird.android.Sender;
 import com.sendbird.android.User;
 import com.sendbird.android.UserMessage;
+import com.sendbird.android.UserMessageParams;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendBirdUIKit;
 import com.sendbird.uikit.consts.StringSet;
@@ -81,11 +84,24 @@ public class ViewUtils {
         view.setText(spannable);
     }
 
-    public static void drawTextMessage(@NonNull TextView textView, BaseMessage message, @StyleRes int editedTextAppearance) {
-        drawTextMessage(textView, message, editedTextAppearance, null, 0, 0);
+    public static void drawTextMessage(
+            @NonNull TextView textView,
+            BaseMessage message,
+            BaseChannel channel,
+            @StyleRes int editedTextAppearance
+    ) {
+        drawTextMessage(textView, message, channel, editedTextAppearance, null, 0, 0);
     }
 
-    public static void drawTextMessage(@NonNull TextView textView, BaseMessage message, @StyleRes int editedTextAppearance, HighlightMessageInfo highlightMessageInfo, @ColorRes int backgroundColor, @ColorRes int foregroundColor) {
+    public static void drawTextMessage(
+            @NonNull TextView textView,
+            BaseMessage message,
+            BaseChannel channel,
+            @StyleRes int editedTextAppearance,
+            HighlightMessageInfo highlightMessageInfo,
+            @ColorRes int backgroundColor,
+            @ColorRes int foregroundColor
+    ) {
         if (message == null) {
             return;
         }
@@ -105,7 +121,14 @@ public class ViewUtils {
         android.text.SpannableStringBuilder spannableString = new android.text.SpannableStringBuilder(text);
 
         if (message instanceof UserMessage) {
-            List<User> users = message.getMentionedUsers();
+            UserMessageParams params = ((UserMessage) message).getMessageParams();
+            List<? extends User> users = message.getMentionedUsers();
+            if (params != null && params.getMentionType() == BaseMessageParams.MentionType.CHANNEL) {
+                if (channel instanceof GroupChannel) {
+                    users = ((GroupChannel) channel).getMembers();
+                }
+            }
+
             List<TagInfo> tagInfos = new ArrayList<>();
 
             for (User user: users) {
@@ -147,6 +170,7 @@ public class ViewUtils {
                             }
                         });
 
+                        Log.e("nt.dung", "Tag start: " + start + ", tag length: " + tag.length() + ", tag: " + tag);
                         spannableString.setSpan(tagClickableSpan, start, start + tag.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
                 }

@@ -1138,6 +1138,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
 
         if (tagChannel != null) {
             params.setMentionType(BaseMessageParams.MentionType.CHANNEL);
+            tagChannel = null;
         }
     }
 
@@ -1166,6 +1167,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
 
         if (tagChannel != null) {
             params.setMentionType(BaseMessageParams.MentionType.CHANNEL);
+            tagChannel = null;
         }
     }
 
