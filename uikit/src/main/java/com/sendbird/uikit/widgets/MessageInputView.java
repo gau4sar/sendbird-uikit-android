@@ -37,6 +37,7 @@ import com.devlomi.record_view.OnRecordListener;
 import com.devlomi.record_view.RecordPermissionHandler;
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.FileMessage;
+import com.sendbird.android.GroupChannel;
 import com.sendbird.android.Member;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendBirdUIKit;
@@ -61,7 +62,7 @@ import kotlin.text.Regex;
 
 import kotlin.text.Regex;
 
-public class MessageInputView extends FrameLayout {
+public class MessageInputView extends FrameLayout implements TagView.OnUserMentionSelectedListener {
     private SbViewMessageInputBinding binding;
 
     private FragmentManager fragmentManager;
@@ -74,10 +75,25 @@ public class MessageInputView extends FrameLayout {
     private OnInputTextChangedListener inputTextChangedListener;
     private OnInputTextChangedListener editModeTextChangedListener;
     private OnInputModeChangedListener inputModeChangedListener;
+    private TagView.OnUserMentionSelectedListener onUserMentionSelectedListener;
     private Mode mode;
     private int addButtonVisibility = VISIBLE;
     private boolean showSendButtonAlways;
     private boolean isTagging = false;
+
+    @Override
+    public void onUserMentionSelected(Member member) {
+        enableTagView(false);
+        insertTag(member);
+        onUserMentionSelectedListener.onUserMentionSelected(member);
+    }
+
+    @Override
+    public void onChannelMentionSelected(GroupChannel channel) {
+        enableTagView(false);
+        insertTag(channel);
+        onUserMentionSelectedListener.onChannelMentionSelected(channel);
+    }
 
     public enum Mode {
         DEFAULT, EDIT, QUOTE_REPLY, AUDIO_RECORD
@@ -228,13 +244,10 @@ public class MessageInputView extends FrameLayout {
         });
     }
 
-    public void initTagView(List<Member> memberList, TagView.OnUserMentionSelectedListener onUserMentionSelectedListener) {
-        binding.tagView.setUserList(memberList);
-        binding.tagView.setOnUserMentionSelectedListener(member -> {
-            enableTagView(false);
-            insertTag(member);
-            onUserMentionSelectedListener.onUserMentionSelected(member);
-        });
+    public void initTagView(GroupChannel channel, List<Member> memberList, TagView.OnUserMentionSelectedListener onUserMentionSelectedListener) {
+        this.onUserMentionSelectedListener = onUserMentionSelectedListener;
+        binding.tagView.setUserList(channel, memberList);
+        binding.tagView.setOnUserMentionSelectedListener(this);
     }
 
     public void updateTagView(List<Member> memberList) {
@@ -659,6 +672,33 @@ public class MessageInputView extends FrameLayout {
         if (newStart >= 0 && end >= 0 && newStart < end) {
             editable.insert(newStart, tagName);
             editable.setSpan(new TagClickableSpan(tagName, member.getUserId(), Color.parseColor("#491389"), null), newStart, end - 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+    }
+
+    public void insertTag(GroupChannel channel) {
+        int position;
+        String tagName = channel.isSuper() ? "Channel" : "Group";
+
+        Editable editable = binding.etInputText.getEditableText();
+        if (editable == null) return;
+
+        int start = binding.etInputText.getSelectionStart();
+        for (position = start - 1; position >= 0; position--) {
+            if (editable.toString().charAt(position) == '@') {
+                break;
+            }
+        }
+
+        if (position < start - 1) {
+            editable.delete(position + 1, start);
+        }
+
+        tagName = tagName + " ";
+        int newStart = binding.etInputText.getSelectionStart();
+        int end = newStart + tagName.length();
+        if (newStart >= 0 && end >= 0 && newStart < end) {
+            editable.insert(newStart, tagName);
+            editable.setSpan(new TagClickableSpan(tagName, channel.getUrl(), Color.parseColor("#491389"), null), newStart, end - 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
     }
 }

@@ -200,7 +200,7 @@ public class ChannelUtils {
         return urls;
     }
 
-    private static boolean isDefaultChannelCover(BaseChannel channel) {
+    public static boolean isDefaultChannelCover(BaseChannel channel) {
         return TextUtils.isEmpty(channel.getCoverUrl()) || channel.getCoverUrl().contains(StringSet.DEFAULT_CHANNEL_COVER_URL);
     }
 
