@@ -34,6 +34,7 @@ import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.signature.ObjectKey;
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
+import com.sendbird.android.BaseMessageParams;
 import com.sendbird.android.FileMessage;
 import com.sendbird.android.OGMetaData;
 import com.sendbird.android.Sender;
@@ -116,9 +117,14 @@ public class ViewUtils {
 
                 String tag = "@" + tagUserName;
                 for (int i = 0; i < matchCount; i++) {
-                    tagInfos.add(new TagInfo(tag, user.getUserId()));
+                    tagInfos.add(new TagInfo(tag, user.getUserId(), BaseMessageParams.MentionType.USERS));
                 }
             }
+
+            tagInfos.add(new TagInfo("@Group", message.getChannelUrl(), BaseMessageParams.MentionType.CHANNEL));
+            tagInfos.add(new TagInfo("@Channel", message.getChannelUrl(), BaseMessageParams.MentionType.CHANNEL));
+            tagInfos.add(new TagInfo("@channel", message.getChannelUrl(), BaseMessageParams.MentionType.CHANNEL));
+            tagInfos.add(new TagInfo("@group", message.getChannelUrl(), BaseMessageParams.MentionType.CHANNEL));
 
             spannableString = new android.text.SpannableStringBuilder(text);
 
@@ -128,16 +134,25 @@ public class ViewUtils {
                 for (Integer start: indices) {
                     if (start >= 0) {
                         int color = ContextCompat.getColor(textView.getContext(), R.color.tag_link);
-                        TagClickableSpan tagClickableSpan = new TagClickableSpan(tag, tagInfo.getUserId(), color, (tagName, userId) -> {
-                            Intent intent = new Intent(StringSet.KEY_ACTION_OPEN_USER_PROFILE);
-                            intent.putExtra(StringSet.KEY_USER_ID, tagInfo.getUserId());
-                            textView.getContext().sendBroadcast(intent);
+                        TagClickableSpan tagClickableSpan = new TagClickableSpan(tag, tagInfo.getTagId(), color, (tagName, userId) -> {
+                            if (tagInfo.getMentionType() == BaseMessageParams.MentionType.USERS) {
+                                Intent intent = new Intent(StringSet.KEY_ACTION_OPEN_USER_PROFILE);
+                                intent.putExtra(StringSet.KEY_USER_ID, tagInfo.getTagId());
+                                textView.getContext().sendBroadcast(intent);
+                            }
+                            if (tagInfo.getMentionType() == BaseMessageParams.MentionType.CHANNEL) {
+                                Intent intent = new Intent(StringSet.KEY_ACTION_OPEN_GROUP_PROFILE);
+                                intent.putExtra(StringSet.KEY_CHANNEL_URL, tagInfo.getTagId());
+                                textView.getContext().sendBroadcast(intent);
+                            }
                         });
 
                         spannableString.setSpan(tagClickableSpan, start, start + tag.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
                 }
             }
+
+
         }
 
         textView.setText(spannableString);

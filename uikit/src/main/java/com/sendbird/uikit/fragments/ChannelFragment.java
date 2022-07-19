@@ -167,7 +167,8 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
     final AtomicBoolean isInitCallFinished = new AtomicBoolean(false);
     final AtomicBoolean shouldAnimate = new AtomicBoolean(false);
 
-    private List<Member> tagUsers = new ArrayList<>();
+    private final List<Member> tagUsers = new ArrayList<>();
+    private GroupChannel tagChannel;
 
     private final ReplyType replyType = SendBirdUIKit.getReplyType();
 
@@ -901,7 +902,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
         });
         binding.vgInputBox.setOnAudioLongClickListener();
 
-        binding.vgInputBox.initTagView(getMembers(), this);
+        binding.vgInputBox.initTagView(channel, getMembers(), this);
     }
 
     private void onScrollEndReaches(PagerRecyclerView.ScrollDirection direction) {
@@ -1134,6 +1135,10 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
             params.setMentionedUserIds(mentionedUserIds);
             params.setData(data.toString());
         }
+
+        if (tagChannel != null) {
+            params.setMentionType(BaseMessageParams.MentionType.CHANNEL);
+        }
     }
 
     /**
@@ -1157,6 +1162,10 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
             params.setMentionType(BaseMessageParams.MentionType.USERS);
             params.setMentionedUserIds(mentionedUserIds);
             params.setData(data.toString());
+        }
+
+        if (tagChannel != null) {
+            params.setMentionType(BaseMessageParams.MentionType.CHANNEL);
         }
     }
 
@@ -1915,6 +1924,11 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
     @Override
     public void onUserMentionSelected(Member member) {
         tagUsers.add(member);
+    }
+
+    @Override
+    public void onChannelMentionSelected(GroupChannel channel) {
+        tagChannel = channel;
     }
 
     public static class Builder {

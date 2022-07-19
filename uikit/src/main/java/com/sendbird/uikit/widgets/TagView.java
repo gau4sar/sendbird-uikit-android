@@ -9,6 +9,7 @@ import android.widget.Filter;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.sendbird.android.GroupChannel;
 import com.sendbird.android.Member;
 import com.sendbird.uikit.SendBirdUIKit;
 import com.sendbird.uikit.activities.adapter.TagAdapter;
@@ -16,16 +17,17 @@ import com.sendbird.uikit.interfaces.OnItemClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-public class TagView extends ThemeableRecyclerView implements OnItemClickListener<Member> {
+public class TagView extends ThemeableRecyclerView implements OnItemClickListener<Object> {
 
     public interface OnUserMentionSelectedListener {
         void onUserMentionSelected(Member member);
+        void onChannelMentionSelected(GroupChannel channel);
     }
 
     public TagAdapter tagAdapter = new TagAdapter();
     private final List<Member> members = new ArrayList<>();
+    private GroupChannel channel;
     private final MemberFilter memberFilter = new MemberFilter();
     private OnUserMentionSelectedListener onUserMentionSelectedListener;
 
@@ -49,14 +51,16 @@ public class TagView extends ThemeableRecyclerView implements OnItemClickListene
         memberFilter.filter(constraint);
     }
 
-    public void setUserList(List<Member> memberList) {
+    public void setUserList(GroupChannel channel, List<Member> memberList) {
         this.members.clear();
+        this.channel = channel;
         for (Member member: memberList) {
             if (!SendBirdUIKit.isItMe(member.getUserId())) {
                 this.members.add(member);
             }
         }
-        tagAdapter.setItems(memberList);
+
+        tagAdapter.setItems(memberList, channel);
         tagAdapter.setItemClickListener(this);
         setAdapter(tagAdapter);
     }
@@ -72,9 +76,14 @@ public class TagView extends ThemeableRecyclerView implements OnItemClickListene
     }
 
     @Override
-    public void onItemClick(View view, int position, Member data) {
+    public void onItemClick(View view, int position, Object data) {
         if (onUserMentionSelectedListener != null) {
-            onUserMentionSelectedListener.onUserMentionSelected(data);
+            if (data instanceof Member) {
+                onUserMentionSelectedListener.onUserMentionSelected((Member) data);
+            }
+            if (data instanceof GroupChannel) {
+                onUserMentionSelectedListener.onChannelMentionSelected((GroupChannel) data);
+            }
         }
     }
 
@@ -116,7 +125,7 @@ public class TagView extends ThemeableRecyclerView implements OnItemClickListene
             if (results.values != null) {
                 if (results.values instanceof Result) {
                     Result result = (Result) results.values;
-                    tagAdapter.setItems(result.contacts);
+                    tagAdapter.setItems(result.contacts, channel);
                     tagAdapter.notifyDataSetChanged();
                 }
             }
