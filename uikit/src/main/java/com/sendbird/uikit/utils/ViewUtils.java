@@ -121,9 +121,8 @@ public class ViewUtils {
         android.text.SpannableStringBuilder spannableString = new android.text.SpannableStringBuilder(text);
 
         if (message instanceof UserMessage) {
-            UserMessageParams params = ((UserMessage) message).getMessageParams();
             List<? extends User> users = message.getMentionedUsers();
-            if (params != null && params.getMentionType() == BaseMessageParams.MentionType.CHANNEL) {
+            if (message.getMentionType() == BaseMessageParams.MentionType.CHANNEL) {
                 if (channel instanceof GroupChannel) {
                     users = ((GroupChannel) channel).getMembers();
                 }
@@ -170,7 +169,6 @@ public class ViewUtils {
                             }
                         });
 
-                        Log.e("nt.dung", "Tag start: " + start + ", tag length: " + tag.length() + ", tag: " + tag);
                         spannableString.setSpan(tagClickableSpan, start, start + tag.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
                 }
