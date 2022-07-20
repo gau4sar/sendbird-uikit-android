@@ -27,7 +27,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
-import androidx.arch.core.util.Function;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -35,6 +34,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.devlomi.record_view.OnRecordListener;
 import com.sendbird.android.AdminMessage;
+import com.sendbird.android.ApplicationUserListQuery;
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
 import com.sendbird.android.BaseMessageParams;
@@ -55,11 +55,9 @@ import com.sendbird.android.handlers.GroupChannelContext;
 import com.sendbird.android.handlers.MessageCollectionHandler;
 import com.sendbird.android.handlers.MessageContext;
 import com.sendbird.uikit.AudioRecorder;
-import com.sendbird.uikit.BuildConfig;
 import com.sendbird.uikit.PhonebookUpdateListener;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendBirdUIKit;
-import com.sendbird.uikit.activities.ChannelSettingsActivity;
 import com.sendbird.uikit.activities.MembersActivity;
 import com.sendbird.uikit.activities.MessageSearchActivity;
 import com.sendbird.uikit.activities.PhotoViewActivity;
@@ -147,7 +145,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
     @Nullable
     private BaseMessage targetMessage;
 
-    private AudioRecorder audioRecorder = new AudioRecorder();
+    private final AudioRecorder audioRecorder = new AudioRecorder();
     private View.OnClickListener headerLeftButtonListener;
     private View.OnClickListener headerRightButtonListener;
     private OnItemClickListener<BaseMessage> profileClickListener;
@@ -171,6 +169,14 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
     private GroupChannel tagChannel;
 
     private final ReplyType replyType = SendBirdUIKit.getReplyType();
+    private final Runnable presenceRunnable = new Runnable() {
+        @Override
+        public void run() {
+            checkUserPresence();
+            presenceHandler.postDelayed(presenceRunnable, 1000);
+        }
+    };
+    private final Handler presenceHandler = new Handler();
 
     ActivityResultLauncher<Uri> captureVideo = registerForActivityResult(new ActivityResultContracts.CaptureVideo(), result -> {
         SendBird.setAutoBackgroundDetection(true);
@@ -229,6 +235,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
     @Override
     public void onDestroyView() {
         SendBirdUIKit.unregisterPhonebookListener(this);
+        stopCheckUserPresence();
         super.onDestroyView();
     }
 
@@ -408,14 +415,13 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
         if (useTypingIndicator) {
             viewModel.getTypingMembers().observe(this, typingMembers -> {
                 if (typingMembers == null) {
+                    binding.chvChannelHeader.getDescriptionTextView().setVisibility(View.GONE);
                     if (isSingleChat()) {
                         ChannelUtils.makeLastSeenText(getContext(), channel, lastSeenAt -> {
                             binding.chvChannelHeader.getDescriptionTextView().setVisibility(View.VISIBLE);
                             binding.chvChannelHeader.getDescriptionTextView().setText(lastSeenAt);
                             return null;
                         });
-                    } else {
-                        binding.chvChannelHeader.getDescriptionTextView().setVisibility(View.GONE);
                     }
                 } else {
                     binding.chvChannelHeader.getDescriptionTextView().setVisibility(View.VISIBLE);
@@ -430,6 +436,46 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
                 binding.chvChannelHeader.getDescriptionTextView().setText(lastSeenAt);
                 return null;
             });
+        }
+
+        startCheckUserPresence();
+    }
+
+    private void startCheckUserPresence() {
+        if (isSingleChat()) {
+            presenceHandler.post(presenceRunnable);
+        }
+    }
+
+    private void stopCheckUserPresence() {
+        if (isSingleChat()) {
+            presenceHandler.removeCallbacks(presenceRunnable);
+        }
+    }
+    private void checkUserPresence() {
+        User other = ChannelUtils.getOtherMember(channel);
+        if (other != null) {
+            List<String> userIdList = new ArrayList<>();
+            userIdList.add(other.getUserId());
+
+            ApplicationUserListQuery userListQuery = SendBird.createApplicationUserListQuery();
+            userListQuery.setLimit(1);
+            userListQuery.setUserIdsFilter(userIdList);
+            if (userListQuery.hasNext()) {
+                userListQuery.next((users, e) -> {
+                    if (e == null && !users.isEmpty()) {
+                        User user = ChannelUtils.findUser(users, other.getUserId());
+                        if (user != null) {
+                            ChannelUtils.makeLastSeenText(user, lastSeenAt -> {
+                                Log.e("nt.dung", "Check presence for " + user.getNickname() + " -> " + lastSeenAt);
+                                binding.chvChannelHeader.getDescriptionTextView().setVisibility(View.VISIBLE);
+                                binding.chvChannelHeader.getDescriptionTextView().setText(lastSeenAt);
+                                return null;
+                            });
+                        }
+                    }
+                });
+            }
         }
     }
 
@@ -1199,7 +1245,6 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
                 params.setReplyToChannel(true);
             }
 
-            Log.e("nt.dung", "Data: " + params.getData());
             viewModel.sendUserMessage(params);
             clearInput();
             scrollToBottom();
