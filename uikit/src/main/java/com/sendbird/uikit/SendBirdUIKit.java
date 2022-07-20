@@ -145,6 +145,10 @@ public class SendBirdUIKit {
         return Objects.equals(userId, getAdapter().getUserInfo().getUserId());
     }
 
+    public static boolean isItMeByNumber(String phoneNumber) {
+        return Objects.equals(phoneNumber, getAdapter().getUserInfo().getUserPhoneNumber());
+    }
+
     public synchronized static void initPhoneBookData(Map<String, String> phoneBook) {
         phoneBookData = phoneBook;
         for (PhonebookUpdateListener listener: phonebookUpdateListeners) {

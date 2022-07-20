@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.multidex.MultiDexApplication;
 
+import com.jakewharton.threetenabp.AndroidThreeTen;
 import com.sendbird.android.ApplicationUserListQuery;
 import com.sendbird.android.FileMessageParams;
 import com.sendbird.android.GroupChannelParams;
@@ -69,6 +70,11 @@ public class BaseApplication extends MultiDexApplication {
                     public String getProfileUrl() {
                         return PreferenceUtils.getProfileUrl();
                     }
+
+                    @Override
+                    public String getUserPhoneNumber() {
+                        return "+84979070843";
+                    }
                 };
             }
 
@@ -131,7 +137,7 @@ public class BaseApplication extends MultiDexApplication {
         });
 
         AudioPlayer.getInstance().init(this);
-
+        AndroidThreeTen.init(this);
     }
 
     public static LiveData<InitState> initStateChanges() {

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.multidex.MultiDexApplication;
 
+import com.jakewharton.threetenabp.AndroidThreeTen;
 import com.sendbird.android.LogLevel;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.SendBirdException;
@@ -55,6 +56,11 @@ public class BaseApplication extends MultiDexApplication {
                     public String getProfileUrl() {
                         return "https://triva-backend-prod.s3.eu-central-1.amazonaws.com/3208a31f-ac5f-432d-90d0-ab5a305d5325-tmp_image_file4717924989520794310.png";
                     }
+
+                    @Override
+                    public String getUserPhoneNumber() {
+                        return "+84979070843";
+                    }
                 };
             }
 
@@ -87,6 +93,7 @@ public class BaseApplication extends MultiDexApplication {
         SendBirdUIKit.setUseDefaultUserProfile(true);
 
         AudioPlayer.getInstance().init(this);
+        AndroidThreeTen.init(this);
     }
 
     public static LiveData<InitState> initStateChanges() {
