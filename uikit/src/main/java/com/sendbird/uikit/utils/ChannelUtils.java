@@ -32,12 +32,29 @@ import java.util.Locale;
 
 public class ChannelUtils {
 
-    private static Member getOtherMember(GroupChannel channel) {
+    public static Member getOtherMember(GroupChannel channel) {
         List<Member> members = channel.getMembers();
-        String userId = SendBirdUIKit.getAdapter().getUserInfo().getUserId();
         for (Member member: members) {
-            if (!member.getUserId().equals(userId)) {
+            if (!SendBirdUIKit.isItMe(member.getUserId())) {
                 return member;
+            }
+        }
+        return null;
+    }
+
+    public static User getOtherUser(List<User> users) {
+        for (User user: users) {
+            if (!SendBirdUIKit.isItMe(user.getUserId())) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+    public static User findUser(List<User> users, String userId) {
+        for (User user: users) {
+            if (user.getUserId().equals(userId)) {
+                return user;
             }
         }
         return null;
@@ -225,47 +242,45 @@ public class ChannelUtils {
                     return;
                 }
 
-                User other = null;
-                List<? extends User> members = channel.getMembers();
-                for (User member : members) {
-                    if (!SendBirdUIKit.isItMe(member.getUserId())) {
-                        other = member;
-                    }
-                }
+                User other = getOtherMember(channel);
                 if (other != null) {
-                    String lastSeenText = "";
-                    long lastSeenAt = other.getLastSeenAt();
-                    LocalDateTime now = LocalDateTime.now();
-                    LocalDate nowDate = now.toLocalDate();
-
-                    LocalDateTime lastSeen = LocalDateTime.ofInstant(Instant.ofEpochMilli(lastSeenAt), ZoneOffset.UTC);
-                    LocalDate lastSeenDate = lastSeen.toLocalDate();
-
-                    Duration duration = Duration.between(lastSeen, now);
-                    long offsetDays = duration.toDays();
-
-                    if (other.getConnectionStatus() == User.ConnectionStatus.ONLINE) {
-                        lastSeenText = "Online";
-                    } else if (lastSeenAt <= 0) {
-                        lastSeenText = "Offline";
-                    } else if (nowDate.isEqual(lastSeenDate)) {
-                        lastSeenText = "Last seen at " + lastSeen.format(DateTimeFormatter.ofPattern("hh:mm a"));
-                    } else if (offsetDays == 1) {
-                        lastSeenText = "Last seen yesterday, " + lastSeen.format(DateTimeFormatter.ofPattern("hh:mm a"));
-                    } else if (offsetDays > 1 && offsetDays < 7) {
-                        lastSeenText = "Last seen " + lastSeen.format(DateTimeFormatter.ofPattern("EEEE, hh:mm a"));
-                    } else if (offsetDays >= 7 && offsetDays < 14) {
-                        lastSeenText = "Last seen a week ago";
-                    } else if (offsetDays >= 14 && offsetDays < 28) {
-                        lastSeenText = "Last seen few weeks ago";
-                    } else {
-                        lastSeenText = "Last seen " + lastSeen.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-                    }
-
-                    callback.apply(lastSeenText);
+                    makeLastSeenText(other, callback);
                 }
             }
         });
+    }
+
+    public static void makeLastSeenText(User user, Function<String, Void> callback) {
+        String lastSeenText = "";
+        long lastSeenAt = user.getLastSeenAt();
+        LocalDateTime now = LocalDateTime.now();
+        LocalDate nowDate = now.toLocalDate();
+
+        LocalDateTime lastSeen = LocalDateTime.ofInstant(Instant.ofEpochMilli(lastSeenAt), ZoneOffset.UTC);
+        LocalDate lastSeenDate = lastSeen.toLocalDate();
+
+        Duration duration = Duration.between(lastSeen, now);
+        long offsetDays = duration.toDays();
+
+        if (user.getConnectionStatus() == User.ConnectionStatus.ONLINE) {
+            lastSeenText = "Online";
+        } else if (lastSeenAt <= 0) {
+            lastSeenText = "Offline";
+        } else if (nowDate.isEqual(lastSeenDate)) {
+            lastSeenText = "Last seen at " + lastSeen.format(DateTimeFormatter.ofPattern("hh:mm a"));
+        } else if (offsetDays == 1) {
+            lastSeenText = "Last seen yesterday, " + lastSeen.format(DateTimeFormatter.ofPattern("hh:mm a"));
+        } else if (offsetDays > 1 && offsetDays < 7) {
+            lastSeenText = "Last seen " + lastSeen.format(DateTimeFormatter.ofPattern("EEEE, hh:mm a"));
+        } else if (offsetDays >= 7 && offsetDays < 14) {
+            lastSeenText = "Last seen a week ago";
+        } else if (offsetDays >= 14 && offsetDays < 28) {
+            lastSeenText = "Last seen few weeks ago";
+        } else {
+            lastSeenText = "Last seen " + lastSeen.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        }
+
+        callback.apply(lastSeenText);
     }
 
     public static boolean isChannelPushOff(GroupChannel channel) {
