@@ -467,7 +467,6 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
                         User user = ChannelUtils.findUser(users, other.getUserId());
                         if (user != null) {
                             ChannelUtils.makeLastSeenText(user, lastSeenAt -> {
-                                Log.e("nt.dung", "Check presence for " + user.getNickname() + " -> " + lastSeenAt);
                                 binding.chvChannelHeader.getDescriptionTextView().setVisibility(View.VISIBLE);
                                 binding.chvChannelHeader.getDescriptionTextView().setText(lastSeenAt);
                                 return null;

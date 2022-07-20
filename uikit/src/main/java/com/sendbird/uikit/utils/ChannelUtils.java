@@ -60,6 +60,17 @@ public class ChannelUtils {
         return null;
     }
 
+    public static User findUserByNumber(GroupChannel channel, String phoneNumber) {
+        List<Member> members = channel.getMembers();
+        for (User user: members) {
+            String number = user.getMetaData("phone");
+            if (phoneNumber.equals(number)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
     private static List<Member> getOtherMembers(GroupChannel channel) {
         List<Member> members = channel.getMembers();
         List<Member> otherMembers = new ArrayList<>();
