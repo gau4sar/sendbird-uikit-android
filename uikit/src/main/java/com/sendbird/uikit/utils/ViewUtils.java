@@ -59,7 +59,12 @@ import com.sendbird.uikit.widgets.RoundCornerView;
 import com.sendbird.uikit.widgets.TagClickableSpan;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+
+import kotlin.sequences.Sequence;
+import kotlin.text.MatchResult;
+import kotlin.text.Regex;
 
 /**
  * The helper class for the drawing views in the UIKit.
@@ -121,36 +126,53 @@ public class ViewUtils {
         android.text.SpannableStringBuilder spannableString = new android.text.SpannableStringBuilder(text);
 
         if (message instanceof UserMessage) {
-            List<? extends User> users = message.getMentionedUsers();
+            List<TagInfo> tagList = new ArrayList<>();
+
             if (message.getMentionType() == BaseMessageParams.MentionType.CHANNEL) {
                 if (channel instanceof GroupChannel) {
-                    users = ((GroupChannel) channel).getMembers();
+                    Regex regex = new Regex("@\\+?\\d+");
+                    Sequence<MatchResult> matches = regex.findAll(text, 0);
+                    Iterator<MatchResult> iterator = matches.iterator();
+                    while (iterator.hasNext()) {
+                        String phoneNumber = iterator.next().getValue().replace("@", "");
+                        boolean itsme = SendBirdUIKit.isItMeByNumber(phoneNumber);
+                        String tagUserName = itsme ? "You" : SendBirdUIKit.findPhoneBookName(phoneNumber);
+                        int matchCount = indicesOfSubString("@" + phoneNumber, text.toString()).size();
+                        text = text.toString().replace("@" + phoneNumber, "@" + tagUserName);
+
+                        String tag = "@" + tagUserName;
+                        for (int i = 0; i < matchCount; i++) {
+                            User user = ChannelUtils.findUserByNumber((GroupChannel) channel, phoneNumber);
+                            if (user != null) {
+                                tagList.add(new TagInfo(tag, user.getUserId(), BaseMessageParams.MentionType.USERS));
+                            }
+                        }
+                    }
+                }
+            } else {
+                List<? extends User> users = message.getMentionedUsers();
+                for (User user: users) {
+                    String phoneNumber = user.getMetaData("phone");
+                    boolean itsme = SendBirdUIKit.isItMe(user.getUserId());
+                    String tagUserName = itsme ? "You" : SendBirdUIKit.findPhoneBookName(phoneNumber);
+                    int matchCount = indicesOfSubString("@" + phoneNumber, text.toString()).size();
+                    text = text.toString().replace("@" + phoneNumber, "@" + tagUserName);
+
+                    String tag = "@" + tagUserName;
+                    for (int i = 0; i < matchCount; i++) {
+                        tagList.add(new TagInfo(tag, user.getUserId(), BaseMessageParams.MentionType.USERS));
+                    }
                 }
             }
 
-            List<TagInfo> tagInfos = new ArrayList<>();
-
-            for (User user: users) {
-                String phoneNumber = user.getMetaData("phone");
-                boolean itsme = SendBirdUIKit.isItMe(user.getUserId());
-                String tagUserName = itsme ? "You" : SendBirdUIKit.findPhoneBookName(phoneNumber);
-                int matchCount = indicesOfSubString("@" + phoneNumber, text.toString()).size();
-                text = text.toString().replace("@" + phoneNumber, "@" + tagUserName);
-
-                String tag = "@" + tagUserName;
-                for (int i = 0; i < matchCount; i++) {
-                    tagInfos.add(new TagInfo(tag, user.getUserId(), BaseMessageParams.MentionType.USERS));
-                }
-            }
-
-            tagInfos.add(new TagInfo("@Group", message.getChannelUrl(), BaseMessageParams.MentionType.CHANNEL));
-            tagInfos.add(new TagInfo("@Channel", message.getChannelUrl(), BaseMessageParams.MentionType.CHANNEL));
-            tagInfos.add(new TagInfo("@channel", message.getChannelUrl(), BaseMessageParams.MentionType.CHANNEL));
-            tagInfos.add(new TagInfo("@group", message.getChannelUrl(), BaseMessageParams.MentionType.CHANNEL));
+            tagList.add(new TagInfo("@Group", message.getChannelUrl(), BaseMessageParams.MentionType.CHANNEL));
+            tagList.add(new TagInfo("@Channel", message.getChannelUrl(), BaseMessageParams.MentionType.CHANNEL));
+            tagList.add(new TagInfo("@channel", message.getChannelUrl(), BaseMessageParams.MentionType.CHANNEL));
+            tagList.add(new TagInfo("@group", message.getChannelUrl(), BaseMessageParams.MentionType.CHANNEL));
 
             spannableString = new android.text.SpannableStringBuilder(text);
 
-            for (TagInfo tagInfo: tagInfos) {
+            for (TagInfo tagInfo: tagList)  {
                 String tag = tagInfo.getTagString();
                 List<Integer> indices = indicesOfSubString(tag, text.toString());
                 for (Integer start: indices) {
@@ -173,8 +195,6 @@ public class ViewUtils {
                     }
                 }
             }
-
-
         }
 
         textView.setText(spannableString);
