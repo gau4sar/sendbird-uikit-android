@@ -75,7 +75,9 @@ public class TagAdapter extends BaseAdapter<Object, BaseViewHolder<Object>> {
 
     public void setItems(List<Member> memberList, GroupChannel channel) {
         this.data = new ArrayList<>();
-        this.data.add(channel);
+        if (!channel.isDistinct()) {
+            this.data.add(channel);
+        }
         this.data.addAll(memberList);
         notifyDataSetChanged();
     }
@@ -127,10 +129,10 @@ public class TagAdapter extends BaseAdapter<Object, BaseViewHolder<Object>> {
         @Override
         public void bind(Object obj) {
             GroupChannel channel = (GroupChannel) obj;
-            binding.tvNickname.setText(channel.isSuper() ? "Channel" : "Group");
+            binding.tvNickname.setText(channel.isSuper() ? "@Channel" : "@Group");
 
             if (ChannelUtils.isDefaultChannelCover(channel)) {
-                binding.ivProfile.setImageResource(R.drawable.ic_default_profile);
+                binding.ivProfile.setImageResource(R.drawable.ic_default_channel_mention);
             } else {
                 ViewUtils.drawProfile(binding.ivProfile, channel.getCoverUrl());
             }
