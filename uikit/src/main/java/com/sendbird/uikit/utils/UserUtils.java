@@ -29,6 +29,11 @@ public class UserUtils {
             public String getProfileUrl() {
                 return user.getProfileUrl();
             }
+
+            @Override
+            public String getUserPhoneNumber() {
+                return user.getMetaData("phone");
+            }
         };
     }
 
