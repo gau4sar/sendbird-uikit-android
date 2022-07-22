@@ -117,6 +117,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import kotlin.jvm.functions.Function2;
+
 /**
  * Fragment displaying the list of messages in the channel.
  */
@@ -416,24 +418,22 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
             viewModel.getTypingMembers().observe(this, typingMembers -> {
                 if (typingMembers == null) {
                     binding.chvChannelHeader.getDescriptionTextView().setVisibility(View.GONE);
+                    binding.chvChannelHeader.getOnlineIndicatorView().setVisibility(View.GONE);
                     if (isSingleChat()) {
-                        ChannelUtils.makeLastSeenText(getContext(), channel, lastSeenAt -> {
-                            binding.chvChannelHeader.getDescriptionTextView().setVisibility(View.VISIBLE);
-                            binding.chvChannelHeader.getDescriptionTextView().setText(lastSeenAt);
+                        ChannelUtils.makeLastSeenText(getContext(), channel, (isOnline, lastSeenAt) -> {
+                            binding.chvChannelHeader.setOnline(isOnline, lastSeenAt);
                             return null;
                         });
                     }
                 } else {
-                    binding.chvChannelHeader.getDescriptionTextView().setVisibility(View.VISIBLE);
-                    binding.chvChannelHeader.getDescriptionTextView().setText(ChannelUtils.makeTypingText(getContext(), typingMembers));
+                    binding.chvChannelHeader.setTyping(ChannelUtils.makeTypingText(getContext(), typingMembers));
                 }
             });
         }
 
         if (isSingleChat()) {
-            ChannelUtils.makeLastSeenText(getContext(), channel, lastSeenAt -> {
-                binding.chvChannelHeader.getDescriptionTextView().setVisibility(View.VISIBLE);
-                binding.chvChannelHeader.getDescriptionTextView().setText(lastSeenAt);
+            ChannelUtils.makeLastSeenText(getContext(), channel, (isOnline, lastSeenAt) -> {
+                binding.chvChannelHeader.setOnline(isOnline, lastSeenAt);
                 return null;
             });
         }
@@ -466,9 +466,8 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
                     if (e == null && !users.isEmpty()) {
                         User user = ChannelUtils.findUser(users, other.getUserId());
                         if (user != null) {
-                            ChannelUtils.makeLastSeenText(user, lastSeenAt -> {
-                                binding.chvChannelHeader.getDescriptionTextView().setVisibility(View.VISIBLE);
-                                binding.chvChannelHeader.getDescriptionTextView().setText(lastSeenAt);
+                            ChannelUtils.makeLastSeenText(user, (isOnline, lastSeenAt) -> {
+                                binding.chvChannelHeader.setOnline(isOnline, lastSeenAt);
                                 return null;
                             });
                         }
