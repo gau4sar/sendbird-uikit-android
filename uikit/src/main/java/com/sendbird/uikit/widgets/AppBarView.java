@@ -3,12 +3,14 @@ package com.sendbird.uikit.widgets;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.DrawableRes;
@@ -115,6 +117,10 @@ public class AppBarView extends FrameLayout {
         return binding.tvAppBarDesc;
     }
 
+    public ImageView getOnlineIndicatorView() {
+        return binding.ivOnline;
+    }
+
     public TextView getLeftTextButton() {
         return binding.btnLeft;
     }
@@ -212,6 +218,23 @@ public class AppBarView extends FrameLayout {
             binding.ibtnRight.setVisibility(useRightButton ? VISIBLE : GONE);
             binding.btnRight.setVisibility(useRightButton ? VISIBLE : GONE);
         }
+    }
+
+    public void setOnline(boolean isOnline, String lastSeenAt) {
+        getOnlineIndicatorView().setVisibility(View.VISIBLE);
+        getDescriptionTextView().setVisibility(View.VISIBLE);
+        getDescriptionTextView().setText(lastSeenAt);
+        if (isOnline) {
+            getOnlineIndicatorView().setImageResource(R.drawable.ic_online);
+        } else {
+            getOnlineIndicatorView().setImageResource(R.drawable.ic_offline);
+        }
+    }
+
+    public void setTyping(String typingText) {
+        getOnlineIndicatorView().setVisibility(View.GONE);
+        getDescriptionTextView().setVisibility(View.VISIBLE);
+        getDescriptionTextView().setText(typingText);
     }
 
     public ChannelCoverView getProfileView() {

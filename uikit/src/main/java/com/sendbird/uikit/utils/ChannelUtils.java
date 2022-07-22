@@ -23,12 +23,15 @@ import org.threeten.bp.Duration;
 import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
+import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import kotlin.jvm.functions.Function2;
 
 public class ChannelUtils {
 
@@ -244,7 +247,7 @@ public class ChannelUtils {
         }
     }
 
-    public static void makeLastSeenText(Context context, GroupChannel channel, Function<String, Void> callback) {
+    public static void makeLastSeenText(Context context, GroupChannel channel, Function2<Boolean, String, Void> callback) {
         channel.refresh(new GroupChannel.GroupChannelRefreshHandler() {
             @Override
             public void onResult(SendBirdException e) {
@@ -261,19 +264,20 @@ public class ChannelUtils {
         });
     }
 
-    public static void makeLastSeenText(User user, Function<String, Void> callback) {
+    public static void makeLastSeenText(User user, Function2<Boolean, String, Void> callback) {
         String lastSeenText = "";
         long lastSeenAt = user.getLastSeenAt();
         LocalDateTime now = LocalDateTime.now();
         LocalDate nowDate = now.toLocalDate();
 
-        LocalDateTime lastSeen = LocalDateTime.ofInstant(Instant.ofEpochMilli(lastSeenAt), ZoneOffset.UTC);
+        LocalDateTime lastSeen = LocalDateTime.ofInstant(Instant.ofEpochMilli(lastSeenAt), ZoneId.systemDefault());
         LocalDate lastSeenDate = lastSeen.toLocalDate();
 
         Duration duration = Duration.between(lastSeen, now);
         long offsetDays = duration.toDays();
+        boolean isOnline = user.getConnectionStatus() == User.ConnectionStatus.ONLINE;
 
-        if (user.getConnectionStatus() == User.ConnectionStatus.ONLINE) {
+        if (isOnline) {
             lastSeenText = "Online";
         } else if (lastSeenAt <= 0) {
             lastSeenText = "Offline";
@@ -291,7 +295,7 @@ public class ChannelUtils {
             lastSeenText = "Last seen " + lastSeen.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         }
 
-        callback.apply(lastSeenText);
+        callback.invoke(isOnline, lastSeenText);
     }
 
     public static boolean isChannelPushOff(GroupChannel channel) {
