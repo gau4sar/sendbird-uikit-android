@@ -129,10 +129,10 @@ public class TagAdapter extends BaseAdapter<Object, BaseViewHolder<Object>> {
         @Override
         public void bind(Object obj) {
             GroupChannel channel = (GroupChannel) obj;
-            binding.tvNickname.setText(channel.isSuper() ? "@Channel" : "@Group");
+            binding.tvNickname.setText(channel.isSuper() ? "Channel" : "Group");
 
             if (ChannelUtils.isDefaultChannelCover(channel)) {
-                binding.ivProfile.setImageResource(R.drawable.ic_default_channel_mention);
+                binding.ivProfile.setImageResource(R.drawable.ic_default_profile);
             } else {
                 ViewUtils.drawProfile(binding.ivProfile, channel.getCoverUrl());
             }
