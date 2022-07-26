@@ -116,8 +116,8 @@
 
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/ibtnAdd"
-                    android:layout_width="@dimen/sb_size_40"
-                    android:layout_height="@dimen/sb_size_40"
+                    android:layout_width="@dimen/sb_size_36"
+                    android:layout_height="@dimen/sb_size_36"
                     android:layout_marginStart="@dimen/sb_size_0"
                     android:layout_marginLeft="@dimen/sb_size_0"
                     android:layout_marginEnd="@dimen/sb_size_4"
@@ -142,7 +142,7 @@
                         android:background="@drawable/sb_message_input_text_background_light"
                         android:orientation="vertical"
                         android:visibility="gone"
-                        tools:itemCount="40"
+                        tools:itemCount="4"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         app:sb_pager_recycler_view_use_divide_line="false"
                         tools:visibility="visible" />
@@ -165,15 +165,15 @@
 
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/ibtnSend"
-                    android:layout_width="@dimen/sb_size_24"
-                    android:layout_height="@dimen/sb_size_24"
+                    android:layout_width="@dimen/sb_size_36"
+                    android:layout_height="@dimen/sb_size_36"
                     android:layout_marginStart="@dimen/sb_size_12"
                     android:layout_marginLeft="@dimen/sb_size_12"
                     android:layout_marginEnd="@dimen/sb_size_0"
                     android:layout_marginRight="@dimen/sb_size_0"
-                    android:padding="@dimen/sb_size_0"
+                    android:padding="@dimen/sb_size_4"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/icon_send"
+                    android:src="@drawable/ic_message_send"
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
