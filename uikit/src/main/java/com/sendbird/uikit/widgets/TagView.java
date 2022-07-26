@@ -135,7 +135,7 @@ public class TagView extends ThemeableRecyclerView implements OnItemClickListene
             String key = constraint.toString().toLowerCase().trim();
             String phoneNumber = member.getMetaData("phone");
             String contactName = SendBirdUIKit.findPhoneBookName(phoneNumber);
-            return contactName.trim().toLowerCase().startsWith(key);
+            return contactName.trim().toLowerCase().contains(key);
         }
     }
 }
