@@ -174,7 +174,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
     private final Runnable presenceRunnable = new Runnable() {
         @Override
         public void run() {
-            checkUserPresence();
+            checkUserPresence(getContext());
             presenceHandler.postDelayed(presenceRunnable, 1000);
         }
     };
@@ -452,7 +452,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
             presenceHandler.removeCallbacks(presenceRunnable);
         }
     }
-    private void checkUserPresence() {
+    private void checkUserPresence(Context context) {
         User other = ChannelUtils.getOtherMember(channel);
         if (other != null) {
             List<String> userIdList = new ArrayList<>();
@@ -466,7 +466,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
                     if (e == null && !users.isEmpty()) {
                         User user = ChannelUtils.findUser(users, other.getUserId());
                         if (user != null) {
-                            ChannelUtils.makeLastSeenText(user, (isOnline, lastSeenAt) -> {
+                            ChannelUtils.makeLastSeenText(context, user, (isOnline, lastSeenAt) -> {
                                 binding.chvChannelHeader.setOnline(isOnline, lastSeenAt);
                                 return null;
                             });

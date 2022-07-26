@@ -1,6 +1,7 @@
 package com.sendbird.uikit.utils;
 
 import android.content.Context;
+import android.text.format.DateFormat;
 
 import androidx.annotation.NonNull;
 import androidx.arch.core.util.Function;
@@ -258,13 +259,13 @@ public class ChannelUtils {
 
                 User other = getOtherMember(channel);
                 if (other != null) {
-                    makeLastSeenText(other, callback);
+                    makeLastSeenText(context, other, callback);
                 }
             }
         });
     }
 
-    public static void makeLastSeenText(User user, Function2<Boolean, String, Void> callback) {
+    public static void makeLastSeenText(Context context, User user, Function2<Boolean, String, Void> callback) {
         String lastSeenText = "";
         long lastSeenAt = user.getLastSeenAt();
         LocalDateTime now = LocalDateTime.now();
@@ -276,17 +277,18 @@ public class ChannelUtils {
         Duration duration = Duration.between(lastSeen, now);
         long offsetDays = duration.toDays();
         boolean isOnline = user.getConnectionStatus() == User.ConnectionStatus.ONLINE;
-
+        boolean is24hFormat = DateFormat.is24HourFormat(context);
+        String timeFormat = is24hFormat ? "HH:mm" : "hh:mm a";
         if (isOnline) {
             lastSeenText = "Online";
         } else if (lastSeenAt <= 0) {
             lastSeenText = "Offline";
         } else if (nowDate.isEqual(lastSeenDate)) {
-            lastSeenText = "Last seen at " + lastSeen.format(DateTimeFormatter.ofPattern("hh:mm a"));
+            lastSeenText = "Last seen at " + lastSeen.format(DateTimeFormatter.ofPattern(timeFormat));
         } else if (offsetDays == 1) {
-            lastSeenText = "Last seen yesterday, " + lastSeen.format(DateTimeFormatter.ofPattern("hh:mm a"));
+            lastSeenText = "Last seen yesterday, " + lastSeen.format(DateTimeFormatter.ofPattern(timeFormat));
         } else if (offsetDays > 1 && offsetDays < 7) {
-            lastSeenText = "Last seen " + lastSeen.format(DateTimeFormatter.ofPattern("EEEE, hh:mm a"));
+            lastSeenText = "Last seen " + lastSeen.format(DateTimeFormatter.ofPattern("EEEE, " + timeFormat));
         } else if (offsetDays >= 7 && offsetDays < 14) {
             lastSeenText = "Last seen a week ago";
         } else if (offsetDays >= 14 && offsetDays < 28) {
