@@ -148,7 +148,31 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/icon_search"
-                app:tint="@color/primary_400" />
+                app:tint="@color/primary_500" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/btnAudioCall"
+                android:layout_width="@dimen/sb_size_40"
+                android:layout_height="@dimen/sb_size_40"
+                android:padding="@dimen/sb_size_8"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/btnVideoCall"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_voice_call"
+                app:tint="@color/primary_500" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/btnVideoCall"
+                android:layout_width="@dimen/sb_size_40"
+                android:layout_height="@dimen/sb_size_40"
+                android:padding="@dimen/sb_size_8"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_video_call"
+                app:tint="@color/primary_500" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -156,6 +156,16 @@ public class AppBarView extends FrameLayout {
         }
     }
 
+    public void setCallListener(OnClickListener audioCallListener, OnClickListener videoCallListener) {
+        if (binding != null) {
+            binding.btnSearch.setVisibility(View.GONE);
+            binding.btnAudioCall.setVisibility(View.VISIBLE);
+            binding.btnAudioCall.setOnClickListener(audioCallListener);
+            binding.btnVideoCall.setVisibility(View.VISIBLE);
+            binding.btnVideoCall.setOnClickListener(videoCallListener);
+        }
+    }
+
     public void setUseLeftImageButton(boolean useLeftImageButton) {
         this.useLeftImageButton = useLeftImageButton;
         if (binding != null) {

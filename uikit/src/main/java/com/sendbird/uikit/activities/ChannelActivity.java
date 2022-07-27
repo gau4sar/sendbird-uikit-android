@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.FragmentManager;
 
 import com.sendbird.android.Member;
@@ -71,6 +73,8 @@ public class ChannelActivity extends AppCompatActivity {
     private String url;
     private View.OnClickListener onBackClickListener;
     private View.OnClickListener onInfoClickListener;
+    private View.OnClickListener audioCallListener;
+    private View.OnClickListener videoCallListener;
     private ChannelFragment channelFragment;
 
     @Override
@@ -121,7 +125,8 @@ public class ChannelActivity extends AppCompatActivity {
     }
 
     public void initialize() {
-
+        setAudioCallListener(v -> {});
+        setVideoCallListener(v -> {});
     }
 
     public String getChannelUrl() {
@@ -142,6 +147,14 @@ public class ChannelActivity extends AppCompatActivity {
 
     public void setOnInfoClickListener(View.OnClickListener infoClickListener) {
         this.onInfoClickListener = infoClickListener;
+    }
+
+    public void setAudioCallListener(View.OnClickListener audioCallListener) {
+        this.audioCallListener = audioCallListener;
+    }
+
+    public void setVideoCallListener(View.OnClickListener videoCallListener) {
+        this.videoCallListener = videoCallListener;
     }
 
     @Override
@@ -178,6 +191,8 @@ public class ChannelActivity extends AppCompatActivity {
 
         builder.setHeaderLeftButtonListener(onBackClickListener);
         builder.setHeaderRightButtonListener(onInfoClickListener);
+        builder.setAudioCallListener(audioCallListener);
+        builder.setVideoCallListener(videoCallListener);
         return builder.build();
     }
 

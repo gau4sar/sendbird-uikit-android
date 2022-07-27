@@ -150,6 +150,8 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
     private final AudioRecorder audioRecorder = new AudioRecorder();
     private View.OnClickListener headerLeftButtonListener;
     private View.OnClickListener headerRightButtonListener;
+    private View.OnClickListener audioCallListener;
+    private View.OnClickListener videoCallListener;
     private OnItemClickListener<BaseMessage> profileClickListener;
     private OnItemClickListener<BaseMessage> itemClickListener;
     private OnItemLongClickListener<BaseMessage> itemLongClickListener;
@@ -369,46 +371,6 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
             binding.chvChannelHeader.setRightImageButtonClickListener(headerRightButtonListener);
             binding.chvChannelHeader.getTitleTextView().setOnClickListener(headerRightButtonListener);
             binding.chvChannelHeader.getProfileView().setOnClickListener(headerRightButtonListener);
-        } else {
-            List<Member> members = channel.getMembers();
-            ArrayList<CharSequence> memberIds = new ArrayList<>();
-            for (Member member: members) {
-                memberIds.add(member.getUserId());
-            }
-
-            binding.chvChannelHeader.setRightImageButtonClickListener(v -> {
-                Intent intent;
-                if (!channel.isDistinct() || channel.isSuper()) {
-                    intent = new Intent(StringSet.KEY_ACTION_OPEN_GROUP_PROFILE);
-                    intent.putExtra(StringSet.KEY_CHANNEL_URL, channel.getUrl());
-                } else {
-                    intent = new Intent(StringSet.KEY_ACTION_OPEN_USER_PROFILE);
-                    intent.putCharSequenceArrayListExtra(StringSet.KEY_USER_ID, memberIds);
-                }
-                requireContext().sendBroadcast(intent);
-            });
-            binding.chvChannelHeader.getTitleTextView().setOnClickListener(v -> {
-                Intent intent;
-                if (!channel.isDistinct() || channel.isSuper()) {
-                    intent = new Intent(StringSet.KEY_ACTION_OPEN_GROUP_PROFILE);
-                    intent.putExtra(StringSet.KEY_CHANNEL_URL, channel.getUrl());
-                } else {
-                    intent = new Intent(StringSet.KEY_ACTION_OPEN_USER_PROFILE);
-                    intent.putCharSequenceArrayListExtra(StringSet.KEY_USER_ID, memberIds);
-                }
-                requireContext().sendBroadcast(intent);
-            });
-            binding.chvChannelHeader.getProfileView().setOnClickListener(v -> {
-                Intent intent;
-                if (!channel.isDistinct() || channel.isSuper()) {
-                    intent = new Intent(StringSet.KEY_ACTION_OPEN_GROUP_PROFILE);
-                    intent.putExtra(StringSet.KEY_CHANNEL_URL, channel.getUrl());
-                } else {
-                    intent = new Intent(StringSet.KEY_ACTION_OPEN_USER_PROFILE);
-                    intent.putCharSequenceArrayListExtra(StringSet.KEY_USER_ID, memberIds);
-                }
-                requireContext().sendBroadcast(intent);
-            });
         }
 
         binding.chvChannelHeader.getProfileView().setVisibility(useHeaderProfileImage ? View.VISIBLE : View.GONE);
@@ -432,6 +394,11 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
         }
 
         if (isSingleChat()) {
+            binding.chvChannelHeader.setUseRightButton(false);
+            if (audioCallListener != null && videoCallListener != null) {
+                binding.chvChannelHeader.setCallListener(audioCallListener, videoCallListener);
+            }
+
             ChannelUtils.makeLastSeenText(getContext(), channel, (isOnline, lastSeenAt) -> {
                 binding.chvChannelHeader.setOnline(isOnline, lastSeenAt);
                 return null;
@@ -1884,6 +1851,14 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
         this.headerRightButtonListener = listener;
     }
 
+    public void setAudioCallListener(View.OnClickListener audioCallListener) {
+        this.audioCallListener = audioCallListener;
+    }
+
+    public void setVideoCallListener(View.OnClickListener videoCallListener) {
+        this.videoCallListener = videoCallListener;
+    }
+
     private void setMessageListAdapter(MessageListAdapter adapter) {
         this.adapter = adapter;
     }
@@ -1982,6 +1957,8 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
         private MessageListAdapter adapter;
         private View.OnClickListener headerLeftButtonListener;
         private View.OnClickListener headerRightButtonListener;
+        private View.OnClickListener audioCallListener;
+        private View.OnClickListener videoCallListener;
         private OnItemClickListener<BaseMessage> itemClickListener;
         private OnItemLongClickListener<BaseMessage> itemLongClickListener;
         private View.OnClickListener inputLeftButtonListener;
@@ -2253,6 +2230,14 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
         public Builder setHeaderRightButtonListener(View.OnClickListener listener) {
             this.headerRightButtonListener = listener;
             return this;
+        }
+
+        public void setAudioCallListener(View.OnClickListener audioCallListener) {
+            this.audioCallListener = audioCallListener;
+        }
+
+        public void setVideoCallListener(View.OnClickListener videoCallListener) {
+            this.videoCallListener = videoCallListener;
         }
 
         /**
@@ -2557,6 +2542,8 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
             fragment.setArguments(bundle);
             fragment.setHeaderLeftButtonListener(headerLeftButtonListener);
             fragment.setHeaderRightButtonListener(headerRightButtonListener);
+            fragment.setAudioCallListener(audioCallListener);
+            fragment.setVideoCallListener(videoCallListener);
             fragment.setMessageListAdapter(adapter);
             fragment.setItemClickListener(itemClickListener);
             fragment.setItemLongClickListener(itemLongClickListener);
