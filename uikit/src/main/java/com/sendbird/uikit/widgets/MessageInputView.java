@@ -80,6 +80,7 @@ public class MessageInputView extends FrameLayout implements TagView.OnUserMenti
     private int addButtonVisibility = VISIBLE;
     private boolean showSendButtonAlways;
     private boolean isTagging = false;
+    private GroupChannel channel;
 
     @Override
     public void onUserMentionSelected(Member member) {
@@ -245,6 +246,7 @@ public class MessageInputView extends FrameLayout implements TagView.OnUserMenti
     }
 
     public void initTagView(GroupChannel channel, List<Member> memberList, TagView.OnUserMentionSelectedListener onUserMentionSelectedListener) {
+        this.channel = channel;
         this.onUserMentionSelectedListener = onUserMentionSelectedListener;
         binding.tagView.setUserList(channel, memberList);
         binding.tagView.setOnUserMentionSelectedListener(this);
@@ -609,7 +611,7 @@ public class MessageInputView extends FrameLayout implements TagView.OnUserMenti
 
     private void checkForTag(String text) {
         String tagText = text;
-        if (!TextUtils.isEmpty(tagText)) {
+        if (!TextUtils.isEmpty(tagText) && channel != null && !channel.isDistinct()) {
             int start = binding.etInputText.getSelectionStart();
             if (start >= 0) {
                 tagText = tagText.substring(0, start);
