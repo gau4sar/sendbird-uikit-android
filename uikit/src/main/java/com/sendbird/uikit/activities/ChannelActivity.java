@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.arch.core.util.Function;
 import androidx.fragment.app.FragmentManager;
 
 import com.sendbird.android.Member;
@@ -133,12 +134,12 @@ public class ChannelActivity extends AppCompatActivity {
         return url;
     }
 
-    public List<Member> getMembers() {
-        return channelFragment.getMembers();
-    }
-
     public boolean isSingleChat() {
         return channelFragment.isSingleChat();
+    }
+
+    public void getMembers(Function<List<Member>, Void> callback) {
+        channelFragment.getMembers(callback);
     }
 
     public void setOnBackClickListener(View.OnClickListener backClickListener) {

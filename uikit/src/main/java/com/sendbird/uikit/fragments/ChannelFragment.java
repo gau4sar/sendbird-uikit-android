@@ -27,6 +27,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
+import androidx.arch.core.util.Function;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -42,6 +43,7 @@ import com.sendbird.android.Emoji;
 import com.sendbird.android.FileMessage;
 import com.sendbird.android.FileMessageParams;
 import com.sendbird.android.GroupChannel;
+import com.sendbird.android.GroupChannelMemberListQuery;
 import com.sendbird.android.Member;
 import com.sendbird.android.MessageListParams;
 import com.sendbird.android.MessagePayloadFilter;
@@ -116,8 +118,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import kotlin.jvm.functions.Function2;
 
 /**
  * Fragment displaying the list of messages in the channel.
@@ -310,7 +310,11 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
         binding.vgInputBox.setEnabled(!isMuted && !isFrozen);
         // set hint
         setInputTextHint(isMuted, isFrozen);
-        binding.vgInputBox.updateTagView(getMembers());
+
+        getMembers(input -> {
+            binding.vgInputBox.updateTagView(input);
+            return null;
+        });
     }
 
     private void initHeaderOnCreated() {
@@ -913,7 +917,10 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
         });
         binding.vgInputBox.setOnAudioLongClickListener();
 
-        binding.vgInputBox.initTagView(channel, getMembers(), this);
+        getMembers(members -> {
+            binding.vgInputBox.initTagView(channel, members, ChannelFragment.this);
+            return null;
+        });
     }
 
     private void onScrollEndReaches(PagerRecyclerView.ScrollDirection direction) {
@@ -1919,16 +1926,21 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
         return channel.getMemberCount() <= 2 && !channel.isSuper() && channel.isDistinct();
     }
 
-    public List<Member> getMembers() {
-        List<String> bannedUsers = viewModel.getBannedUsers();
-        List<Member> members = channel.getMembers();
-        ArrayList<Member> channelMembers = new ArrayList<>();
-        for(Member member: members) {
-            if (!bannedUsers.contains(member.getUserId())) {
-                channelMembers.add(member);
-            }
+    public void getMembers(Function<List<Member>, Void> callback) {
+        GroupChannelMemberListQuery query = channel.createMemberListQuery();
+        query.setLimit(channel.getMemberCount());
+        if (query.hasNext()) {
+            query.next((members, exception) -> {
+                List<String> bannedUsers = viewModel.getBannedUsers();
+                List<Member> channelMembers = new ArrayList<>();
+                for(Member member: members) {
+                    if (!bannedUsers.contains(member.getUserId())) {
+                        channelMembers.add(member);
+                    }
+                }
+                callback.apply(channelMembers);
+            });
         }
-        return channelMembers;
     }
 
     @Override
