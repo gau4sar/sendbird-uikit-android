@@ -34,6 +34,11 @@ public class UserUtils {
             public String getUserPhoneNumber() {
                 return user.getMetaData("phone");
             }
+
+            @Override
+            public String getUsername() {
+                return user.getMetaData("username");
+            }
         };
     }
 

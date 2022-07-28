@@ -65,7 +65,7 @@
                         android:imeOptions="actionNext"
                         android:inputType="text"
                         android:maxLines="1"
-                        android:text="d19b2886-18b6-47e2-93b7-c9388fb10694"
+                        android:text="d19b2886-18b6-47e2-93b7-c9388fb10695"
                         android:textCursorDrawable="@drawable/shape_cursor_drawable"
                         android:textSize="@dimen/sb_text_size_16">
 
@@ -93,7 +93,7 @@
                         android:hint="@string/text_hint_nickname"
                         android:imeOptions="actionDone"
                         android:inputType="text"
-                        android:text="Nguyen Tien Dzung123"
+                        android:text="Anthony"
                         android:maxLines="1"
                         android:textCursorDrawable="@drawable/shape_cursor_drawable"
                         android:textSize="@dimen/sb_text_size_16" />

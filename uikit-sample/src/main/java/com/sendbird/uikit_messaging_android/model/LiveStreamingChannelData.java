@@ -63,6 +63,11 @@ public class LiveStreamingChannelData {
         }
 
         @Override
+        public String getUsername() {
+            return null;
+        }
+
+        @Override
         public String getUserId() {
             return userId;
         }

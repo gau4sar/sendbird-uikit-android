@@ -136,7 +136,7 @@ public class ViewUtils {
                     while (iterator.hasNext()) {
                         String phoneNumber = iterator.next().getValue().replace("@", "");
                         boolean itsme = SendBirdUIKit.isItMeByNumber(phoneNumber);
-                        String tagUserName = itsme ? "You" : SendBirdUIKit.findPhoneBookName(phoneNumber);
+                        String tagUserName = itsme ? SendBirdUIKit.getUsername() : SendBirdUIKit.findPhoneBookName(phoneNumber);
                         int matchCount = indicesOfSubString("@" + phoneNumber, text.toString()).size();
                         text = text.toString().replace("@" + phoneNumber, "@" + tagUserName);
 
@@ -154,7 +154,7 @@ public class ViewUtils {
                 for (User user: users) {
                     String phoneNumber = user.getMetaData("phone");
                     boolean itsme = SendBirdUIKit.isItMe(user.getUserId());
-                    String tagUserName = itsme ? "You" : SendBirdUIKit.findPhoneBookName(phoneNumber);
+                    String tagUserName = itsme ? SendBirdUIKit.getUsername() : SendBirdUIKit.findPhoneBookName(phoneNumber);
                     int matchCount = indicesOfSubString("@" + phoneNumber, text.toString()).size();
                     text = text.toString().replace("@" + phoneNumber, "@" + tagUserName);
 

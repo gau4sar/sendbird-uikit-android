@@ -78,6 +78,16 @@ public class LiveStreamingChannelData {
         }
 
         @Override
+        public String getUserPhoneNumber() {
+            return null;
+        }
+
+        @Override
+        public String getUsername() {
+            return null;
+        }
+
+        @Override
         public boolean equals(Object o) {
             if (this == o) return true;
             if (!(o instanceof Creator)) return false;

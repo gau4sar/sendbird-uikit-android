@@ -29,7 +29,7 @@ public class AdminMessageUser {
 
     public String getName() {
         boolean itsMe = itsMe();
-        if (itsMe) return "You";
+        if (itsMe) return SendBirdUIKit.getUsername();
 
         String phone = metaData.getPhone();
         String phonebookName = SendBirdUIKit.findPhoneBookName(phone);

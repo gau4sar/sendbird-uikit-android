@@ -149,6 +149,11 @@ public class SendBirdUIKit {
         return Objects.equals(phoneNumber, getAdapter().getUserInfo().getUserPhoneNumber());
     }
 
+    public static String getUsername() {
+        String username = getAdapter().getUserInfo().getUsername();
+        return android.text.TextUtils.isEmpty(username) ? "You" : username;
+    }
+
     public synchronized static void initPhoneBookData(Map<String, String> phoneBook) {
         phoneBookData = phoneBook;
         for (PhonebookUpdateListener listener: phonebookUpdateListeners) {

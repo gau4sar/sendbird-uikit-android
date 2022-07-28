@@ -26,4 +26,6 @@ public interface UserInfo {
     String getProfileUrl();
 
     String getUserPhoneNumber();
+
+    String getUsername();
 }

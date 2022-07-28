@@ -71,7 +71,7 @@ public class EmoijReactionUserView extends FrameLayout {
         if (user != null) {
             String number = user.getMetaData("phone");
             boolean itsMe = SendBirdUIKit.isItMe(user.getUserId());
-            nickname = itsMe ? "You" : SendBirdUIKit.findPhoneBookName(number);
+            nickname = itsMe ? SendBirdUIKit.getUsername() : SendBirdUIKit.findPhoneBookName(number);
             urls.add(user.getProfileUrl());
         }
 

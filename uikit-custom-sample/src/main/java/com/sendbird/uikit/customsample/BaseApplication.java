@@ -75,6 +75,11 @@ public class BaseApplication extends MultiDexApplication {
                     public String getUserPhoneNumber() {
                         return "+84979070843";
                     }
+
+                    @Override
+                    public String getUsername() {
+                        return "tiendung717";
+                    }
                 };
             }
 
