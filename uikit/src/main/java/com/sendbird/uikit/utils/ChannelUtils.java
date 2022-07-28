@@ -282,7 +282,7 @@ public class ChannelUtils {
         if (isOnline) {
             lastSeenText = "Online";
         } else if (lastSeenAt <= 0) {
-            lastSeenText = "Offline";
+            lastSeenText = "Last seen a few months ago";
         } else if (nowDate.isEqual(lastSeenDate)) {
             lastSeenText = "Last seen at " + lastSeen.format(DateTimeFormatter.ofPattern(timeFormat));
         } else if (offsetDays == 1) {
