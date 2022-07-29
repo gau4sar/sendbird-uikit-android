@@ -1931,14 +1931,18 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
         query.setLimit(channel.getMemberCount());
         if (query.hasNext()) {
             query.next((members, exception) -> {
-                List<String> bannedUsers = viewModel.getBannedUsers();
-                List<Member> channelMembers = new ArrayList<>();
-                for(Member member: members) {
-                    if (!bannedUsers.contains(member.getUserId())) {
-                        channelMembers.add(member);
+                if (exception != null) {
+                    exception.printStackTrace();
+                } else {
+                    List<String> bannedUsers = viewModel.getBannedUsers();
+                    List<Member> channelMembers = new ArrayList<>();
+                    for(Member member: members) {
+                        if (!bannedUsers.contains(member.getUserId())) {
+                            channelMembers.add(member);
+                        }
                     }
+                    callback.apply(channelMembers);
                 }
-                callback.apply(channelMembers);
             });
         }
     }
