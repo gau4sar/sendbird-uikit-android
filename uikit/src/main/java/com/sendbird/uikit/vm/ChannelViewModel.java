@@ -32,6 +32,7 @@ import com.sendbird.android.handlers.Traceable;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.consts.MessageLoadState;
 import com.sendbird.uikit.consts.StringSet;
+import com.sendbird.uikit.extend.NeutralMessage;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.FileInfo;
 import com.sendbird.uikit.model.MessageList;
@@ -77,6 +78,7 @@ public class ChannelViewModel extends BaseViewModel implements PagerRecyclerView
         ChannelMessageData(@Nullable String traceName, @NonNull List<BaseMessage> messages) {
             this.traceName = traceName;
             this.messages = messages;
+            this.messages.add(new NeutralMessage("", 0, Long.MAX_VALUE));
         }
 
         public List<BaseMessage> getMessages() {

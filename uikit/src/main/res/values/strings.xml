@@ -184,4 +184,5 @@
     <string name="sb_text_reply_to">Reply to %s</string>
     <string name="sb_text_replied_to">%s replied to %s</string>
     <string name="sb_text_error_original_message_not_found">Couldn\'t find the original message for this reply.</string>
+    <string name="encrypted_message">Messages and calls are end-to-end encrypted. No one outside this chat, not even Triva, can read or listen them.</string>
 </resources>

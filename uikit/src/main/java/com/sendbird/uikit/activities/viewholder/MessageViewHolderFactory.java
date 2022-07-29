@@ -12,6 +12,7 @@ import com.sendbird.android.FileMessage;
 import com.sendbird.android.UserMessage;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.consts.StringSet;
+import com.sendbird.uikit.extend.NeutralMessage;
 import com.sendbird.uikit.model.TimelineMessage;
 import com.sendbird.uikit.utils.MessageUtils;
 
@@ -96,6 +97,9 @@ public class MessageViewHolderFactory {
             case VIEW_TYPE_FILE_MESSAGE_AUDIO_OTHER:
                 holder = new OtherAudioFileMessageViewHolder(DataBindingUtil.inflate(inflater, R.layout.sb_view_other_file_audio_message, parent, false), useMessageGroupUI);
                 break;
+            case VIEW_TYPE_NEUTRAL_MESSAGE:
+                holder = new NeutralMessageViewHolder(DataBindingUtil.inflate(inflater, R.layout.sb_view_neutral_message, parent, false), false);
+                break;
             default:
                 // unknown message type
                 if (viewType == MessageType.VIEW_TYPE_UNKNOWN_MESSAGE_ME) {
@@ -174,6 +178,8 @@ public class MessageViewHolderFactory {
             type = MessageType.VIEW_TYPE_TIME_LINE;
         } else if (message instanceof AdminMessage) {
             type = MessageType.VIEW_TYPE_ADMIN_MESSAGE;
+        } else if (message instanceof NeutralMessage) {
+            type = MessageType.VIEW_TYPE_NEUTRAL_MESSAGE;
         } else {
             if (MessageUtils.isMine(message)) {
                 type = MessageType.VIEW_TYPE_UNKNOWN_MESSAGE_ME;
