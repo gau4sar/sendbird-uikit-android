@@ -170,6 +170,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
     final AtomicBoolean shouldAnimate = new AtomicBoolean(false);
 
     private final List<Member> tagUsers = new ArrayList<>();
+    private StringBuilder tagData = new StringBuilder();
     private GroupChannel tagChannel;
 
     private final ReplyType replyType = SendBirdUIKit.getReplyType();
@@ -1124,6 +1125,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
         }
 
         tagUsers.clear();
+        tagData.setLength(0);
     }
 
     /**
@@ -1136,7 +1138,6 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
     protected void onBeforeSendUserMessage(@NonNull UserMessageParams params) {
         if (!tagUsers.isEmpty()) {
             List<String> mentionedUserIds = new ArrayList<>();
-            StringBuilder data = new StringBuilder();
             for (Member user: tagUsers) {
                 String phoneNumber = user.getMetaData("phone");
                 String name = SendBirdUIKit.findPhoneBookName(phoneNumber);
@@ -1144,20 +1145,27 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
                 params.setMessage(message);
 
                 mentionedUserIds.add(user.getUserId());
-                data.append(user.getMetaData("phone"));
-                if (tagUsers.indexOf(user) != tagUsers.size() - 1) {
-                    data.append(",");
-                }
             }
             params.setMentionType(BaseMessageParams.MentionType.USERS);
             params.setMentionedUserIds(mentionedUserIds);
-            params.setData(data.toString());
+
         }
 
         if (tagChannel != null) {
             params.setMentionType(BaseMessageParams.MentionType.CHANNEL);
             tagChannel = null;
         }
+
+        String data = tagData.toString();
+        if (!TextUtils.isEmpty(data)) {
+            if (data.endsWith(",")) {
+                params.setData(data.substring(0, data.length() - 1));
+            } else {
+                params.setData(data);
+            }
+        }
+
+        Log.e("onesays", "Data: " + params.getData());
     }
 
     /**
@@ -1170,22 +1178,25 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
     protected void onBeforeSendFileMessage(@NonNull FileMessageParams params) {
         if (!tagUsers.isEmpty()) {
             List<String> mentionedUserIds = new ArrayList<>();
-            StringBuilder data = new StringBuilder();
             for (Member user: tagUsers) {
                 mentionedUserIds.add(user.getUserId());
-                data.append(user.getMetaData("phone"));
-                if (tagUsers.indexOf(user) != tagUsers.size() - 1) {
-                    data.append(",");
-                }
             }
             params.setMentionType(BaseMessageParams.MentionType.USERS);
             params.setMentionedUserIds(mentionedUserIds);
-            params.setData(data.toString());
         }
 
         if (tagChannel != null) {
             params.setMentionType(BaseMessageParams.MentionType.CHANNEL);
             tagChannel = null;
+        }
+
+        String data = tagData.toString();
+        if (!TextUtils.isEmpty(data)) {
+            if (data.endsWith(",")) {
+                params.setData(data.substring(0, data.length() - 2));
+            } else {
+                params.setData(data);
+            }
         }
     }
 
@@ -1960,11 +1971,23 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
     @Override
     public void onUserMentionSelected(Member member) {
         tagUsers.add(member);
+
+        String phoneNumber = member.getMetaData("phone");
+        if (TextUtils.isEmpty(phoneNumber)) {
+            tagData.append(phoneNumber);
+            tagData.append(",");
+        }
     }
 
     @Override
     public void onChannelMentionSelected(GroupChannel channel) {
         tagChannel = channel;
+        if (channel.isSuper()) {
+            tagData.append("Channel");
+        } else {
+            tagData.append("Group");
+        }
+        tagData.append(",");
     }
 
     public static class Builder {
