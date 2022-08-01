@@ -1973,7 +1973,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
         tagUsers.add(member);
 
         String phoneNumber = member.getMetaData("phone");
-        if (TextUtils.isEmpty(phoneNumber)) {
+        if (!TextUtils.isEmpty(phoneNumber)) {
             tagData.append(phoneNumber);
             tagData.append(",");
         }
