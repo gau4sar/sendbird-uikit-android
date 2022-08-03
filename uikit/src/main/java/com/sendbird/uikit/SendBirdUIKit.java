@@ -24,6 +24,7 @@ import com.sendbird.uikit.interfaces.CustomUserListQueryHandler;
 import com.sendbird.uikit.interfaces.UserInfo;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.EmojiManager;
+import com.sendbird.uikit.model.UserConfigInfo;
 import com.sendbird.uikit.tasks.JobResultTask;
 import com.sendbird.uikit.tasks.TaskQueue;
 import com.sendbird.uikit.utils.FileUtils;
@@ -536,5 +537,26 @@ public class SendBirdUIKit {
         if (name == null) name = "";
         if (number == null) number = "";
         return android.text.TextUtils.isEmpty(name) ? number : name;
+    }
+
+    public static String getPhonebookName(User user) {
+        String number = user.getMetaData("phone");
+        String name = phoneBookData.get(number);
+        if (name == null) name = "";
+        if (number == null) number = "";
+        return android.text.TextUtils.isEmpty(name) ? number : name;
+    }
+
+    public static UserConfigInfo getUserConfig() {
+        return getUserConfig(SendBird.getCurrentUser());
+    }
+
+
+    public static UserConfigInfo getUserConfig(User user) {
+        String value = user.getMetaData("UserConfigInfo");
+        if (!TextUtils.isEmpty(value)) {
+            return UserConfigInfo.fromJson(value);
+        }
+        return null;
     }
 }

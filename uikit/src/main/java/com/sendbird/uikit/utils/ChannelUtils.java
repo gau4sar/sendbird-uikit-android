@@ -18,6 +18,7 @@ import com.sendbird.android.User;
 import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendBirdUIKit;
 import com.sendbird.uikit.consts.StringSet;
+import com.sendbird.uikit.model.UserConfigInfo;
 import com.sendbird.uikit.widgets.ChannelCoverView;
 
 import org.threeten.bp.Duration;
@@ -226,7 +227,11 @@ public class ChannelUtils {
                 if (member.getUserId().equals(myUserId)) {
                     continue;
                 }
-                urls.add(member.getProfileUrl());
+
+                UserConfigInfo userConfigInfo = SendBirdUIKit.getUserConfig(member);
+                if (userConfigInfo == null || !userConfigInfo.isProfileImageDisable()) {
+                    urls.add(member.getProfileUrl());
+                }
             }
         }
         return urls;
@@ -239,65 +244,65 @@ public class ChannelUtils {
     public static String makeTypingText(Context context, List<? extends User> typingUsers) {
         if (typingUsers.size() == 1) {
             return String.format(context.getString(R.string.sb_text_channel_typing_indicator_single),
-                    typingUsers.get(0).getNickname());
+                    SendBirdUIKit.getPhonebookName(typingUsers.get(0)));
         } else if (typingUsers.size() == 2) {
             return String.format(context.getString(R.string.sb_text_channel_typing_indicator_double),
-                    typingUsers.get(0).getNickname(), typingUsers.get(1).getNickname());
+                    SendBirdUIKit.getPhonebookName(typingUsers.get(0)), SendBirdUIKit.getPhonebookName(typingUsers.get(1)));
         } else {
             return context.getString(R.string.sb_text_channel_typing_indicator_multiple);
         }
     }
 
     public static void makeLastSeenText(Context context, GroupChannel channel, Function2<Boolean, String, Void> callback) {
-        channel.refresh(new GroupChannel.GroupChannelRefreshHandler() {
-            @Override
-            public void onResult(SendBirdException e) {
-                if (e != null) {
-                    e.printStackTrace();
-                    return;
-                }
+        channel.refresh(e -> {
+            if (e != null) {
+                e.printStackTrace();
+                return;
+            }
 
-                User other = getOtherMember(channel);
-                if (other != null) {
-                    makeLastSeenText(context, other, callback);
-                }
+            User other = getOtherMember(channel);
+            if (other != null) {
+                makeLastSeenText(context, other, callback);
             }
         });
     }
 
     public static void makeLastSeenText(Context context, User user, Function2<Boolean, String, Void> callback) {
-        String lastSeenText = "";
-        long lastSeenAt = user.getLastSeenAt();
-        LocalDateTime now = LocalDateTime.now();
-        LocalDate nowDate = now.toLocalDate();
+        UserConfigInfo userConfigInfo = SendBirdUIKit.getUserConfig();
+        if (userConfigInfo == null || !userConfigInfo.isLastSeenDisable()) {
+            String lastSeenText = "";
+            long lastSeenAt = user.getLastSeenAt();
+            LocalDateTime now = LocalDateTime.now();
+            LocalDate nowDate = now.toLocalDate();
 
-        LocalDateTime lastSeen = LocalDateTime.ofInstant(Instant.ofEpochMilli(lastSeenAt), ZoneId.systemDefault());
-        LocalDate lastSeenDate = lastSeen.toLocalDate();
+            LocalDateTime lastSeen = LocalDateTime.ofInstant(Instant.ofEpochMilli(lastSeenAt), ZoneId.systemDefault());
+            LocalDate lastSeenDate = lastSeen.toLocalDate();
 
-        Duration duration = Duration.between(lastSeen, now);
-        long offsetDays = duration.toDays();
-        boolean isOnline = user.getConnectionStatus() == User.ConnectionStatus.ONLINE;
-        boolean is24hFormat = DateFormat.is24HourFormat(context);
-        String timeFormat = is24hFormat ? "HH:mm" : "hh:mm a";
-        if (isOnline) {
-            lastSeenText = "Online";
-        } else if (lastSeenAt <= 0) {
-            lastSeenText = "Last seen a few months ago";
-        } else if (nowDate.isEqual(lastSeenDate)) {
-            lastSeenText = "Last seen at " + lastSeen.format(DateTimeFormatter.ofPattern(timeFormat));
-        } else if (offsetDays == 1) {
-            lastSeenText = "Last seen yesterday, " + lastSeen.format(DateTimeFormatter.ofPattern(timeFormat));
-        } else if (offsetDays > 1 && offsetDays < 7) {
-            lastSeenText = "Last seen " + lastSeen.format(DateTimeFormatter.ofPattern("EEEE, " + timeFormat));
-        } else if (offsetDays >= 7 && offsetDays < 14) {
-            lastSeenText = "Last seen a week ago";
-        } else if (offsetDays >= 14 && offsetDays < 28) {
-            lastSeenText = "Last seen few weeks ago";
-        } else {
-            lastSeenText = "Last seen " + lastSeen.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            Duration duration = Duration.between(lastSeen, now);
+            long offsetDays = duration.toDays();
+            boolean isOnline = user.getConnectionStatus() == User.ConnectionStatus.ONLINE;
+            boolean is24hFormat = DateFormat.is24HourFormat(context);
+            String timeFormat = is24hFormat ? "HH:mm" : "hh:mm a";
+            if (isOnline) {
+                lastSeenText = "Online";
+            } else if (lastSeenAt <= 0) {
+                lastSeenText = "Last seen a few months ago";
+            } else if (nowDate.isEqual(lastSeenDate)) {
+                lastSeenText = "Last seen at " + lastSeen.format(DateTimeFormatter.ofPattern(timeFormat));
+            } else if (offsetDays == 1) {
+                lastSeenText = "Last seen yesterday, " + lastSeen.format(DateTimeFormatter.ofPattern(timeFormat));
+            } else if (offsetDays > 1 && offsetDays < 7) {
+                lastSeenText = "Last seen " + lastSeen.format(DateTimeFormatter.ofPattern("EEEE, " + timeFormat));
+            } else if (offsetDays >= 7 && offsetDays < 14) {
+                lastSeenText = "Last seen a week ago";
+            } else if (offsetDays >= 14 && offsetDays < 28) {
+                lastSeenText = "Last seen few weeks ago";
+            } else {
+                lastSeenText = "Last seen " + lastSeen.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            }
+
+            callback.invoke(isOnline, lastSeenText);
         }
-
-        callback.invoke(isOnline, lastSeenText);
     }
 
     public static boolean isChannelPushOff(GroupChannel channel) {

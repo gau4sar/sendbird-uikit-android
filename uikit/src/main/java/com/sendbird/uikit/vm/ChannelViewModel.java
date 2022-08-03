@@ -30,12 +30,14 @@ import com.sendbird.android.handlers.MessageCollectionInitPolicy;
 import com.sendbird.android.handlers.MessageContext;
 import com.sendbird.android.handlers.Traceable;
 import com.sendbird.uikit.R;
+import com.sendbird.uikit.SendBirdUIKit;
 import com.sendbird.uikit.consts.MessageLoadState;
 import com.sendbird.uikit.consts.StringSet;
 import com.sendbird.uikit.extend.NeutralMessage;
 import com.sendbird.uikit.log.Logger;
 import com.sendbird.uikit.model.FileInfo;
 import com.sendbird.uikit.model.MessageList;
+import com.sendbird.uikit.model.UserConfigInfo;
 import com.sendbird.uikit.widgets.PagerRecyclerView;
 import com.sendbird.uikit.widgets.StatusFrameView;
 
@@ -400,7 +402,10 @@ public class ChannelViewModel extends BaseViewModel implements PagerRecyclerView
 
     private void markAsRead() {
         Logger.dev("markAsRead");
-        channel.markAsRead();
+        UserConfigInfo userConfigInfo = SendBirdUIKit.getUserConfig();
+        if (userConfigInfo == null || !userConfigInfo.isReadReceiptDisable()) {
+            channel.markAsRead();
+        }
     }
 
     public void setTyping(boolean isTyping) {
