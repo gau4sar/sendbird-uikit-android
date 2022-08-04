@@ -6,26 +6,26 @@ import com.sendbird.android.shadow.com.google.gson.Gson;
 
 @Keep
 public class UserConfigInfo {
-    private final boolean lastSeenDisable;
-    private final boolean profileImageDisable;
-    private final boolean readReceiptDisable;
+    private final boolean showLastSeen;
+    private final boolean showProfile;
+    private final boolean readReceipt;
 
-    public UserConfigInfo(boolean lastSeenDisable, boolean profileImageDisable, boolean readReceiptDisable) {
-        this.lastSeenDisable = lastSeenDisable;
-        this.profileImageDisable = profileImageDisable;
-        this.readReceiptDisable = readReceiptDisable;
+    public UserConfigInfo(boolean showLastSeen, boolean showProfile, boolean readReceiptDisable) {
+        this.showLastSeen = showLastSeen;
+        this.showProfile = showProfile;
+        this.readReceipt = readReceiptDisable;
     }
 
-    public boolean isLastSeenDisable() {
-        return lastSeenDisable;
+    public boolean isShowLastSeen() {
+        return showLastSeen;
     }
 
-    public boolean isProfileImageDisable() {
-        return profileImageDisable;
+    public boolean isShowProfile() {
+        return showProfile;
     }
 
-    public boolean isReadReceiptDisable() {
-        return readReceiptDisable;
+    public boolean isReadReceipt() {
+        return readReceipt;
     }
 
     public static UserConfigInfo fromJson(String json) {

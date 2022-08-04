@@ -4,7 +4,6 @@ import android.content.Context;
 import android.text.format.DateFormat;
 
 import androidx.annotation.NonNull;
-import androidx.arch.core.util.Function;
 
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.BaseMessage;
@@ -12,7 +11,6 @@ import com.sendbird.android.FileMessage;
 import com.sendbird.android.GroupChannel;
 import com.sendbird.android.Member;
 import com.sendbird.android.SendBird;
-import com.sendbird.android.SendBirdException;
 import com.sendbird.android.Sender;
 import com.sendbird.android.User;
 import com.sendbird.uikit.R;
@@ -26,7 +24,6 @@ import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
-import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.format.DateTimeFormatter;
 
 import java.util.ArrayList;
@@ -229,7 +226,7 @@ public class ChannelUtils {
                 }
 
                 UserConfigInfo userConfigInfo = SendBirdUIKit.getUserConfig(member);
-                if (userConfigInfo == null || !userConfigInfo.isProfileImageDisable()) {
+                if (userConfigInfo == null || !userConfigInfo.isShowProfile()) {
                     urls.add(member.getProfileUrl());
                 }
             }
@@ -269,7 +266,7 @@ public class ChannelUtils {
 
     public static void makeLastSeenText(Context context, User user, Function2<Boolean, String, Void> callback) {
         UserConfigInfo userConfigInfo = SendBirdUIKit.getUserConfig();
-        if (userConfigInfo == null || !userConfigInfo.isLastSeenDisable()) {
+        if (userConfigInfo == null || userConfigInfo.isShowLastSeen()) {
             String lastSeenText = "";
             long lastSeenAt = user.getLastSeenAt();
             LocalDateTime now = LocalDateTime.now();
