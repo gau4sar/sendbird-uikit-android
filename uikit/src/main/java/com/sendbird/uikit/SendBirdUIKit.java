@@ -557,6 +557,6 @@ public class SendBirdUIKit {
         if (!TextUtils.isEmpty(value)) {
             return UserConfigInfo.fromJson(value);
         }
-        return null;
+        return UserConfigInfo.getDefault();
     }
 }

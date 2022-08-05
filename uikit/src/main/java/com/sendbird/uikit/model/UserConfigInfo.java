@@ -31,4 +31,8 @@ public class UserConfigInfo {
     public static UserConfigInfo fromJson(String json) {
         return new Gson().fromJson(json, UserConfigInfo.class);
     }
+
+    public static UserConfigInfo getDefault() {
+        return new UserConfigInfo(true, true, true);
+    }
 }

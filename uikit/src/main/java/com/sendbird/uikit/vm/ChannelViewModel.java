@@ -403,7 +403,7 @@ public class ChannelViewModel extends BaseViewModel implements PagerRecyclerView
     private void markAsRead() {
         Logger.dev("markAsRead");
         UserConfigInfo userConfigInfo = SendBirdUIKit.getUserConfig();
-        if (userConfigInfo == null || !userConfigInfo.isReadReceipt()) {
+        if (userConfigInfo == null || userConfigInfo.isReadReceipt()) {
             channel.markAsRead();
         }
     }

@@ -265,7 +265,7 @@ public class ChannelUtils {
     }
 
     public static void makeLastSeenText(Context context, User user, Function2<Boolean, String, Void> callback) {
-        UserConfigInfo userConfigInfo = SendBirdUIKit.getUserConfig();
+        UserConfigInfo userConfigInfo = SendBirdUIKit.getUserConfig(user);
         if (userConfigInfo == null || userConfigInfo.isShowLastSeen()) {
             String lastSeenText = "";
             long lastSeenAt = user.getLastSeenAt();
