@@ -117,7 +117,11 @@ public class AdminMessageData {
     public List<String> getUserNames() {
         List<String> names = new ArrayList<>();
         for (AdminMessageUser user : users) {
-            names.add(user.getName());
+            if (user.itsMe()) {
+                names.add("You");
+            } else {
+                names.add(user.getName());
+            }
         }
         return names;
     }
