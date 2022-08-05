@@ -1136,6 +1136,9 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
      * @since 1.0.4
      */
     protected void onBeforeSendUserMessage(@NonNull UserMessageParams params) {
+        List<String> translationTargetLanguages = SendBirdUIKit.getAdapter().getUserInfo().getTranslationTargetLanguages();
+        params.setTranslationTargetLanguages(translationTargetLanguages);
+
         if (!tagUsers.isEmpty()) {
             List<String> mentionedUserIds = new ArrayList<>();
             for (Member user: tagUsers) {

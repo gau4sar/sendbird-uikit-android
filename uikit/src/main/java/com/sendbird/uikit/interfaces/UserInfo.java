@@ -1,5 +1,7 @@
 package com.sendbird.uikit.interfaces;
 
+import java.util.List;
+
 /**
  * Interface definition for a information of user.
  */
@@ -28,4 +30,8 @@ public interface UserInfo {
     String getUserPhoneNumber();
 
     String getUsername();
+
+    List<String> getTranslationTargetLanguages();
+
+    String getPreferTranslateLanguage();
 }

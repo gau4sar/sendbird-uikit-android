@@ -61,6 +61,7 @@ import com.sendbird.uikit.widgets.TagClickableSpan;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import kotlin.sequences.Sequence;
 import kotlin.text.MatchResult;
@@ -116,7 +117,16 @@ public class ViewUtils {
             return;
         }
 
+
         CharSequence text = message.getMessage();
+        if (message instanceof UserMessage) {
+            Map<String, String> translateMap = ((UserMessage) message).getTranslations();
+            String preferLanguage = SendBirdUIKit.getAdapter().getUserInfo().getPreferTranslateLanguage();
+            if (translateMap != null && !TextUtils.isEmpty(preferLanguage) && translateMap.containsKey(preferLanguage)) {
+                text = translateMap.get(preferLanguage);
+            }
+        }
+
         if (highlightMessageInfo != null && highlightMessageInfo.getMessageId() == message.getMessageId() && highlightMessageInfo.getUpdatedAt() == message.getUpdatedAt()) {
             SpannableStringBuilder builder = new SpannableStringBuilder(textView.getContext(), text);
             builder.addHighlightTextSpan(text.toString(), text.toString(), backgroundColor, foregroundColor);

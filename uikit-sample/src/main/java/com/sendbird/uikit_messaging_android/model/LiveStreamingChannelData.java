@@ -68,6 +68,17 @@ public class LiveStreamingChannelData {
         }
 
         @Override
+        public List<String> getTranslationTargetLanguages() {
+            List<String> translationTargetLanguages = new ArrayList<>();
+            translationTargetLanguages.add("uk");
+            return translationTargetLanguages;
+        }
+
+        @Override
+        public String getPreferTranslateLanguage() {
+            return "uk";
+        }
+        @Override
         public String getUserId() {
             return userId;
         }

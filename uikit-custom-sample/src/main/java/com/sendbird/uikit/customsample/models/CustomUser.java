@@ -3,6 +3,9 @@ package com.sendbird.uikit.customsample.models;
 import com.sendbird.android.User;
 import com.sendbird.uikit.interfaces.UserInfo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CustomUser implements UserInfo {
     User user;
 
@@ -28,6 +31,18 @@ public class CustomUser implements UserInfo {
     @Override
     public String getUserPhoneNumber() {
         return user.getMetaData("phone");
+    }
+
+    @Override
+    public List<String> getTranslationTargetLanguages() {
+        List<String> translationTargetLanguages = new ArrayList<>();
+        translationTargetLanguages.add("uk");
+        return translationTargetLanguages;
+    }
+
+    @Override
+    public String getPreferTranslateLanguage() {
+        return "uk";
     }
 
     @Override

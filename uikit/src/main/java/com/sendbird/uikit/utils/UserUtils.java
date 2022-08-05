@@ -12,6 +12,9 @@ import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendBirdUIKit;
 import com.sendbird.uikit.interfaces.UserInfo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class UserUtils {
     public static <T extends User> UserInfo toUserInfo(@NonNull T user) {
         return new UserInfo() {
@@ -38,6 +41,18 @@ public class UserUtils {
             @Override
             public String getUsername() {
                 return user.getMetaData("username");
+            }
+
+            @Override
+            public List<String> getTranslationTargetLanguages() {
+                List<String> translationTargetLanguages = new ArrayList<>();
+                translationTargetLanguages.add("uk");
+                return translationTargetLanguages;
+            }
+
+            @Override
+            public String getPreferTranslateLanguage() {
+                return "uk";
             }
         };
     }

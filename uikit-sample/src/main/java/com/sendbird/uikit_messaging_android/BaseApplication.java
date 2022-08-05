@@ -18,6 +18,9 @@ import com.sendbird.uikit_messaging_android.fcm.MyFirebaseMessagingService;
 import com.sendbird.uikit_messaging_android.utils.PreferenceUtils;
 import com.sendbird.uikit_messaging_android.utils.PushUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BaseApplication extends MultiDexApplication {
 
     private static final String APP_ID = "033D0C2B-1B69-4592-90E5-2B6D8D58A86B";
@@ -65,6 +68,18 @@ public class BaseApplication extends MultiDexApplication {
                     @Override
                     public String getUsername() {
                         return "tiendung717";
+                    }
+
+                    @Override
+                    public List<String> getTranslationTargetLanguages() {
+                        List<String> translationTargetLanguages = new ArrayList<>();
+                        translationTargetLanguages.add("uk");
+                        return translationTargetLanguages;
+                    }
+
+                    @Override
+                    public String getPreferTranslateLanguage() {
+                        return "uk";
                     }
                 };
             }

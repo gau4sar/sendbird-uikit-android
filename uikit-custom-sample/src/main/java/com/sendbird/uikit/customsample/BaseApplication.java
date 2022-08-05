@@ -80,6 +80,18 @@ public class BaseApplication extends MultiDexApplication {
                     public String getUsername() {
                         return "tiendung717";
                     }
+
+                    @Override
+                    public List<String> getTranslationTargetLanguages() {
+                        List<String> translationTargetLanguages = new ArrayList<>();
+                        translationTargetLanguages.add("uk");
+                        return translationTargetLanguages;
+                    }
+
+                    @Override
+                    public String getPreferTranslateLanguage() {
+                        return "uk";
+                    }
                 };
             }
 
