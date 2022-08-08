@@ -617,18 +617,6 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
                             break;
                     }
                 }
-                if (!isInitCallEnded) {
-                    int scrollPosition = scrollToStartingPointIfNeeded();
-                    if (scrollPosition > 0) {
-                        recyclerView.post(() -> {
-                            if (needToShowScrollBottomButton()) {
-                                binding.mrvMessageList.showScrollBottomButton();
-                            } else {
-                                binding.mrvMessageList.hideScrollBottomButton();
-                            }
-                        });
-                    }
-                }
             });
         });
         viewModel.getErrorToast().observe(this, this::toastError);
@@ -636,24 +624,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
         viewModel.getMessageLoadState().observe(this, state -> {
             if (state == MessageLoadState.LOAD_ENDED) {
                 if (!isInitCallFinished.getAndSet(true)) {
-                    if (shouldAnimate.getAndSet(false)) {
-                        final List<BaseMessage> founded = viewModel.getMessagesByCreatedAt(viewModel.getStartingPoint());
-                        Logger.i("++ founded=%s, startingPoint=%s", founded, viewModel.getStartingPoint());
-                        if (founded != null && founded.size() == 1) {
-                            final long parentMessageId = founded.get(0).getMessageId();
-                            Logger.i("++ founded parent message id = %s", parentMessageId);
-                            recyclerView.postDelayed(() -> {
-                                startAnimationForReplyMessage(parentMessageId);
-                                if (needToShowScrollBottomButton()) {
-                                    binding.mrvMessageList.showScrollBottomButton();
-                                } else {
-                                    binding.mrvMessageList.hideScrollBottomButton();
-                                }
-                            }, 200);
-                        } else {
-                            toastError(R.string.sb_text_error_original_message_not_found);
-                        }
-                    }
+                    scrollToBottom();
                 }
             }
         });

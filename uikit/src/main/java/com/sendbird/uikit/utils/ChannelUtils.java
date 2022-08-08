@@ -265,40 +265,44 @@ public class ChannelUtils {
     }
 
     public static void makeLastSeenText(Context context, User user, Function2<Boolean, String, Void> callback) {
-        UserConfigInfo userConfigInfo = SendBirdUIKit.getUserConfig(user);
-        if (userConfigInfo == null || userConfigInfo.isShowLastSeen()) {
-            String lastSeenText = "";
-            long lastSeenAt = user.getLastSeenAt();
-            LocalDateTime now = LocalDateTime.now();
-            LocalDate nowDate = now.toLocalDate();
+        String lastSeenText = "";
+        boolean isOnline = user.getConnectionStatus() == User.ConnectionStatus.ONLINE;
+        if (isOnline) {
+            lastSeenText = "Online";
+            callback.invoke(true, lastSeenText);
+        } else {
+            UserConfigInfo userConfigInfo = SendBirdUIKit.getUserConfig(user);
+            if (userConfigInfo == null || userConfigInfo.isShowLastSeen()) {
+                long lastSeenAt = user.getLastSeenAt();
+                LocalDateTime now = LocalDateTime.now();
+                LocalDate nowDate = now.toLocalDate();
 
-            LocalDateTime lastSeen = LocalDateTime.ofInstant(Instant.ofEpochMilli(lastSeenAt), ZoneId.systemDefault());
-            LocalDate lastSeenDate = lastSeen.toLocalDate();
+                LocalDateTime lastSeen = LocalDateTime.ofInstant(Instant.ofEpochMilli(lastSeenAt), ZoneId.systemDefault());
+                LocalDate lastSeenDate = lastSeen.toLocalDate();
 
-            Duration duration = Duration.between(lastSeen, now);
-            long offsetDays = duration.toDays();
-            boolean isOnline = user.getConnectionStatus() == User.ConnectionStatus.ONLINE;
-            boolean is24hFormat = DateFormat.is24HourFormat(context);
-            String timeFormat = is24hFormat ? "HH:mm" : "hh:mm a";
-            if (isOnline) {
-                lastSeenText = "Online";
-            } else if (lastSeenAt <= 0) {
-                lastSeenText = "Last seen a few months ago";
-            } else if (nowDate.isEqual(lastSeenDate)) {
-                lastSeenText = "Last seen at " + lastSeen.format(DateTimeFormatter.ofPattern(timeFormat));
-            } else if (offsetDays == 1) {
-                lastSeenText = "Last seen yesterday, " + lastSeen.format(DateTimeFormatter.ofPattern(timeFormat));
-            } else if (offsetDays > 1 && offsetDays < 7) {
-                lastSeenText = "Last seen " + lastSeen.format(DateTimeFormatter.ofPattern("EEEE, " + timeFormat));
-            } else if (offsetDays >= 7 && offsetDays < 14) {
-                lastSeenText = "Last seen a week ago";
-            } else if (offsetDays >= 14 && offsetDays < 28) {
-                lastSeenText = "Last seen few weeks ago";
-            } else {
-                lastSeenText = "Last seen " + lastSeen.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                Duration duration = Duration.between(lastSeen, now);
+                long offsetDays = duration.toDays();
+
+                boolean is24hFormat = DateFormat.is24HourFormat(context);
+                String timeFormat = is24hFormat ? "HH:mm" : "hh:mm a";
+                if (lastSeenAt < 0) {
+                    lastSeenText = "Last seen a few months ago";
+                } else if (nowDate.isEqual(lastSeenDate)) {
+                    lastSeenText = "Last seen at " + lastSeen.format(DateTimeFormatter.ofPattern(timeFormat));
+                } else if (offsetDays == 1) {
+                    lastSeenText = "Last seen yesterday, " + lastSeen.format(DateTimeFormatter.ofPattern(timeFormat));
+                } else if (offsetDays > 1 && offsetDays < 7) {
+                    lastSeenText = "Last seen " + lastSeen.format(DateTimeFormatter.ofPattern("EEEE, " + timeFormat));
+                } else if (offsetDays >= 7 && offsetDays < 14) {
+                    lastSeenText = "Last seen a week ago";
+                } else if (offsetDays >= 14 && offsetDays < 28) {
+                    lastSeenText = "Last seen few weeks ago";
+                } else {
+                    lastSeenText = "Last seen " + lastSeen.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                }
+
+                callback.invoke(false, lastSeenText);
             }
-
-            callback.invoke(isOnline, lastSeenText);
         }
     }
 
