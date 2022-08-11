@@ -286,19 +286,19 @@ public class ChannelUtils {
                 boolean is24hFormat = DateFormat.is24HourFormat(context);
                 String timeFormat = is24hFormat ? "HH:mm" : "hh:mm a";
                 if (lastSeenAt < 0) {
-                    lastSeenText = "Last seen a few months ago";
+                    lastSeenText = context.getString(R.string.last_seen_months_ago);
                 } else if (nowDate.isEqual(lastSeenDate)) {
-                    lastSeenText = "Last seen at " + lastSeen.format(DateTimeFormatter.ofPattern(timeFormat));
+                    lastSeenText = context.getString(R.string.last_seen_at, lastSeen.format(DateTimeFormatter.ofPattern(timeFormat)));
                 } else if (offsetDays == 1) {
-                    lastSeenText = "Last seen yesterday, " + lastSeen.format(DateTimeFormatter.ofPattern(timeFormat));
+                    lastSeenText = context.getString(R.string.last_seen_yesterday) + lastSeen.format(DateTimeFormatter.ofPattern(timeFormat));
                 } else if (offsetDays > 1 && offsetDays < 7) {
-                    lastSeenText = "Last seen " + lastSeen.format(DateTimeFormatter.ofPattern("EEEE, " + timeFormat));
+                    lastSeenText = context.getString(R.string.last_seen, lastSeen.format(DateTimeFormatter.ofPattern("EEEE, " + timeFormat)));
                 } else if (offsetDays >= 7 && offsetDays < 14) {
-                    lastSeenText = "Last seen a week ago";
+                    lastSeenText = context.getString(R.string.last_seen_a_week_ago);
                 } else if (offsetDays >= 14 && offsetDays < 28) {
-                    lastSeenText = "Last seen few weeks ago";
+                    lastSeenText = context.getString(R.string.last_seen_few_weeks_ago);
                 } else {
-                    lastSeenText = "Last seen " + lastSeen.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                    lastSeenText = context.getString(R.string.last_seen, lastSeen.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
                 }
 
                 callback.invoke(false, lastSeenText);
