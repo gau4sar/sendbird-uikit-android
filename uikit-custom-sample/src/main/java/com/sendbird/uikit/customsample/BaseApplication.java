@@ -31,6 +31,7 @@ import com.sendbird.uikit.widgets.AudioPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class BaseApplication extends MultiDexApplication {
 
@@ -79,6 +80,11 @@ public class BaseApplication extends MultiDexApplication {
                     @Override
                     public String getUsername() {
                         return "tiendung717";
+                    }
+
+                    @Override
+                    public Locale getLocale() {
+                        return new Locale("en");
                     }
                 };
             }

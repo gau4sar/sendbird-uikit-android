@@ -191,4 +191,6 @@
     <string name="last_seen_yesterday">"Last seen yesterday, "</string>
     <string name="last_seen">Last seen %s</string>
     <string name="last_seen_at">Last seen at %s</string>
+    <string name="slide_to_cancel">Slide To Cancel</string>
+    <string name="online">Online</string>
 </resources>

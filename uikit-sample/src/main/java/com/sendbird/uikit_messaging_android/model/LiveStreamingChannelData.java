@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class LiveStreamingChannelData {
     private final String name;
@@ -60,6 +61,11 @@ public class LiveStreamingChannelData {
             userId = jsonObject.optString(StringSet.id);
             nickname = jsonObject.optString(StringSet.name);
             profileUrl = jsonObject.optString(StringSet.profile_url);
+        }
+
+        @Override
+        public Locale getLocale() {
+            return null;
         }
 
         @Override

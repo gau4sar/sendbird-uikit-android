@@ -3,6 +3,12 @@ package com.sendbird.uikit.utils;
 import android.content.Context;
 
 import com.sendbird.uikit.R;
+import com.sendbird.uikit.SendBirdUIKit;
+
+import org.threeten.bp.Instant;
+import org.threeten.bp.LocalDateTime;
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.format.DateTimeFormatter;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -44,12 +50,9 @@ public class DateUtils {
      * Formats timestamp to 'date month' format (e.g. 'Wed, 19 Dec').
      */
     public static String formatDate(long timeInMillis) {
-        int flags = android.text.format.DateUtils.FORMAT_NO_YEAR
-                | android.text.format.DateUtils.FORMAT_ABBREV_MONTH
-                | android.text.format.DateUtils.FORMAT_ABBREV_WEEKDAY
-                | android.text.format.DateUtils.FORMAT_SHOW_WEEKDAY
-                | android.text.format.DateUtils.FORMAT_SHOW_DATE;
-        return android.text.format.DateUtils.formatDateTime(null, timeInMillis, flags);
+        LocalDateTime lastSeen = LocalDateTime.ofInstant(Instant.ofEpochMilli(timeInMillis), ZoneId.systemDefault());
+        Locale locale = SendBirdUIKit.getAdapter().getUserInfo().getLocale();
+        return lastSeen.format(DateTimeFormatter.ofPattern("EEE, dd MMM", locale));
     }
 
     /**

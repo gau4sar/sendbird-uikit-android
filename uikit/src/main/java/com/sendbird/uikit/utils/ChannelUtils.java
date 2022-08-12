@@ -268,7 +268,7 @@ public class ChannelUtils {
         String lastSeenText = "";
         boolean isOnline = user.getConnectionStatus() == User.ConnectionStatus.ONLINE;
         if (isOnline) {
-            lastSeenText = "Online";
+            lastSeenText = context.getString(R.string.online);
             callback.invoke(true, lastSeenText);
         } else {
             UserConfigInfo userConfigInfo = SendBirdUIKit.getUserConfig(user);
@@ -285,20 +285,21 @@ public class ChannelUtils {
 
                 boolean is24hFormat = DateFormat.is24HourFormat(context);
                 String timeFormat = is24hFormat ? "HH:mm" : "hh:mm a";
+                Locale locale = SendBirdUIKit.getAdapter().getUserInfo().getLocale();
                 if (lastSeenAt < 0) {
                     lastSeenText = context.getString(R.string.last_seen_months_ago);
                 } else if (nowDate.isEqual(lastSeenDate)) {
-                    lastSeenText = context.getString(R.string.last_seen_at, lastSeen.format(DateTimeFormatter.ofPattern(timeFormat)));
+                    lastSeenText = context.getString(R.string.last_seen_at, lastSeen.format(DateTimeFormatter.ofPattern(timeFormat, locale)));
                 } else if (offsetDays == 1) {
-                    lastSeenText = context.getString(R.string.last_seen_yesterday) + lastSeen.format(DateTimeFormatter.ofPattern(timeFormat));
+                    lastSeenText = context.getString(R.string.last_seen_yesterday) + lastSeen.format(DateTimeFormatter.ofPattern(timeFormat, locale));
                 } else if (offsetDays > 1 && offsetDays < 7) {
-                    lastSeenText = context.getString(R.string.last_seen, lastSeen.format(DateTimeFormatter.ofPattern("EEEE, " + timeFormat)));
+                    lastSeenText = context.getString(R.string.last_seen, lastSeen.format(DateTimeFormatter.ofPattern("EEEE, " + timeFormat, locale)));
                 } else if (offsetDays >= 7 && offsetDays < 14) {
                     lastSeenText = context.getString(R.string.last_seen_a_week_ago);
                 } else if (offsetDays >= 14 && offsetDays < 28) {
                     lastSeenText = context.getString(R.string.last_seen_few_weeks_ago);
                 } else {
-                    lastSeenText = context.getString(R.string.last_seen, lastSeen.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                    lastSeenText = context.getString(R.string.last_seen, lastSeen.format(DateTimeFormatter.ofPattern("dd/MM/yyyy", locale)));
                 }
 
                 callback.invoke(false, lastSeenText);

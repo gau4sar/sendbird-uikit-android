@@ -12,6 +12,8 @@ import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendBirdUIKit;
 import com.sendbird.uikit.interfaces.UserInfo;
 
+import java.util.Locale;
+
 public class UserUtils {
     public static <T extends User> UserInfo toUserInfo(@NonNull T user) {
         return new UserInfo() {
@@ -38,6 +40,11 @@ public class UserUtils {
             @Override
             public String getUsername() {
                 return user.getMetaData("username");
+            }
+
+            @Override
+            public Locale getLocale() {
+                return new Locale("en");
             }
         };
     }

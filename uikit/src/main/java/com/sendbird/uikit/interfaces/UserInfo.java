@@ -1,5 +1,7 @@
 package com.sendbird.uikit.interfaces;
 
+import java.util.Locale;
+
 /**
  * Interface definition for a information of user.
  */
@@ -28,4 +30,6 @@ public interface UserInfo {
     String getUserPhoneNumber();
 
     String getUsername();
+
+    Locale getLocale();
 }

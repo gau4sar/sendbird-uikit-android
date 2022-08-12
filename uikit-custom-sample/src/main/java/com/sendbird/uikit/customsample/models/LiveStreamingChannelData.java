@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class LiveStreamingChannelData {
     private final String name;
@@ -84,6 +85,11 @@ public class LiveStreamingChannelData {
 
         @Override
         public String getUsername() {
+            return null;
+        }
+
+        @Override
+        public Locale getLocale() {
             return null;
         }
 

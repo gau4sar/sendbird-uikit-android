@@ -18,6 +18,8 @@ import com.sendbird.uikit_messaging_android.fcm.MyFirebaseMessagingService;
 import com.sendbird.uikit_messaging_android.utils.PreferenceUtils;
 import com.sendbird.uikit_messaging_android.utils.PushUtils;
 
+import java.util.Locale;
+
 public class BaseApplication extends MultiDexApplication {
 
     private static final String APP_ID = "033D0C2B-1B69-4592-90E5-2B6D8D58A86B";
@@ -60,6 +62,11 @@ public class BaseApplication extends MultiDexApplication {
                     @Override
                     public String getUserPhoneNumber() {
                         return "+84979070843";
+                    }
+
+                    @Override
+                    public Locale getLocale() {
+                        return new Locale("es");
                     }
 
                     @Override

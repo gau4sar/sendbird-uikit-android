@@ -7,4 +7,21 @@
     <string name="last_seen_yesterday">"Visto por última vez ayer,"</string>
     <string name="last_seen">"Última vista %s"</string>
     <string name="last_seen_at">"Visto por última vez en %s"</string>
+
+
+    <string name="sb_text_channel_input_text_hint">"Ingrese el mensaje"</string>
+    <string name="slide_to_cancel">"Diapositiva para cancelar"</string>
+    <string name="sb_text_channel_input_camera">"Cámara"</string>
+    <string name="sb_text_channel_input_video">"Grabar video"</string>
+    <string name="sb_text_channel_input_gallery">"librería fotográfica"</string>
+    <string name="sb_text_channel_input_document">"Archivos"</string>
+    <string name="sb_text_channel_anchor_copy">"Copiar"</string>
+    <string name="sb_text_channel_anchor_save">"Ahorrar"</string>
+    <string name="sb_text_channel_anchor_edit">"Editar"</string>
+    <string name="sb_text_channel_anchor_delete">"Borrar"</string>
+    <string name="sb_text_channel_anchor_reply">"Respuesta"</string>
+    <string name="sb_text_channel_anchor_retry">"Rever"</string>
+    <string name="sb_text_channel_anchor_read_by">"Leído por"</string>
+    <string name="sb_text_channel_anchor_delivered_by">"Entregado a"</string>
+    <string name="online">"En línea"</string>
 </resources>
