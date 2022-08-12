@@ -184,7 +184,7 @@
     <string name="sb_text_reply_to">Reply to %s</string>
     <string name="sb_text_replied_to">%s replied to %s</string>
     <string name="sb_text_error_original_message_not_found">Couldn\'t find the original message for this reply.</string>
-    <string name="encrypted_message">"Messages and calls are end-to-end encrypted. No one outside this chat, not even One'sSay, can read or listen them."</string>
+    <string name="encrypted_message">"Messages and calls are end-to-end encrypted. No one outside this chat, not even One'sSay, can read or listen to them."</string>
     <string name="last_seen_months_ago">Last seen a few months ago</string>
     <string name="last_seen_a_week_ago">Last seen a week ago</string>
     <string name="last_seen_few_weeks_ago">Last seen few weeks ago</string>
