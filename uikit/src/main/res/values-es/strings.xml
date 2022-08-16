@@ -139,7 +139,8 @@
     <string name="last_seen_a_week_ago">"Visto por última vez hace una semana"</string>
     <string name="last_seen_few_weeks_ago">"Visto por última vez hace unas semanas"</string>
     <string name="last_seen_yesterday">"Visto por última vez ayer,"</string>
-    <string name="last_seen">"Última vista %s"</string>
+    <string name="last_seen">"Última vista "</string>
     <string name="last_seen_at">"Visto por última vez en %s"</string>
     <string name="online">"En línea"</string>
+    <string name="slide_to_cancel">"Diapositiva para cancelar"</string>
 </resources>

@@ -293,13 +293,13 @@ public class ChannelUtils {
                 } else if (offsetDays == 1) {
                     lastSeenText = context.getString(R.string.last_seen_yesterday) + lastSeen.format(DateTimeFormatter.ofPattern(timeFormat, locale));
                 } else if (offsetDays > 1 && offsetDays < 7) {
-                    lastSeenText = context.getString(R.string.last_seen, lastSeen.format(DateTimeFormatter.ofPattern("EEEE, " + timeFormat, locale)));
+                    lastSeenText = context.getString(R.string.last_seen) + " " + lastSeen.format(DateTimeFormatter.ofPattern("EEEE, " + timeFormat, locale));
                 } else if (offsetDays >= 7 && offsetDays < 14) {
                     lastSeenText = context.getString(R.string.last_seen_a_week_ago);
                 } else if (offsetDays >= 14 && offsetDays < 28) {
                     lastSeenText = context.getString(R.string.last_seen_few_weeks_ago);
                 } else {
-                    lastSeenText = context.getString(R.string.last_seen, lastSeen.format(DateTimeFormatter.ofPattern("dd/MM/yyyy", locale)));
+                    lastSeenText = context.getString(R.string.last_seen) + " " + lastSeen.format(DateTimeFormatter.ofPattern("dd/MM/yyyy", locale));
                 }
 
                 callback.invoke(false, lastSeenText);
