@@ -289,7 +289,7 @@ public class ChannelUtils {
                 if (lastSeenAt < 0) {
                     lastSeenText = context.getString(R.string.last_seen_months_ago);
                 } else if (nowDate.isEqual(lastSeenDate)) {
-                    lastSeenText = context.getString(R.string.last_seen_at, lastSeen.format(DateTimeFormatter.ofPattern(timeFormat, locale)));
+                    lastSeenText = context.getString(R.string.last_seen_at) + " " + lastSeen.format(DateTimeFormatter.ofPattern(timeFormat, locale));
                 } else if (offsetDays == 1) {
                     lastSeenText = context.getString(R.string.last_seen_yesterday) + lastSeen.format(DateTimeFormatter.ofPattern(timeFormat, locale));
                 } else if (offsetDays > 1 && offsetDays < 7) {

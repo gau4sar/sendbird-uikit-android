@@ -190,7 +190,7 @@
     <string name="last_seen_few_weeks_ago">Last seen few weeks ago</string>
     <string name="last_seen_yesterday">"Last seen yesterday, "</string>
     <string name="last_seen">Last seen </string>
-    <string name="last_seen_at">Last seen at %s</string>
+    <string name="last_seen_at">Last seen at</string>
     <string name="slide_to_cancel">Slide To Cancel</string>
     <string name="online">Online</string>
 </resources>
