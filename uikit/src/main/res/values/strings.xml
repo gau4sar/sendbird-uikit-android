@@ -193,4 +193,13 @@
     <string name="last_seen_at">Last seen at</string>
     <string name="slide_to_cancel">Slide To Cancel</string>
     <string name="online">Online</string>
+    <string name="channel_is_created">The channel is created</string>
+    <string name="group_is_created">The group is created</string>
+    <string name="user_joined">%s joined</string>
+    <string name="user_left">%s left</string>
+    <string name="user_are_now_operator">%s are now operator</string>
+    <string name="user_is_now_operator">%s is now operator</string>
+    <string name="channel_was_updated">The %s was updated</string>
+    <string name="channel_were_updated">The %s were updated</string>
+
 </resources>

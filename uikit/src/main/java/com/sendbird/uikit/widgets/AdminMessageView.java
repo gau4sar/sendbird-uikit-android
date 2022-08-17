@@ -63,7 +63,7 @@ public class AdminMessageView extends BaseMessageView {
         try {
             String data = message.getData();
             AdminMessageData adminMessageData = new Gson().fromJson(data, AdminMessageData.class);
-            String adminMessageContent = adminMessageData.getContent(channel);
+            String adminMessageContent = adminMessageData.getContent(getContext(), channel);
 
             binding.tvMessage.setText(TextUtils.isEmpty(adminMessageContent) ? message.getMessage() : adminMessageContent);
         } catch (Exception e) {

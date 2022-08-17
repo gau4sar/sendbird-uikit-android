@@ -1,10 +1,13 @@
 package com.sendbird.uikit.model.admin;
 
+import android.content.Context;
+
 import androidx.annotation.Keep;
 
 import com.sendbird.android.BaseChannel;
 import com.sendbird.android.GroupChannel;
 import com.sendbird.android.shadow.com.google.gson.annotations.SerializedName;
+import com.sendbird.uikit.R;
 import com.sendbird.uikit.SendBirdUIKit;
 import com.sendbird.uikit.utils.TextUtils;
 
@@ -49,36 +52,37 @@ public class AdminMessageData {
         this.changes = changes;
     }
 
-    public String getContent(BaseChannel channel) {
+    public String getContent(Context context, BaseChannel channel) {
         if (type.equalsIgnoreCase(AdminMessageType.CHANNEL_CREATE)) {
             if (channel instanceof GroupChannel) {
                 GroupChannel groupChannel = (GroupChannel) channel;
-                if (groupChannel.isSuper()) return "The channel is created";
-                else return  "The group is created";
+                if (groupChannel.isSuper()) return context.getString(R.string.channel_is_created);
+                else return context.getString(R.string.group_is_created);
             }
         } else if (type.equalsIgnoreCase(AdminMessageType.USER_JOINED)) {
             String joinedName = joinUserNames();
-            return android.text.TextUtils.isEmpty(joinedName) ? "" : joinedName + " joined";
+            return String.format(context.getString(R.string.user_joined), android.text.TextUtils.isEmpty(joinedName) ? "" : joinedName);
         } else if (type.equalsIgnoreCase(AdminMessageType.USER_LEAVE)) {
             String joinedName = joinUserNames();
-            return android.text.TextUtils.isEmpty(joinedName) ? "" : joinedName + " left";
+            return String.format(context.getString(R.string.user_left), android.text.TextUtils.isEmpty(joinedName) ? "" : joinedName);
         } else if (type.equalsIgnoreCase(AdminMessageType.CHANNEL_CHANGE)) {
             if (changes != null && !changes.isEmpty()) {
-                return "The "
-                        + joinChannelChanges()
-                        + " "
-                        + (changes.size() == 1 ? "was" : "were")
-                        + " updated";
+                if (changes.size() == 1) {
+                    return String.format(context.getString(R.string.channel_was_updated), joinChannelChanges());
+                } else {
+                    return String.format(context.getString(R.string.channel_were_updated), joinChannelChanges());
+                }
             } else {
                 return "";
             }
         } else if (type.equalsIgnoreCase(AdminMessageType.USER_ROLE_CHANGE)) {
             if (AdminMessageReason.USER_TO_OPERATOR.equalsIgnoreCase(reason)) {
                 boolean onlyMe = users.size() == 1 && users.get(0).itsMe();
-                return joinUserNames()
-                        + " "
-                        + (users.size() > 1 || onlyMe ? "are" : "is")
-                        + " now an operator";
+                if ((users.size() > 1 || onlyMe)) {
+                    return String.format(context.getString(R.string.user_are_now_operator), joinUserNames());
+                } else {
+                    return String.format(context.getString(R.string.user_is_now_operator), joinUserNames());
+                }
             }
         }
         return "";
