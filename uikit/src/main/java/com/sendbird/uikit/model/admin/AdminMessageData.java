@@ -60,10 +60,10 @@ public class AdminMessageData {
                 else return context.getString(R.string.group_is_created);
             }
         } else if (type.equalsIgnoreCase(AdminMessageType.USER_JOINED)) {
-            String joinedName = joinUserNames();
+            String joinedName = joinUserNames(context);
             return String.format(context.getString(R.string.user_joined), android.text.TextUtils.isEmpty(joinedName) ? "" : joinedName);
         } else if (type.equalsIgnoreCase(AdminMessageType.USER_LEAVE)) {
-            String joinedName = joinUserNames();
+            String joinedName = joinUserNames(context);
             return String.format(context.getString(R.string.user_left), android.text.TextUtils.isEmpty(joinedName) ? "" : joinedName);
         } else if (type.equalsIgnoreCase(AdminMessageType.CHANNEL_CHANGE)) {
             if (changes != null && !changes.isEmpty()) {
@@ -79,17 +79,17 @@ public class AdminMessageData {
             if (AdminMessageReason.USER_TO_OPERATOR.equalsIgnoreCase(reason)) {
                 boolean onlyMe = users.size() == 1 && users.get(0).itsMe();
                 if ((users.size() > 1 || onlyMe)) {
-                    return String.format(context.getString(R.string.user_are_now_operator), joinUserNames());
+                    return String.format(context.getString(R.string.user_are_now_operator), joinUserNames(context));
                 } else {
-                    return String.format(context.getString(R.string.user_is_now_operator), joinUserNames());
+                    return String.format(context.getString(R.string.user_is_now_operator), joinUserNames(context));
                 }
             }
         }
         return "";
     }
 
-    public String joinUserNames() {
-        List<String> names = getUserNames();
+    public String joinUserNames(Context context) {
+        List<String> names = getUserNames(context);
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < names.size(); i++) {
             String name = names.get(i);
@@ -118,11 +118,11 @@ public class AdminMessageData {
         return builder.toString();
     }
 
-    public List<String> getUserNames() {
+    public List<String> getUserNames(Context context) {
         List<String> names = new ArrayList<>();
         for (AdminMessageUser user : users) {
             if (user.itsMe()) {
-                names.add("You");
+                names.add(context.getString(R.string.sb_text_you));
             } else {
                 names.add(user.getName());
             }
