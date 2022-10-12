@@ -1,7 +1,6 @@
 package com.sendbird.uikit.activities.viewholder;
 
 import android.net.Uri;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -29,7 +28,7 @@ public final class MyAudioFileMessageViewHolder extends GroupChannelMessageViewH
         super(binding, useMessageGroupUI);
         emojiReactionListView = ((MyAudioFileMessageView) binding.getRoot()).getBinding().rvEmojiReactionList;
         final MyAudioFileMessageView root = (MyAudioFileMessageView) binding.getRoot();
-
+        clickableViewMap.put(ClickableViewIdentifier.Chat.name(), root.getBinding().contentPanel);
         clickableViewMap.put(ClickableViewIdentifier.QuoteReply.name(), root.getBinding().quoteReplyPanel);
     }
 

@@ -834,7 +834,8 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
             setInputTextHint(isMuted, isFrozen);
 
             if (MessageInputView.Mode.EDIT == current) {
-                if (targetMessage != null) binding.vgInputBox.setInputText(targetMessage.getMessage());
+                if (targetMessage != null)
+                    binding.vgInputBox.setInputText(targetMessage.getMessage());
                 binding.vgInputBox.showKeyboard();
             } else if (MessageInputView.Mode.QUOTE_REPLY == current) {
                 if (targetMessage != null) binding.vgInputBox.drawMessageToReply(targetMessage);
@@ -1109,7 +1110,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
     protected void onBeforeSendUserMessage(@NonNull UserMessageParams params) {
         if (!tagUsers.isEmpty()) {
             List<String> mentionedUserIds = new ArrayList<>();
-            for (Member user: tagUsers) {
+            for (Member user : tagUsers) {
                 String phoneNumber = user.getMetaData("phone");
                 String name = SendBirdUIKit.findPhoneBookName(phoneNumber);
                 String message = params.getMessage().replace("@" + name, "@" + phoneNumber);
@@ -1149,7 +1150,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
     protected void onBeforeSendFileMessage(@NonNull FileMessageParams params) {
         if (!tagUsers.isEmpty()) {
             List<String> mentionedUserIds = new ArrayList<>();
-            for (Member user: tagUsers) {
+            for (Member user : tagUsers) {
                 mentionedUserIds.add(user.getUserId());
             }
             params.setMentionType(BaseMessageParams.MentionType.USERS);
@@ -1517,6 +1518,30 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
 
         DialogListItem[] actions = null;
         switch (type) {
+            case VIEW_TYPE_FILE_MESSAGE_AUDIO_ME:
+                if (status == BaseMessage.SendingStatus.SUCCEEDED) {
+                    if (replyType == ReplyType.NONE) {
+                        if (channel.getMemberCount() > 2) {
+                            actions = new DialogListItem[]{delete, readBy, deliveredBy};
+                        } else {
+                            actions = new DialogListItem[]{delete};
+                        }
+                    } else {
+                        if (channel.getMemberCount() > 2) {
+                            actions = new DialogListItem[]{delete, reply, readBy, deliveredBy};
+                        } else {
+                            actions = new DialogListItem[]{delete, reply};
+                        }
+                    }
+                } else if (MessageUtils.isFailed(message)) {
+                    actions = new DialogListItem[]{retry, deleteFailed};
+                }
+                break;
+            case VIEW_TYPE_FILE_MESSAGE_AUDIO_OTHER:
+                if (replyType != ReplyType.NONE) {
+                    actions = new DialogListItem[]{reply};
+                }
+                break;
             case VIEW_TYPE_USER_MESSAGE_ME:
                 if (status == BaseMessage.SendingStatus.SUCCEEDED) {
                     if (replyType == ReplyType.NONE) {
@@ -1580,10 +1605,10 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
     /**
      * It will be called when the message context menu was clicked.
      *
-     * @param message A clicked message.
-     * @param view The view that was clicked.
+     * @param message  A clicked message.
+     * @param view     The view that was clicked.
      * @param position The position that was clicked.
-     * @param item {@link DialogListItem} that was clicked.
+     * @param item     {@link DialogListItem} that was clicked.
      * @return <code>true</code> if long click event was handled, <code>false</code> otherwise.
      * @since 2.2.3
      */
@@ -1619,14 +1644,14 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
         } else if (key == R.string.sb_text_channel_anchor_read_by) {
             List<Member> members = channel.getReadMembers(message, false);
             ArrayList<String> memberIdList = new ArrayList<>();
-            for (Member member: members) memberIdList.add(member.getUserId());
+            for (Member member : members) memberIdList.add(member.getUserId());
 
             startActivity(MembersActivity.newIntent(getContext(), channel.getUrl(), memberIdList, getString(R.string.sb_text_channel_anchor_read_by)));
             return true;
         } else if (key == R.string.sb_text_channel_anchor_delivered_by) {
             List<Member> members = channel.getUnreadMembers(message, false);
             ArrayList<String> memberIdList = new ArrayList<>();
-            for (Member member: members) memberIdList.add(member.getUserId());
+            for (Member member : members) memberIdList.add(member.getUserId());
             startActivity(MembersActivity.newIntent(getContext(), channel.getUrl(), memberIdList, getString(R.string.sb_text_channel_anchor_delivered_by)));
             return true;
         }
@@ -1783,17 +1808,17 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
     private void showWarningDialog(BaseMessage message) {
         if (getContext() == null || getFragmentManager() == null) return;
         DialogUtils.buildWarning(
-                getString(R.string.sb_text_dialog_delete_message),
-                (int) getResources().getDimension(R.dimen.sb_dialog_width_280),
-                getString(R.string.sb_text_button_delete),
-                delete -> {
-                    Logger.dev("delete");
-                    deleteMessage(message);
-                },
-                getString(R.string.sb_text_button_cancel),
-                cancel -> {
-                    Logger.dev("cancel");
-                })
+                        getString(R.string.sb_text_dialog_delete_message),
+                        (int) getResources().getDimension(R.dimen.sb_dialog_width_280),
+                        getString(R.string.sb_text_button_delete),
+                        delete -> {
+                            Logger.dev("delete");
+                            deleteMessage(message);
+                        },
+                        getString(R.string.sb_text_button_cancel),
+                        cancel -> {
+                            Logger.dev("cancel");
+                        })
                 .showSingle(getFragmentManager());
     }
 
@@ -1918,7 +1943,7 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
                 } else {
                     List<String> bannedUsers = viewModel.getBannedUsers();
                     List<Member> channelMembers = new ArrayList<>();
-                    for(Member member: members) {
+                    for (Member member : members) {
                         if (!bannedUsers.contains(member.getUserId())) {
                             channelMembers.add(member);
                         }
