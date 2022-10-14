@@ -1538,8 +1538,10 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
                 }
                 break;
             case VIEW_TYPE_FILE_MESSAGE_AUDIO_OTHER:
-                if (replyType != ReplyType.NONE) {
-                    actions = new DialogListItem[]{reply};
+                if (replyType == ReplyType.NONE) {
+                    actions = new DialogListItem[]{save};
+                } else {
+                    actions = new DialogListItem[]{save, reply};
                 }
                 break;
             case VIEW_TYPE_USER_MESSAGE_ME:

@@ -28,8 +28,8 @@ public final class OtherAudioFileMessageViewHolder extends GroupChannelMessageVi
         super(binding, useMessageGroupUI);
         emojiReactionListView = ((OtherAudioFileMessageView) binding.getRoot()).getBinding().rvEmojiReactionList;
         final OtherAudioFileMessageView root = (OtherAudioFileMessageView) binding.getRoot();
-
         clickableViewMap.put(ClickableViewIdentifier.Chat.name(), root.getBinding().ivThumbnailOveray);
+        clickableViewMap.put(ClickableViewIdentifier.Chat.name(), root.getBinding().contentPanel);
         clickableViewMap.put(ClickableViewIdentifier.QuoteReply.name(), root.getBinding().quoteReplyPanel);
     }
 
