@@ -1522,15 +1522,15 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
                 if (status == BaseMessage.SendingStatus.SUCCEEDED) {
                     if (replyType == ReplyType.NONE) {
                         if (channel.getMemberCount() > 2) {
-                            actions = new DialogListItem[]{delete, readBy, deliveredBy};
+                            actions = new DialogListItem[]{save, delete, readBy, deliveredBy};
                         } else {
-                            actions = new DialogListItem[]{delete};
+                            actions = new DialogListItem[]{save, delete};
                         }
                     } else {
                         if (channel.getMemberCount() > 2) {
-                            actions = new DialogListItem[]{delete, reply, readBy, deliveredBy};
+                            actions = new DialogListItem[]{save, delete, reply, readBy, deliveredBy};
                         } else {
-                            actions = new DialogListItem[]{delete, reply};
+                            actions = new DialogListItem[]{save, delete, reply};
                         }
                     }
                 } else if (MessageUtils.isFailed(message)) {
