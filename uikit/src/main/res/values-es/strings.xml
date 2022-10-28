@@ -134,7 +134,7 @@
     <string name="sb_text_replied_to">"%s respondió a %s"</string>
     <string name="sb_text_error_original_message_not_found">"No pude encontrar el mensaje original para esta respuesta."</string>
 
-    <string name="encrypted_message">"Los mensajes y las llamadas están encriptados de extremo a extremo. Nadie fuera de este chat, ni siquiera uno de loss, puede leerlos o escucharlos."</string>
+    <string name="encrypted_message">"Los mensajes y las llamadas están encriptados de extremo a extremo. Nadie fuera de este chat, ni siquiera One's Say, puede leerlos o escucharlos."</string>
     <string name="last_seen_months_ago">"Visto por última vez hace unos meses"</string>
     <string name="last_seen_a_week_ago">"Visto por última vez hace una semana"</string>
     <string name="last_seen_few_weeks_ago">"Visto por última vez hace unas semanas"</string>
