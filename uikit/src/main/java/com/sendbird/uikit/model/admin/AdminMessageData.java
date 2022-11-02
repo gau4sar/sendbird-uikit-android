@@ -79,9 +79,22 @@ public class AdminMessageData {
             if (AdminMessageReason.USER_TO_OPERATOR.equalsIgnoreCase(reason)) {
                 boolean onlyMe = users.size() == 1 && users.get(0).itsMe();
                 if ((users.size() > 1 || onlyMe)) {
-                    return String.format(context.getString(R.string.user_are_now_operator), joinUserNames(context));
+
+                    if (channel instanceof GroupChannel) {
+                        GroupChannel groupChannel = (GroupChannel) channel;
+                        if (groupChannel.isSuper())
+                            return String.format(context.getString(R.string.user_are_now_operator), joinUserNames(context));
+                        else
+                            return String.format(context.getString(R.string.user_are_now_admin), joinUserNames(context));
+                    }
                 } else {
-                    return String.format(context.getString(R.string.user_is_now_operator), joinUserNames(context));
+                    if (channel instanceof GroupChannel) {
+                        GroupChannel groupChannel = (GroupChannel) channel;
+                        if (groupChannel.isSuper())
+                            return String.format(context.getString(R.string.user_is_now_operator), joinUserNames(context));
+                        else
+                            return String.format(context.getString(R.string.user_is_now_admin), joinUserNames(context));
+                    }
                 }
             }
         }

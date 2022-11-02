@@ -199,6 +199,8 @@
     <string name="user_left">%s left</string>
     <string name="user_are_now_operator">%s are now an operator</string>
     <string name="user_is_now_operator">%s is now an operator</string>
+    <string name="user_are_now_admin">%s are now an admin</string>
+    <string name="user_is_now_admin">%s is now an admin</string>
     <string name="channel_was_updated">The %s was updated</string>
     <string name="channel_were_updated">The %s were updated</string>
 

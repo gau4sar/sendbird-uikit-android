@@ -149,6 +149,8 @@
     <string name="user_left">"%s de licencia"</string>
     <string name="user_are_now_operator">"%s ahora son operadores"</string>
     <string name="user_is_now_operator">"%s es ahora operador"</string>
+    <string name="user_are_now_admin">%s ahora eres administrador</string>
+    <string name="user_is_now_admin">%s ahora es un administrador</string>
     <string name="channel_was_updated">"El %s se actualizó"</string>
     <string name="channel_were_updated">"Los %s se actualizaron"</string>
 </resources>
