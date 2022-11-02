@@ -420,8 +420,15 @@ public class ChannelFragment extends BaseGroupChannelFragment implements OnIdent
     }
 
     private void stopCheckUserPresence() {
-        if (isSingleChat()) {
-            presenceHandler.removeCallbacks(presenceRunnable);
+        //When permission is denied while the app was in on resume state the channel object becomes null
+        if(channel==null)
+        {
+            finish();
+        }
+        else {
+            if (isSingleChat()) {
+                presenceHandler.removeCallbacks(presenceRunnable);
+            }
         }
     }
     private void checkUserPresence(Context context) {
