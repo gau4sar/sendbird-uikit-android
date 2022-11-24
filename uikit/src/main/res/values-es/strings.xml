@@ -145,7 +145,7 @@
     <string name="slide_to_cancel">"Diapositiva para cancelar"</string>
     <string name="channel_is_created">"Se crea el canal"</string>
     <string name="group_is_created">"El grupo se crea"</string>
-    <string name="user_joined">"%s unido"</string>
+    <string name="user_joined">"%s está agregado"</string>
     <string name="user_left">"%s de licencia"</string>
     <string name="user_are_now_operator">"%s ahora son operadores"</string>
     <string name="user_is_now_operator">"%s es ahora operador"</string>
