@@ -195,7 +195,9 @@
     <string name="online">Online</string>
     <string name="channel_is_created">The channel is created</string>
     <string name="group_is_created">The group is created</string>
-    <string name="user_joined">%s is added</string>
+    <string name="user_joined">%s joined</string>
+    <string name="user_is_added">%s is added</string>
+    <string name="user_are_added">%s are added</string>
     <string name="user_left">%s left</string>
     <string name="user_are_now_operator">%s are now an operator</string>
     <string name="user_is_now_operator">%s is now an operator</string>

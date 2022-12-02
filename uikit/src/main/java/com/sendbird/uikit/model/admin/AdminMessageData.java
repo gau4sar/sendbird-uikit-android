@@ -60,7 +60,17 @@ public class AdminMessageData {
                 else return context.getString(R.string.group_is_created);
             }
         } else if (type.equalsIgnoreCase(AdminMessageType.USER_JOINED)) {
+
             String joinedName = joinUserNames(context);
+
+            if (channel instanceof GroupChannel) {
+                GroupChannel groupChannel = (GroupChannel) channel;
+                if (groupChannel.getMemberCount() > 1)
+                    return String.format(context.getString(R.string.user_are_added), android.text.TextUtils.isEmpty(joinedName) ? "" : joinedName);
+                else
+                    return String.format(context.getString(R.string.user_is_added), android.text.TextUtils.isEmpty(joinedName) ? "" : joinedName);
+            }
+
             return String.format(context.getString(R.string.user_joined), android.text.TextUtils.isEmpty(joinedName) ? "" : joinedName);
         } else if (type.equalsIgnoreCase(AdminMessageType.USER_LEAVE)) {
             String joinedName = joinUserNames(context);
