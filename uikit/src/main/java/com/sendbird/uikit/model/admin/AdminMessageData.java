@@ -62,16 +62,14 @@ public class AdminMessageData {
         } else if (type.equalsIgnoreCase(AdminMessageType.USER_JOINED)) {
 
             String joinedName = joinUserNames(context);
+            List<String> names = getUserNames(context);
 
-            if (channel instanceof GroupChannel) {
-                GroupChannel groupChannel = (GroupChannel) channel;
-                if (groupChannel.getMemberCount() > 1)
-                    return String.format(context.getString(R.string.user_are_added), android.text.TextUtils.isEmpty(joinedName) ? "" : joinedName);
-                else
-                    return String.format(context.getString(R.string.user_is_added), android.text.TextUtils.isEmpty(joinedName) ? "" : joinedName);
-            }
+            if (names.size() > 1)
+                return String.format(context.getString(R.string.user_are_added), android.text.TextUtils.isEmpty(joinedName) ? "" : joinedName);
+            else
+                return String.format(context.getString(R.string.user_is_added), android.text.TextUtils.isEmpty(joinedName) ? "" : joinedName);
 
-            return String.format(context.getString(R.string.user_joined), android.text.TextUtils.isEmpty(joinedName) ? "" : joinedName);
+            //return String.format(context.getString(R.string.user_joined), android.text.TextUtils.isEmpty(joinedName) ? "" : joinedName);
         } else if (type.equalsIgnoreCase(AdminMessageType.USER_LEAVE)) {
             String joinedName = joinUserNames(context);
             return String.format(context.getString(R.string.user_left), android.text.TextUtils.isEmpty(joinedName) ? "" : joinedName);
